@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import pymongo
 
 from pyramid.config import Configurator
@@ -14,7 +16,8 @@ def main(global_config, **settings):
     config = Configurator(root_factory=Root, settings=settings)
     initialize_model(settings)
     config.add_route('index', '/')
+    config.add_route('charts', '/charts/')
+    config.add_route('chart', '/charts/:title')
     config.add_subscriber('openchordcharts.model.add_request_attributes', 'pyramid.events.NewRequest')
     config.scan('openchordcharts')
-    config.add_static_view('static', 'openchordcharts:static')
     return config.make_wsgi_app()
