@@ -5,7 +5,7 @@ from pyramid.view import view_config
 
 @view_config(route_name='chart', renderer='/chart.mako')
 def chart(request):
-    title = request.params.get('title')
+    title = request.matchdict.get('title')
     chart = request.db.charts.find_one(dict(title=title))
     return dict(
         chart=chart,
