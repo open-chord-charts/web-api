@@ -2,9 +2,9 @@
     "properties": {
         "compositors": [ "Gerald Marks", "Seymour Simons" ],
         "genre": "medium",
+        "key": "C",
         "structure": [ "A", "B", "A", "C" ],
-        "title": "All of me",
-        "tonality": "C"
+        "title": "All of me"
     },
     "chords": [
         "C", "C", "E7", "E7", "A7", "A7", "Dm", "Dm",

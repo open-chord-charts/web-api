@@ -22,9 +22,9 @@
         <p>Structure: <span class="structure">${len(chart['chords'])} × ${''.join(chart['properties']['structure'])}</span></p>
     </div>
 % endif
-% if chart['properties'].get('tonality'):
-    <div class="tonality">
-        <p>Tonality: <span class="tonality">${chart['properties']['tonality']}</span></p>
+% if chart['properties'].get('key'):
+    <div class="key">
+        <p>Key: <span class="key">${chart['properties']['key']}</span></p>
     </div>
 % endif
     <h3>Chords</h3>
