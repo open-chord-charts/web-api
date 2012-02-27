@@ -6,7 +6,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
-requires = ['pyramid', 'biryani']
+requires = ['biryani', 'pymongo', 'pyramid', 'suq-monpyjama']
 
 setup(name='open-chord-charts',
       version='0.0',
@@ -18,9 +18,9 @@ setup(name='open-chord-charts',
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
         ],
-      author='',
-      author_email='',
-      url='',
+      author='Christophe Benz',
+      author_email='christophe.benz@gmail.com',
+      url='http://www.openchordcharts.org/',
       keywords='web pyramid pylons',
       packages=find_packages(),
       include_package_data=True,

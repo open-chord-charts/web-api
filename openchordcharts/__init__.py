@@ -18,6 +18,7 @@ def main(global_config, **settings):
     config.add_route('index', '/')
     config.add_route('chart', '/charts/{slug}')
     config.add_route('charts', '/charts/')
+    config.add_static_view('static', 'openchordcharts:static')
     config.add_subscriber('openchordcharts.model.add_request_attributes', 'pyramid.events.NewRequest')
     config.scan('openchordcharts')
     return config.make_wsgi_app()

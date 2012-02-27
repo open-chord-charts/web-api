@@ -8,20 +8,18 @@
     "compositors": [ "Gerald Marks", "Seymour Simons" ],
     "genre": "medium",
     "key": "C",
-    "structure": [ "A", "B", "A", "C" ],
-    "parts": [
-        {
-            "name": "A",
+    "parts": {
+        "A": {
             "count": 8
         },
-        {
-            "name": "B",
+        "B": {
             "count": 8
         },
-        {
-            "name": "C",
+        "C": {
             "count": 8
         }
-    ],
-    "title": "All of me"
+    },
+    "structure": [ "A", "B", "A", "C" ],
+    "title": "All of me",
+    "user": "cbenz"
 }
