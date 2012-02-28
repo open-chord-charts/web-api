@@ -1,3 +1,4 @@
+*-local.ini
 *.egg-info
 *~
 *.pyc
