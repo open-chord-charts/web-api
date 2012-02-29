@@ -1,17 +1,21 @@
 .chords {
-    border-collapse: collapse;
-    display: table;
+  border-collapse: collapse;
+  display: table;
 }
 .chords .part {
-    display: table-row;
+  display: table-row;
 }
 .chords .part .bar, .chords .part .part-name {
-    display: table-cell;
+  display: table-cell;
 }
 .chords .part .bar {
-    border: 1px solid;
-    padding: 1em;
+  border: 1px solid;
+  font-family: 'lilyjazzchord', sans-serif;
+  padding: 1em;
 }
 .chords .part .part-name {
-    padding: 0 0.5em 0 0;
+  padding: 0 0.5em 0 0;
+}
+.title {
+  font-family: 'lilyjazzchord', sans-serif;
 }

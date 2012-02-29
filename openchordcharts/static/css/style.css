@@ -1,8 +1,14 @@
+@font-face {
+  font-family: 'lilyjazzchord';
+  font-style: normal;
+  font-weight: normal;
+  src: local('lilyjazzchord'), url('/static/fonts/lilyjazzchord.otf');
+}
 footer {
-    margin-top: 10em;
+  margin-top: 10em;
 }
 @media (max-width: 979px) {
-    footer {
-        margin-top: 0;
-    }
+  footer {
+    margin-top: 0;
+  }
 }

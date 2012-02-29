@@ -7,7 +7,7 @@
 
 <div class="page-header">
   <h1>
-    ${chart.title}
+    <span class="title">${chart.title}</span>
 % if chart.compositors:
     <small class="compositors">${', '.join(chart.compositors)}</small>
 % endif
