@@ -89,8 +89,11 @@ def login_callback(request):
 
 @view_config(route_name='logout')
 def logout(request):
+    state = request.GET.get('state')
+    if state is None:
+        state = request.route_path('index')
     request.session.pop('user_email', None)
-    return HTTPFound(location=request.route_path('index'))
+    return HTTPFound(location=state)
 
 
 @view_config(route_name='user', renderer='/user.mako')

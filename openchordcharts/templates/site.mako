@@ -54,7 +54,7 @@ import urllib
 % endif
               <li>
 % if request.session.get('user_email'):
-                <a href="${request.route_path('logout')}">Logout</a>
+                <a href="${request.route_path('logout', _query=dict(state=request.current_route_path()))}">Logout</a>
 % else:
 <%
 settings = request.registry.settings
