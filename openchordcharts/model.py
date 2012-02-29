@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from biryani.strings import slugify
 from suq.monpyjama import Mapper, Wrapper
 import pymongo
 
@@ -36,6 +37,17 @@ class Chart(Mapper, Wrapper):
     title = None
     user = None
 
+    def generate_unique_slug(self):
+        title_slug = slugify(self.title)
+        slug = title_slug
+        slug_index = 1
+        while True:
+            if Chart.find_one(dict(slug=slug)) is None:
+                return slug
+            else:
+                slug = u'{0}-{1}'.format(title_slug, slug_index)
+                slug_index += 1
+
     def get_part_chords(self, part):
         index = 0
         for current_part in self.structure:
@@ -45,3 +57,7 @@ class Chart(Mapper, Wrapper):
             else:
                 index += count
         return None
+
+    def save(self, *args, **kwargs):
+        self.slug = self.generate_unique_slug()
+        return super(Chart, self).save(*args, **kwargs)
