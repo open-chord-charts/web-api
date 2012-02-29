@@ -36,16 +36,24 @@ import urllib
           <div class="nav-collapse">
             <ul class="nav">
               <li\
-% if request.path == request.route_path('charts'):
+% if request.current_route_path() == request.route_path('charts'):
  class="active"\
 % endif
 ><a href="${request.route_path('charts')}">Charts</a></li>
               <li class="divider-vertical"></li>
-% if request.session.get('email'):
-              <li>${request.session['email']}</li>
+% if request.session.get('user_email'):
+              <li\
+% if request.current_route_path() == request.route_path('user', user_email=request.session['user_email']):
+ class="active"\
+% endif
+>
+                <a href="${request.route_path('user', user_email=request.session['user_email'])}">
+                  <i class="icon-user icon-white"></i> ${request.session['user_email']}
+                </a>
+              </li>
 % endif
               <li>
-% if request.session.get('email'):
+% if request.session.get('user_email'):
                 <a href="${request.route_path('logout')}">Logout</a>
 % else:
 <%

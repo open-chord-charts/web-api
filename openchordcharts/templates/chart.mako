@@ -15,19 +15,13 @@
 </div>
 <div class="properties">
 % if chart.genre:
-  <div class="genre">
-    <p>Genre: <span class="genre">${chart.genre}</span></p>
-  </div>
+  <p>Genre: <span class="genre">${chart.genre}</span></p>
 % endif
 % if chart.structure:
-  <div class="structure">
-    <p>Structure: <span class="structure">${len(chart.chords)} × ${''.join(chart.structure)}</span></p>
-  </div>
+  <p>Structure: <span class="structure">${len(chart.chords)} × ${''.join(chart.structure)}</span></p>
 % endif
 % if chart.key:
-  <div class="key">
-    <p>Key: <span class="key">${chart.key}</span></p>
-  </div>
+  <p>Key: <span class="key">${chart.key}</span></p>
 % endif
   <div class="chords">
 % for part in chart.structure:
@@ -39,4 +33,7 @@
     </div>
 % endfor
   </div>
+% if request.session.get('user_email'):
+  <p>Added by <a class="user" href="${request.route_path('user', user_email=chart.user)}">${chart.user}</a></p>
+% endif
 </div>

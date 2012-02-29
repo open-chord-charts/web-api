@@ -22,6 +22,8 @@ def main(global_config, **settings):
     config.add_route('logout', '/logout/')
     config.add_route('chart', '/charts/{slug}')
     config.add_route('charts', '/charts/')
+    config.add_route('user', '/users/{user_email}')
+    config.add_route('users', '/users/')
     config.add_static_view('static', 'openchordcharts:static')
     config.add_subscriber('openchordcharts.model.add_request_attributes', 'pyramid.events.NewRequest')
     config.scan('openchordcharts')

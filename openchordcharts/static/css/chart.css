@@ -1,6 +1,7 @@
 .chords {
   border-collapse: collapse;
   display: table;
+  margin-bottom: 9px; /* Same as bootstrap p margin-bottom. */
 }
 .chords .part {
   display: table-row;
