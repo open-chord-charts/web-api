@@ -40,8 +40,7 @@ import urllib
  class="active"\
 % endif
 ><a href="${request.route_path('charts')}">Charts</a></li>
-            </ul>
-            <ul class="nav pull-right">
+              <li class="divider-vertical"></li>
 % if request.session.get('email'):
               <li>${request.session['email']}</li>
 % endif
