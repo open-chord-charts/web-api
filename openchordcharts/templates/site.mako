@@ -91,8 +91,7 @@ login_url = settings['oauth.authorize_url'] + '?' + urllib.urlencode(dict(
       </footer>
     </div>
 
-    <script src="/static/lib/jquery-1.7.1.min.js"></script>
-    <script src="/static/lib/bootstrap-2.0.1/js/bootstrap.js"></script>
-
+    <script data-main="/static/js/main" src="/static/lib/requirejs-1.0.7/require.min.js"></script>
+    <%next:scripts/>
   </body>
 </html>
