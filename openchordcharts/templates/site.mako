@@ -11,6 +11,7 @@ import urllib
 <link href="/static/lib/bootstrap-2.0.1/css/bootstrap-responsive.min.css" rel="stylesheet">
 <link href="/static/css/style.css" rel="stylesheet">
 </%def>\
+<%def name="scripts()" filter="trim"></%def>\
 <%def name="title()" filter="trim">OpenChordCharts.org</%def>\
 <!DOCTYPE html>
 <html>
@@ -92,6 +93,6 @@ login_url = settings['oauth.authorize_url'] + '?' + urllib.urlencode(dict(
     </div>
 
     <script data-main="/static/js/main" src="/static/lib/requirejs-1.0.7/require.min.js"></script>
-    <%next:scripts/>
+    <%self:scripts/>
   </body>
 </html>
