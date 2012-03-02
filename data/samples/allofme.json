@@ -1,24 +1,48 @@
 {
-    "chords": [
-        "C", "C", "E7", "E7", "A7", "A7", "Dm", "Dm",
-        "E7", "E7", "Am", "Am", "D7", "D7", "Dm", "G7",
-        "CM7", "CM7", "E7", "E7", "A7", "A7", "Dm", "Dm",
-        "F", "Fm", "C", "A7", "Dm75b", "G7", "C", "C"
-    ],
     "compositors": [ "Gerald Marks", "Seymour Simons" ],
     "genre": "medium",
     "key": "C",
-    "parts": {
-        "A": {
-            "count": 8
+    "parts": [
+        {
+            "name": "A",
+            "chords": [
+                {"duration": 1, "offset": 1, "quality": "M"},
+                {"duration": 1, "offset": 1, "quality": "M"},
+                {"duration": 1, "offset": 3, "quality": "7"},
+                {"duration": 1, "offset": 3, "quality": "7"},
+                {"duration": 1, "offset": 6, "quality": "7"},
+                {"duration": 1, "offset": 6, "quality": "7"},
+                {"duration": 1, "offset": 2, "quality": "m"},
+                {"duration": 1, "offset": 2, "quality": "m"}
+            ]
         },
-        "B": {
-            "count": 8
+        {
+            "name": "B",
+            "chords": [
+                {"duration": 1, "offset": 3, "quality": "7"},
+                {"duration": 1, "offset": 3, "quality": "7"},
+                {"duration": 1, "offset": 6, "quality": "m"},
+                {"duration": 1, "offset": 6, "quality": "m"},
+                {"duration": 1, "offset": 2, "quality": "7"},
+                {"duration": 1, "offset": 2, "quality": "7"},
+                {"duration": 1, "offset": 2, "quality": "m"},
+                {"duration": 1, "offset": 5, "quality": "7"},
+            ]
         },
-        "C": {
-            "count": 8
+        {
+            "name": "C",
+            "chords": [
+                {"duration": 1, "offset": 4, "quality": "M"},
+                {"duration": 1, "offset": 4, "quality": "m"},
+                {"duration": 1, "offset": 1, "quality": "M"},
+                {"duration": 1, "offset": 6, "quality": "7"},
+                {"duration": 1, "offset": 2, "quality": "m75b"},
+                {"duration": 1, "offset": 6, "quality": "7"},
+                {"duration": 1, "offset": 2, "quality": "M"},
+                {"duration": 1, "offset": 2, "quality": "M"}
+            ]
         }
-    },
+    ],
     "structure": [ "A", "B", "A", "C" ],
     "title": "All of me",
     "user": "christophe.benz@gmail.com"
