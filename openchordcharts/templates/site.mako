@@ -84,8 +84,8 @@ login_url = settings['oauth.authorize_url'] + '?' + urllib.urlencode(dict(
       <footer>
         <hr>
         <p>
-          This is free software: <a href="https://gitorious.org/open-chord-charts/">Get the source code</a>
-          — <a href="http://www.gnu.org/licenses/agpl.html">GNU Affero General Public License</a>
+          This is <a href="http://www.gnu.org/licenses/agpl.html">free software</a>.
+          Get the <a href="https://gitorious.org/open-chord-charts/">source code</a>.
         </p>
         <p>Copyright © Christophe Benz 2012</p>
       </footer>
