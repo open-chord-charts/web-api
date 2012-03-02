@@ -12,7 +12,9 @@
 .chords .part .bar {
   border: 1px solid;
   font-family: 'lilyjazzchord', sans-serif;
-  padding: 1em;
+  padding: 0.7em 0.2em;
+  text-align: center;
+  width: 6em;
 }
 .chords .part .part-name {
   padding: 0 0.5em 0 0;
