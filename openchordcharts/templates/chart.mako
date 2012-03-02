@@ -5,14 +5,6 @@
 <link href="/static/css/chart.css" rel="stylesheet">
 </%def>
 
-<%def name="scripts()" filter="trim">
-<script>
-require(["chart"], function(chart) {
-  chart.initialize(".chords");
-});
-</script>
-</%def>
-
 <div class="page-header">
   <h1>
     <span class="title">${chart.title}</span>
