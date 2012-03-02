@@ -8,3 +8,6 @@ require.config
   use:
     bootstrap:
       deps: ["jquery"]
+
+
+require ["use!bootstrap"], (_bootstrap) ->
