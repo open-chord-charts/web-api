@@ -19,6 +19,7 @@ import urllib
     <meta charset="utf-8">
     <meta name="description" content="Open Chord Charts project">
     <meta name="author" content="Christophe Benz">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; minimum-scale=1; maximum-scale=1.0; user-scalable=0;">
     <title><%self:title/></title>
     <%self:css/>
    </head>

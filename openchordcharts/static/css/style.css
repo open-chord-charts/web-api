@@ -1,8 +1,6 @@
 @font-face {
   font-family: 'lilyjazzchord';
-  font-style: normal;
-  font-weight: normal;
-  src: local('lilyjazzchord'), url('/static/fonts/lilyjazzchord.otf');
+  src: url('/static/fonts/lilyjazzchord.otf');
 }
 footer {
   margin-top: 10em;
