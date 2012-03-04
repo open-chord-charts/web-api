@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from pyramid.config import Configurator
+from pyramid.renderers import JSONP
 from pyramid.session import UnencryptedCookieSessionFactoryConfig
 
 from openchordcharts.model import initialize_model
@@ -17,6 +18,7 @@ def main(global_config, **settings):
         settings=settings,
         )
     initialize_model(settings)
+
     config.add_route('index', '/')
     config.add_route('login_callback', '/login-callback/')
     config.add_route('logout', '/logout/')
@@ -24,7 +26,12 @@ def main(global_config, **settings):
     config.add_route('charts', '/charts/')
     config.add_route('user', '/users/{user_email}')
     config.add_route('users', '/users/')
+    # API
+    config.add_route('charts.json', '/api/1/charts.json')
+    config.scan('openchordcharts.views')
+
+    config.add_renderer('jsonp', JSONP(param_name='callback'))
+
     config.add_static_view('static', 'openchordcharts:static')
     config.add_subscriber('openchordcharts.model.add_request_attributes', 'pyramid.events.NewRequest')
-    config.scan('openchordcharts')
     return config.make_wsgi_app()

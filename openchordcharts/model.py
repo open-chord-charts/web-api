@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from biryani.bsonconv import object_id_to_str
 from biryani.strings import slugify
 from suq.monpyjama import Mapper, Wrapper
 import pymongo
@@ -77,3 +78,8 @@ class Chart(Mapper, Wrapper):
         if self.slug is None:
             self.slug = self.generate_unique_slug()
         return super(Chart, self).save(*args, **kwargs)
+
+    def to_json(self):
+        json = self.to_bson()
+        json['_id'] = object_id_to_str(json['_id'])[0]
+        return json

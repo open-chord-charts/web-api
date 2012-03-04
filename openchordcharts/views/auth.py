@@ -7,37 +7,8 @@ import urllib
 import urllib2
 import urlparse
 
-from pyramid.exceptions import Forbidden, NotFound
 from pyramid.httpexceptions import HTTPBadRequest, HTTPFound
 from pyramid.view import view_config
-
-from . import model
-
-
-@view_config(route_name='chart', renderer='/chart.mako')
-def chart(request):
-    slug = request.matchdict.get('slug')
-    if not slug:
-        raise Forbidden()
-    chart = model.Chart.find_one(dict(slug=slug))
-    if chart is None:
-        raise NotFound()
-    return dict(
-        chart=chart,
-        )
-
-
-@view_config(route_name='charts', renderer='/charts.mako')
-def charts(request):
-    charts = model.Chart.find().limit(100)
-    return dict(
-        charts=charts,
-        )
-
-
-@view_config(route_name='index', renderer='/index.mako')
-def index(request):
-    return dict()
 
 
 @view_config(route_name='login_callback')
@@ -94,19 +65,3 @@ def logout(request):
         state = request.route_path('index')
     request.session.pop('user_email', None)
     return HTTPFound(location=state)
-
-
-@view_config(route_name='user', renderer='/user.mako')
-def user(request):
-    user_email = request.matchdict.get('user_email')
-    if not user_email:
-        raise Forbidden()
-    user_charts = model.Chart.find(dict(user=user_email))
-    return dict(
-        user_charts=user_charts,
-        )
-
-
-@view_config(route_name='users')
-def users(request):
-    return {}
