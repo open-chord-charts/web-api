@@ -74,5 +74,6 @@ class Chart(Mapper, Wrapper):
             yield part_name, nb_parts_occurencies[part_name]
 
     def save(self, *args, **kwargs):
-        self.slug = self.generate_unique_slug()
+        if self.slug is None:
+            self.slug = self.generate_unique_slug()
         return super(Chart, self).save(*args, **kwargs)
