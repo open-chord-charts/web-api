@@ -7,4 +7,11 @@ from openchordcharts import model
 
 @view_config(route_name='charts.json', renderer='jsonp')
 def charts_json(request):
-    return [chart.to_json() for chart in model.Chart.find()]
+    title = request.GET.get('title')
+    user = request.GET.get('user')
+    spec = {}
+    if title:
+        spec['title'] = title
+    if user:
+        spec['user'] = user
+    return [chart.to_json() for chart in model.Chart.find(spec)]
