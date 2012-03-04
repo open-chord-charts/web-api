@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import json
-
 from pyramid.view import view_config
 
 from openchordcharts import model
