@@ -48,15 +48,30 @@ class Chart(Mapper, Wrapper):
                 slug = u'{0}-{1}'.format(title_slug, slug_index)
                 slug_index += 1
 
-    def get_part_chords(self, part):
-        index = 0
-        for current_part in self.structure:
-            count = self.parts[current_part]['count']
-            if current_part == part:
-                return self.chords[index:index + count]
+    def get_nb_chords(self):
+        count = 0
+        for part in self.structure:
+            count += len(self.parts[part])
+        return count
+
+    def iter_chords(self, part):
+        previous_chord = self.parts[part][0]
+        yield previous_chord
+        for chord in self.parts[part][1:]:
+            if chord == previous_chord:
+                yield u'—'
             else:
-                index += count
-        return None
+                yield chord
+            previous_chord = chord
+
+    def iter_structure(self):
+        nb_parts_occurencies = {}
+        for part_name in self.structure:
+            if part_name in nb_parts_occurencies:
+                nb_parts_occurencies[part_name] += 1
+            else:
+                nb_parts_occurencies[part_name] = 0
+            yield part_name, nb_parts_occurencies[part_name]
 
     def save(self, *args, **kwargs):
         self.slug = self.generate_unique_slug()

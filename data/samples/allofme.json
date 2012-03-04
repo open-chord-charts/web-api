@@ -2,47 +2,11 @@
     "compositors": [ "Gerald Marks", "Seymour Simons" ],
     "genre": "medium",
     "key": "C",
-    "parts": [
-        {
-            "name": "A",
-            "chords": [
-                {"duration": 1, "offset": 1, "quality": "M"},
-                {"duration": 1, "offset": 1, "quality": "M"},
-                {"duration": 1, "offset": 3, "quality": "7"},
-                {"duration": 1, "offset": 3, "quality": "7"},
-                {"duration": 1, "offset": 6, "quality": "7"},
-                {"duration": 1, "offset": 6, "quality": "7"},
-                {"duration": 1, "offset": 2, "quality": "m"},
-                {"duration": 1, "offset": 2, "quality": "m"}
-            ]
-        },
-        {
-            "name": "B",
-            "chords": [
-                {"duration": 1, "offset": 3, "quality": "7"},
-                {"duration": 1, "offset": 3, "quality": "7"},
-                {"duration": 1, "offset": 6, "quality": "m"},
-                {"duration": 1, "offset": 6, "quality": "m"},
-                {"duration": 1, "offset": 2, "quality": "7"},
-                {"duration": 1, "offset": 2, "quality": "7"},
-                {"duration": 1, "offset": 2, "quality": "m"},
-                {"duration": 1, "offset": 5, "quality": "7"},
-            ]
-        },
-        {
-            "name": "C",
-            "chords": [
-                {"duration": 1, "offset": 4, "quality": "M"},
-                {"duration": 1, "offset": 4, "quality": "m"},
-                {"duration": 1, "offset": 1, "quality": "M"},
-                {"duration": 1, "offset": 6, "quality": "7"},
-                {"duration": 1, "offset": 2, "quality": "m75b"},
-                {"duration": 1, "offset": 6, "quality": "7"},
-                {"duration": 1, "offset": 2, "quality": "M"},
-                {"duration": 1, "offset": 2, "quality": "M"}
-            ]
-        }
-    ],
+    "parts": {
+        "A": [ "C", "C", "E7", "E7", "A7", "A7", "Dm", "Dm" ],
+        "B": [ "E7", "E7", "Am", "Am", "D7", "D7", "Dm", "G7" ],
+        "C": [ "F", "Fm", "C", "A7", "Dm7b5", "G7", "C", "C" ]
+    },
     "structure": [ "A", "B", "A", "C" ],
     "title": "All of me",
     "user": "christophe.benz@gmail.com"

@@ -1,5 +1,9 @@
 <%inherit file="site.mako"/>
 
+<%!
+from openchordcharts.helpers import render_chord
+%>
+
 <%def name="css()" filter="trim">
 <%parent:css/>
 <link href="/static/css/chart.css" rel="stylesheet">
@@ -18,18 +22,28 @@
   <p>Genre: <span class="genre">${chart.genre}</span></p>
 % endif
 % if chart.structure:
-  <p>Structure: <span class="structure">${len(chart.chords)} × ${''.join(chart.structure)}</span></p>
+  <p>Structure: <span class="structure">${chart.get_nb_chords()} × ${''.join(chart.structure)}</span></p>
 % endif
 % if chart.key:
   <p>Key: <span class="key">${chart.key}</span></p>
 % endif
   <div class="chords">
-% for part in chart.structure:
-    <div class="part">
-      <span class="part-name">${part}</span>
-    % for chord in chart.get_part_chords(part):
-      <span class="bar">${chord}</span>
-    % endfor
+% for part_name, part_occurence in chart.iter_structure():
+    <div class="part\
+  % if part_occurence > 0:
+ repeated\
+  % endif
+">
+      <span class="part-name">${part_name}</span>
+  % for chord in chart.iter_chords(part_name):
+      <span class="bar">
+  % if part_occurence > 0:
+        —
+  % else:
+        ${render_chord(chord)}
+  % endif
+      </span>
+  % endfor
     </div>
 % endfor
   </div>
