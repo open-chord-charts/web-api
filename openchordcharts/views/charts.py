@@ -21,7 +21,11 @@ def chart(request):
 
 @view_config(route_name='charts', renderer='/charts.mako')
 def charts(request):
-    charts = model.Chart.find().limit(100)
+    q = request.GET.get('q')
+    spec = {}
+    if q:
+        spec['title'] = q
+    charts = model.Chart.find(spec).limit(100)
     return dict(
         charts=charts,
         )
