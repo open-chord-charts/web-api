@@ -26,8 +26,9 @@ def iter_structure(chart):
 
 def render_chord(chord):
     rendered_chord = chord
-    rendered_chord = rendered_chord.replace('#', '<')
-    rendered_chord = rendered_chord.replace('b', '>')
     if rendered_chord.endswith('b5'):
         rendered_chord = rendered_chord[:-2] + Markup('<sup>{0}</sup>'.format(rendered_chord[-2:]))
+    # FIXME This is ugly, I have to rewrite the font!
+    rendered_chord = rendered_chord.replace('#', '<')
+    rendered_chord = rendered_chord.replace('b', '>')
     return rendered_chord
