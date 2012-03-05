@@ -36,13 +36,7 @@ from openchordcharts.helpers import render_chord
 ">
       <span class="part-name">${part_name}</span>
   % for chord in chart.iter_chords(part_name):
-      <span class="bar">
-  % if part_occurence > 0:
-        —
-  % else:
-        ${render_chord(chord)}
-  % endif
-      </span>
+      <span class="bar">${u'—' if chord is None or part_occurence > 0 else render_chord(chord)}</span>
   % endfor
     </div>
 % endfor

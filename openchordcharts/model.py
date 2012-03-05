@@ -60,7 +60,7 @@ class Chart(Mapper, Wrapper):
         yield previous_chord
         for chord in self.parts[part][1:]:
             if chord == previous_chord:
-                yield u'—'
+                yield None
             else:
                 yield chord
             previous_chord = chord
