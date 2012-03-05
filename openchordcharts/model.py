@@ -4,8 +4,10 @@ from biryani.baseconv import check, noop, pipe, struct
 from biryani.bsonconv import object_id_to_str
 from biryani.objectconv import object_to_clean_dict
 from biryani.strings import slugify
-from suq.monpyjama import Mapper, Wrapper
 import pymongo
+from suq.monpyjama import Mapper, Wrapper
+
+from openchordcharts.utils import get_key_offset, get_transposed_chord
 
 
 db = None
@@ -52,30 +54,16 @@ class Chart(Mapper, Wrapper):
                 slug = u'{0}-{1}'.format(title_slug, slug_index)
                 slug_index += 1
 
-    def get_nb_chords(self):
-        count = 0
-        for part in self.structure:
-            count += len(self.parts[part])
-        return count
-
-    def iter_chords(self, part):
-        previous_chord = self.parts[part][0]
-        yield previous_chord
-        for chord in self.parts[part][1:]:
-            if chord == previous_chord:
-                yield None
-            else:
-                yield chord
-            previous_chord = chord
-
-    def iter_structure(self):
-        nb_parts_occurencies = {}
-        for part_name in self.structure:
-            if part_name in nb_parts_occurencies:
-                nb_parts_occurencies[part_name] += 1
-            else:
-                nb_parts_occurencies[part_name] = 0
-            yield part_name, nb_parts_occurencies[part_name]
+    def iter_chords(self, key=None, part_name=None):
+        if key is not None:
+            key_offset_delta = get_key_offset(key) - get_key_offset(self.key)
+        parts = self.structure if part_name is None else [part_name]
+        for part_name in parts:
+            for chord in self.parts[part_name]:
+                if key is None:
+                    yield chord
+                else:
+                    yield get_transposed_chord(chord, key_offset_delta)
 
     def save(self, *args, **kwargs):
         if self.slug is None:
@@ -89,8 +77,8 @@ class Chart(Mapper, Wrapper):
             object_to_clean_dict,
             struct(
                 dict(
-                    _id = object_id_to_str,
+                    _id=object_id_to_str,
                     ),
-                default = noop,
+                default=noop,
                 ),
             ))(self)
