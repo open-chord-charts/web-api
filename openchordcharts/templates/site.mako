@@ -36,22 +36,16 @@ import urllib
           <a class="brand" href="${request.route_path('index')}">Open Chord Charts</a>
           <div class="nav-collapse">
             <ul class="nav">
-              <li\
-% if request.current_route_path() == request.route_path('charts'):
- class="active"\
-% endif
-><a href="${request.route_path('charts')}">Charts</a></li>
+              <li${u' class="active"' if request.current_route_path() == request.route_path('charts') else '' | n}>
+                <a href="${request.route_path('charts')}">Charts</a>
+              </li>
             </ul>
             <form action="${request.route_path('charts')}" class="navbar-search pull-left">
               <input class="search-query" name="q" placeholder="Search" type="text" value="${request.GET.get('q', '')}">
             </form>
             <ul class="nav pull-right">
 % if request.session.get('user_email'):
-              <li\
-  % if request.current_route_path() == request.route_path('user', user_email=request.session['user_email']):
- class="active"\
-  % endif
->
+              <li${u' class="active"' if request.current_route_path() == request.route_path('user', user_email=request.session['user_email']) else '' | n}>
                 <a href="${request.route_path('user', user_email=request.session['user_email'])}">
                   <i class="icon-user icon-white"></i> ${request.session['user_email']}
                 </a>
