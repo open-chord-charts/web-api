@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
+from biryani.baseconv import check, noop, pipe, struct
 from biryani.bsonconv import object_id_to_str
+from biryani.objectconv import object_to_clean_dict
 from biryani.strings import slugify
 from suq.monpyjama import Mapper, Wrapper
 import pymongo
@@ -32,6 +34,7 @@ class Chart(Mapper, Wrapper):
     compositors = None
     genre = None
     key = None
+    keywords = None
     parts = None
     slug = None
     structure = None
@@ -77,9 +80,17 @@ class Chart(Mapper, Wrapper):
     def save(self, *args, **kwargs):
         if self.slug is None:
             self.slug = self.generate_unique_slug()
+        if self.keywords is None:
+            self.keywords = self.slug.split('-')
         return super(Chart, self).save(*args, **kwargs)
 
     def to_json(self):
-        json = self.to_bson()
-        json['_id'] = object_id_to_str(json['_id'])[0]
-        return json
+        return check(pipe(
+            object_to_clean_dict,
+            struct(
+                dict(
+                    _id = object_id_to_str,
+                    ),
+                default = noop,
+                ),
+            ))(self)

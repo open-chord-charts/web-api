@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import re
+
+from biryani.strings import slugify
 from pyramid.exceptions import Forbidden, NotFound
 from pyramid.view import view_config
 
@@ -24,7 +27,9 @@ def charts(request):
     q = request.GET.get('q')
     spec = {}
     if q:
-        spec['title'] = q
+        q_words = slugify(q).split('-')
+        q_words_regexps = [re.compile(u'^{0}'.format(re.escape(word))) for word in q_words]
+        spec['keywords'] = {'$all': q_words_regexps}
     charts = model.Chart.find(spec).limit(100)
     return dict(
         charts=charts,
