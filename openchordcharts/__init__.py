@@ -20,6 +20,7 @@ def main(global_config, **settings):
     initialize_model(settings)
 
     config.add_route('index', '/')
+    config.add_route('about', '/about')
     config.add_route('login_callback', '/login-callback/')
     config.add_route('logout', '/logout/')
     config.add_route('chart', '/charts/{slug}')

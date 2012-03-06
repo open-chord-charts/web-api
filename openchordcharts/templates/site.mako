@@ -45,6 +45,11 @@ import urllib
             <form action="${request.route_path('charts')}" class="navbar-search pull-left">
               <input class="search-query" name="q" placeholder="Search" type="text" value="${request.GET.get('q', '')}">
             </form>
+            <ul class="nav">
+              <li${u' class="active"' if request.current_route_path() == request.route_path('about') else '' | n}>
+                <a href="${request.route_path('about')}">About</a>
+              </li>
+            </ul>
             <ul class="nav pull-right">
 % if request.session.get('user_email'):
               <li${u' class="active"' if request.current_route_path() == request.route_path('user', user_email=request.session['user_email']) else '' | n}>
@@ -84,11 +89,7 @@ login_url = settings['oauth.authorize_url'] + '?' + urllib.urlencode(dict(
       <%self:body/>
       <footer>
         <hr>
-        <p>
-          This is <a href="http://www.gnu.org/licenses/agpl.html">free software</a>.
-          Get the <a href="https://gitorious.org/open-chord-charts/">source code</a>.
-        </p>
-        <p>Copyright © Christophe Benz 2012</p>
+        <p>Copyright © The Open Chord Charts contributors, 2012</p>
       </footer>
     </div>
 
