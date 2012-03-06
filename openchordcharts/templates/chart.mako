@@ -2,7 +2,7 @@
 
 <%!
 from openchordcharts.helpers import iter_chords, iter_structure, render_chord
-from openchordcharts.utils import all_keys
+from openchordcharts.utils import common_chromatic_keys
 %>
 
 <%def name="css()" filter="trim">
@@ -30,9 +30,12 @@ from openchordcharts.utils import all_keys
   <form action="${request.route_path('chart', slug=chart.slug)}" class="well form-inline">
     <label for="key">Key:</label>
     <select class="key" id="key" name="key">
-% for key, offset in all_keys:
+% for key in common_chromatic_keys:
       <option ${'selected' if key == chart.key else ''}>${key}</option>
 % endfor
+% if chart.key not in common_chromatic_keys:
+      <option selected>${chart.key}</option>
+% endif
     </select>
     <button class="btn transpose">Transpose</button>
   </form>

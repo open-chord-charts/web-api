@@ -7,7 +7,7 @@ from biryani.strings import slugify
 import pymongo
 from suq.monpyjama import Mapper, Wrapper
 
-from openchordcharts.utils import get_key_offset, get_transposed_chord
+from openchordcharts.utils import get_transposed_chord
 
 
 db = None
@@ -55,15 +55,13 @@ class Chart(Mapper, Wrapper):
                 slug_index += 1
 
     def iter_chords(self, key=None, part_name=None):
-        if key is not None:
-            key_offset_delta = get_key_offset(key) - get_key_offset(self.key)
         parts = self.structure if part_name is None else [part_name]
         for part_name in parts:
             for chord in self.parts[part_name]:
                 if key is None:
                     yield chord
                 else:
-                    yield get_transposed_chord(chord, key_offset_delta)
+                    yield get_transposed_chord(chord=chord, from_key=self.key, to_key=key)
 
     def save(self, *args, **kwargs):
         if self.slug is None:

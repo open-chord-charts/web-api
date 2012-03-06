@@ -9,7 +9,7 @@ from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.view import view_config
 
 from openchordcharts import model
-from openchordcharts.utils import all_keys
+from openchordcharts.utils import iter_chromatic_keys
 
 
 @view_config(route_name='chart', renderer='/chart.mako')
@@ -20,7 +20,7 @@ def chart(request):
     key, error = pipe(
             cleanup_line,
             function(lambda s: s.lower()),
-            test_in([key.lower() for key, offset in all_keys]),
+            test_in([key.lower() for key in iter_chromatic_keys()]),
             function(lambda s: s.capitalize()),
             )(request.GET.get('key'))
     if error is not None:
