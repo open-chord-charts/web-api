@@ -23,9 +23,6 @@ from openchordcharts.utils import common_chromatic_keys
 % if chart.genre:
   <p>Genre: <span class="genre">${chart.genre}</span></p>
 % endif
-% if chart.structure:
-  <p>Structure: <span class="structure">${len(list(chart.iter_chords()))} × ${''.join(chart.structure)}</span></p>
-% endif
 
   <form action="${request.route_path('chart', slug=chart.slug)}">
     <div class="btn-group" data-toggle="buttons-radio">
@@ -37,6 +34,10 @@ from openchordcharts.utils import common_chromatic_keys
 % endif
     </div>
   </form>
+
+% if chart.structure:
+  <span class="structure">${len(list(chart.iter_chords()))} × ${''.join(chart.structure)}</span>
+% endif
 
   <div class="chords">
 % for part_name, part_occurence in iter_structure(chart):
