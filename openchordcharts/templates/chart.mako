@@ -27,17 +27,15 @@ from openchordcharts.utils import common_chromatic_keys
   <p>Structure: <span class="structure">${len(list(chart.iter_chords()))} × ${''.join(chart.structure)}</span></p>
 % endif
 
-  <form action="${request.route_path('chart', slug=chart.slug)}" class="well form-inline">
-    <label for="key">Key:</label>
-    <select class="key" id="key" name="key">
+  <form action="${request.route_path('chart', slug=chart.slug)}">
+    <div class="btn-group" data-toggle="buttons-radio">
 % for key in common_chromatic_keys:
-      <option ${'selected' if key == chart.key else ''}>${key}</option>
+      <button class="${'active ' if key == chart.key else ''}btn" name="key" value="${key}">${key}</button>
 % endfor
 % if chart.key not in common_chromatic_keys:
-      <option selected>${chart.key}</option>
+      <button class="active btn" name="key" value="${chart.key}">${chart.key}</button>
 % endif
-    </select>
-    <button class="btn transpose">Transpose</button>
+    </div>
   </form>
 
   <div class="chords">
