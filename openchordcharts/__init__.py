@@ -43,6 +43,4 @@ def main(global_config, **settings):
 
     config.add_static_view('static', 'openchordcharts:static')
 
-    config.add_subscriber('openchordcharts.subscribers.check_user_has_name', 'pyramid.events.NewRequest')
-
     return config.make_wsgi_app()
