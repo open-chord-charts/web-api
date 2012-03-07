@@ -8,7 +8,7 @@ from pyramid.exceptions import Forbidden, NotFound
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.view import view_config
 
-from openchordcharts import model
+from openchordcharts.model.chart import Chart
 from openchordcharts.utils import iter_chromatic_keys
 
 
@@ -25,7 +25,7 @@ def chart(request):
             )(request.GET.get('key'))
     if error is not None:
         raise HTTPBadRequest(detail=error)
-    chart = model.Chart.find_one(dict(slug=slug))
+    chart = Chart.find_one(dict(slug=slug))
     if chart is None:
         raise NotFound()
     if key is not None and key != chart.key:
@@ -45,7 +45,7 @@ def charts(request):
         q_words = slugify(q).split('-')
         q_words_regexps = [re.compile(u'^{0}'.format(re.escape(word))) for word in q_words]
         spec['keywords'] = {'$all': q_words_regexps}
-    charts = model.Chart.find(spec).limit(100)
+    charts = Chart.find(spec).limit(100)
     return dict(
         charts=charts,
         )

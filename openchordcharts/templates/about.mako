@@ -5,6 +5,7 @@
   <p>
     This project is targeted for musicians. It aims to create a database of chord charts from scratch, in a crowdsourcing way.
   </p>
+  <p><a class="btn btn-primary btn-large" href="${request.route_path('charts')}">Browse charts »</a></p>
 </div>
 
 <div class="row">

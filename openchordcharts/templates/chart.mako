@@ -1,6 +1,8 @@
 <%inherit file="site.mako"/>
 
 <%!
+from babel.dates import format_datetime
+
 from openchordcharts.helpers import iter_chords, iter_structure, render_chord
 from openchordcharts.utils import common_chromatic_keys
 %>
@@ -20,7 +22,7 @@ from openchordcharts.utils import common_chromatic_keys
 </div>
 
 <form action="${request.route_path('chart', slug=chart.slug)}">
-  <div class="btn-group" data-toggle="buttons-radio">
+  <div class="btn-group" data-toggle="buttons-radio" title="Click to transpose chart in this key.">
 % for key in common_chromatic_keys:
     <button class="${'active ' if key == chart.key else ''}btn" name="key" value="${key}">${key}</button>
 % endfor
@@ -31,12 +33,14 @@ from openchordcharts.utils import common_chromatic_keys
 </form>
 
 % if chart.genre or chart.structure:
+<p class="structure-genre">
   % if chart.structure:
-<p class="structure">${len(list(chart.iter_chords()))} × ${''.join(chart.structure)}</p>
+  <span class="structure">${len(list(chart.iter_chords()))} × ${''.join(chart.structure)}</span>
   % endif
   % if chart.genre:
-<p class="genre">${chart.genre}</p>
+  <small class="genre">${chart.genre}</small>
   % endif
+</p>
 % endif
 
 <div class="chords">
@@ -50,6 +54,16 @@ from openchordcharts.utils import common_chromatic_keys
 % endfor
 </div>
 
-% if request.session.get('user_email'):
-<p>Added by <a class="user" href="${request.route_path('user', user_email=chart.user)}">${chart.user}</a></p>
+<%block filter="trim" name="footer">
+<p>
+  Created by <a class="user" href="${request.route_path('user', user_email=chart.user)}">${chart.user}</a>
+  on ${format_datetime(chart.created_at)}.
+</p>
+
+% if chart.modified_at is not None and chart.modified_at != chart.created_at:
+<p>
+  Modified by <a class="user" href="${request.route_path('user', user_email=chart.user)}">${chart.user}</a>
+  on ${format_datetime(chart.created_at)}.
+</p>
 % endif
+</%block>

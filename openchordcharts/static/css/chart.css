@@ -25,6 +25,9 @@
   height: 1em;
   padding: 0.2em 0;
 }
+.genre {
+  margin-left: 2em;
+}
 .title {
   font-family: 'lilyjazzchord', sans-serif;
 }

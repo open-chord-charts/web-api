@@ -10,6 +10,8 @@ import urlparse
 from pyramid.httpexceptions import HTTPBadRequest, HTTPFound
 from pyramid.view import view_config
 
+from openchordcharts.model.user import User
+
 
 @view_config(route_name='login_callback')
 def login_callback(request):
@@ -53,6 +55,9 @@ def login_callback(request):
     email = json.loads(
         base64.urlsafe_b64decode(str(access_token_infos['access_token']).split('.')[1]))['prn']['email']
 
+    user = User.find_one(dict(email=email))
+    if user is None:
+        user = User()
     request.session['user_email'] = email
 
     return HTTPFound(location=state)

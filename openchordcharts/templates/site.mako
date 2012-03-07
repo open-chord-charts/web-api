@@ -89,6 +89,7 @@ login_url = settings['oauth.authorize_url'] + '?' + urllib.urlencode(dict(
       <%self:body/>
       <footer>
         <hr>
+        <%block name="footer"/>
         <p>Copyright © The Open Chord Charts contributors, 2012</p>
       </footer>
     </div>

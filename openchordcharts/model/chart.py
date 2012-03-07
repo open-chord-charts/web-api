@@ -1,32 +1,15 @@
 # -*- coding: utf-8 -*-
 
+import datetime
+
 from biryani.baseconv import check, noop, pipe, struct
 from biryani.bsonconv import object_id_to_str
 from biryani.objectconv import object_to_clean_dict
 from biryani.strings import slugify
-import pymongo
+
 from suq.monpyjama import Mapper, Wrapper
 
 from openchordcharts.utils import get_transposed_chord
-
-
-db = None
-
-
-def add_request_attributes(event):
-    global db
-    request = event.request
-    request.db = db
-
-
-def initialize_model(settings):
-    database_uri = settings.get('database.uri')
-    assert database_uri is not None, u'database.uri key is missing in paste ini file.'
-    connection = pymongo.Connection(host=database_uri)
-    database_name = database_uri.rsplit('/', 1)[1]
-    global db
-    db = connection[database_name]
-    Wrapper.db = db
 
 
 class Chart(Mapper, Wrapper):
@@ -34,9 +17,11 @@ class Chart(Mapper, Wrapper):
 
     chords = None
     compositors = None
+    created_at = None
     genre = None
     key = None
     keywords = None
+    modified_at = None
     parts = None
     slug = None
     structure = None
@@ -64,6 +49,9 @@ class Chart(Mapper, Wrapper):
                     yield get_transposed_chord(chord=chord, from_key=self.key, to_key=key)
 
     def save(self, *args, **kwargs):
+        if self.created_at is None:
+            self.created_at = datetime.datetime.utcnow()
+        self.modified_at = datetime.datetime.utcnow()
         if self.slug is None:
             self.slug = self.generate_unique_slug()
         if self.keywords is None:

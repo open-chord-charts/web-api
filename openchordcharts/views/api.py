@@ -5,7 +5,7 @@ import re
 from biryani.strings import slugify
 from pyramid.view import view_config
 
-from openchordcharts import model
+from openchordcharts.model.chart import Chart
 
 
 @view_config(route_name='charts.json', renderer='jsonp')
@@ -19,4 +19,4 @@ def charts_json(request):
         spec['keywords'] = {'$all': title_words_regexps}
     if user:
         spec['user'] = user
-    return [chart.to_json() for chart in model.Chart.find(spec)]
+    return [chart.to_json() for chart in Chart.find(spec)]

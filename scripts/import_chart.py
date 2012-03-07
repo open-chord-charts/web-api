@@ -7,7 +7,8 @@ import sys
 
 from pyramid.paster import bootstrap
 
-from openchordcharts import model
+from openchordcharts.model import initialize_model
+from openchordcharts.model.chart import Chart
 
 
 def main(args=None):
@@ -21,11 +22,11 @@ def main(args=None):
     env = bootstrap(arguments.ini_file)
     settings = env['registry'].settings
 
-    model.initialize_model(settings)
+    initialize_model(settings)
 
     with open(arguments.json) as f:
         chart_str = f.read()
-    chart = model.Chart.from_bson(json.loads(chart_str))
+    chart = Chart.from_bson(json.loads(chart_str))
     assert chart.title, u'Chart must have a title.'
     chart_db_object_id = chart.save(safe=True)
     print unicode(chart_db_object_id).encode('utf-8')
