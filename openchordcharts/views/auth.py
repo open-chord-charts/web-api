@@ -8,6 +8,7 @@ import urllib2
 import urlparse
 
 from pyramid.httpexceptions import HTTPBadRequest, HTTPFound
+from pyramid.security import forget, remember
 from pyramid.view import view_config
 
 from openchordcharts.model.user import User
@@ -58,9 +59,10 @@ def login_callback(request):
     user = User.find_one(dict(email=email))
     if user is None:
         user = User()
-    request.session['user_email'] = email
-
-    return HTTPFound(location=state)
+        user.email = email
+        user.save(safe=True)
+    headers = remember(request, user.email)
+    return HTTPFound(headers=headers, location=state)
 
 
 @view_config(route_name='logout')
@@ -68,5 +70,5 @@ def logout(request):
     state = request.GET.get('state')
     if state is None:
         state = request.route_path('index')
-    request.session.pop('user_email', None)
-    return HTTPFound(location=state)
+    headers = forget(request)
+    return HTTPFound(headers=headers, location=state)

@@ -7,12 +7,6 @@ from suq.monpyjama import Wrapper
 db = None
 
 
-def add_request_attributes(event):
-    global db
-    request = event.request
-    request.db = db
-
-
 def initialize_model(settings):
     database_uri = settings.get('database.uri')
     assert database_uri is not None, u'database.uri key is missing in paste ini file.'

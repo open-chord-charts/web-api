@@ -1,17 +1,21 @@
 # -*- coding: utf-8 -*-
 
-from pyramid.exceptions import Forbidden
+from pyramid.exceptions import Forbidden, NotFound
 from pyramid.view import view_config
 
 from openchordcharts.model.chart import Chart
+from openchordcharts.model.user import User
 
 
 @view_config(route_name='user', renderer='/user.mako')
 def user(request):
-    user_email = request.matchdict.get('user_email')
-    if not user_email:
+    slug = request.matchdict.get('slug')
+    if not slug:
         raise Forbidden()
-    user_charts = Chart.find(dict(user=user_email))
+    user = User.find_one(dict(slug=slug))
+    if user is None:
+        raise NotFound()
+    user_charts = Chart.find(dict(user=slug))
     return dict(
         user_charts=user_charts,
         )

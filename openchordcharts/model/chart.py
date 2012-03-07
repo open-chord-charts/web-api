@@ -4,12 +4,18 @@ import datetime
 
 from biryani.baseconv import check, noop, pipe, struct
 from biryani.bsonconv import object_id_to_str
+from biryani.datetimeconv import datetime_to_iso8601
 from biryani.objectconv import object_to_clean_dict
 from biryani.strings import slugify
 
 from suq.monpyjama import Mapper, Wrapper
 
+from openchordcharts.model.user import User
 from openchordcharts.utils import get_transposed_chord
+
+
+class InvalidChartException(Exception):
+    pass
 
 
 class Chart(Mapper, Wrapper):
@@ -49,13 +55,7 @@ class Chart(Mapper, Wrapper):
                     yield get_transposed_chord(chord=chord, from_key=self.key, to_key=key)
 
     def save(self, *args, **kwargs):
-        if self.created_at is None:
-            self.created_at = datetime.datetime.utcnow()
-        self.modified_at = datetime.datetime.utcnow()
-        if self.slug is None:
-            self.slug = self.generate_unique_slug()
-        if self.keywords is None:
-            self.keywords = self.slug.split('-')
+        self.validate()
         return super(Chart, self).save(*args, **kwargs)
 
     def to_json(self):
@@ -64,7 +64,25 @@ class Chart(Mapper, Wrapper):
             struct(
                 dict(
                     _id=object_id_to_str,
+                    created_at=datetime_to_iso8601,
+                    modified_at=datetime_to_iso8601,
                     ),
                 default=noop,
                 ),
             ))(self)
+
+    def validate(self):
+        if not self.title:
+            raise InvalidChartException(u'Chart has no title.')
+        if self.user:
+            if User.find_one(dict(slug=self.user)) is None:
+                raise InvalidChartException(u'Chart user does not exist.')
+        else:
+            raise InvalidChartException(u'Chart has no user.')
+        if self.created_at is None:
+            self.created_at = datetime.datetime.utcnow()
+        self.modified_at = datetime.datetime.utcnow()
+        if self.slug is None:
+            self.slug = self.generate_unique_slug()
+        if self.keywords is None:
+            self.keywords = self.slug.split('-')

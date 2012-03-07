@@ -51,15 +51,16 @@ import urllib
               </li>
             </ul>
             <ul class="nav pull-right">
-% if request.session.get('user_email'):
-              <li${u' class="active"' if request.current_route_path() == request.route_path('user', user_email=request.session['user_email']) else '' | n}>
-                <a href="${request.route_path('user', user_email=request.session['user_email'])}">
-                  <i class="icon-user icon-white"></i> ${request.session['user_email']}
+% if request.user:
+              <li${u' class="active"' if request.current_route_path() == \
+                request.route_path('user', slug=request.user.slug) else '' | n}>
+                <a href="${request.route_path('user', slug=request.user.slug)}">
+                  <i class="icon-user icon-white"></i> ${request.user.slug}
                 </a>
               </li>
 % endif
               <li>
-% if request.session.get('user_email'):
+% if request.user:
                 <a href="${request.route_path('logout', _query=dict(state=request.current_route_path()))}">Logout</a>
 % else:
 <%
@@ -90,7 +91,7 @@ login_url = settings['oauth.authorize_url'] + '?' + urllib.urlencode(dict(
       <footer>
         <hr>
         <%block name="footer"/>
-        <p>Copyright © The Open Chord Charts contributors, 2012</p>
+        <p><a href="${request.route_path('about')}">Copyright ©</a> The Open Chord Charts contributors, 2012</p>
       </footer>
     </div>
 

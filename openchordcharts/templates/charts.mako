@@ -1,4 +1,9 @@
 <%inherit file="site.mako"/>
+
+<div class="page-header">
+  <h1>All charts</h1>
+</div>
+
 % if charts.count():
 <ul>
   % for chart in charts:
