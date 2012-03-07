@@ -6,7 +6,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
-requires = ['biryani', 'pymongo', 'pyramid', 'suq-monpyjama']
+requires = ['babel', 'biryani', 'pymongo', 'pyramid', 'suq-monpyjama']
 
 setup(name='open-chord-charts',
       version='0.0',
