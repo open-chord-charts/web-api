@@ -1,4 +1,8 @@
-open-chord-charts README
+=================
+Open Chord Charts
+=================
 
+Contact
+=======
 
-
+Main developer: Christophe Benz <christophe.benz@gmail.com>
