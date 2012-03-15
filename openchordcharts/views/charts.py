@@ -72,8 +72,3 @@ def charts(request):
     return dict(
         charts=charts,
         )
-
-
-@view_config(route_name='index', renderer='/index.mako')
-def index(request):
-    return dict()
