@@ -23,7 +23,11 @@
 <%inherit file="site.mako"/>
 
 <div class="page-header">
+% if request.GET.get('q'):
+  <h1>Search results</h1>
+% else:
   <h1>All charts</h1>
+% endif
 </div>
 
 % if charts.count():
