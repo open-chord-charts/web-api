@@ -37,8 +37,8 @@ from openchordcharts.utils import common_chromatic_keys
 <div class="page-header">
   <h1>
     <span class="title">${chart.title}</span>
-% if chart.compositors:
-    <small class="compositors">${u', '.join(chart.compositors)}</small>
+% if chart.composers:
+    <small class="composers">${u', '.join(chart.composers)}</small>
 % endif
   </h1>
 </div>

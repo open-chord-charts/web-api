@@ -45,7 +45,7 @@ class Chart(Mapper, Wrapper):
     collection_name = 'charts'
 
     chords = None
-    compositors = None
+    composers = None
     created_at = None
     genre = None
     key = None
