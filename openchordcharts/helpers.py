@@ -37,7 +37,7 @@ def iter_chords(chart, part_name):
         previous_chord = chord
 
 
-def iter_structure(chart):
+def iter_parts(chart):
     nb_parts_occurencies = {}
     for part_name in chart.structure:
         if part_name in nb_parts_occurencies:

@@ -25,7 +25,7 @@
 <%!
 from babel.dates import format_datetime
 
-from openchordcharts.helpers import iter_chords, iter_structure, render_chord
+from openchordcharts.helpers import iter_chords, iter_parts, render_chord
 from openchordcharts.utils import common_chromatic_keys
 %>
 
@@ -66,7 +66,7 @@ from openchordcharts.utils import common_chromatic_keys
 % endif
 
 <div class="chords">
-% for part_name, part_occurence in iter_structure(chart):
+% for part_name, part_occurence in iter_parts(chart):
   <div class="part ${'repeated' if part_occurence > 0 else ''}">
     <span class="part-name">${part_name}</span>
   % for chord in iter_chords(chart, part_name):
