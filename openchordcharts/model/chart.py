@@ -24,6 +24,7 @@
 
 
 import datetime
+import re
 
 from biryani.baseconv import check, noop, pipe, struct
 from biryani.bsonconv import object_id_to_str
@@ -67,6 +68,11 @@ class Chart(Mapper, Wrapper):
             else:
                 slug = u'{0}-{1}'.format(title_slug, slug_index)
                 slug_index += 1
+
+    @classmethod
+    def get_search_by_keywords_spec(cls, keywords):
+        keywords_regexps = [re.compile(u'^{0}'.format(re.escape(keyword))) for keyword in keywords]
+        return {'$all': keywords_regexps}
 
     def iter_chords(self, key=None, part_name=None):
         parts = self.structure if part_name is None else [part_name]

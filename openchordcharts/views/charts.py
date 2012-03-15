@@ -23,8 +23,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import re
-
 from biryani.baseconv import cleanup_line, function, pipe, test_in
 from biryani.strings import slugify
 from pyramid.exceptions import Forbidden, NotFound
@@ -66,12 +64,11 @@ def chart(request):
 @view_config(route_name='charts', renderer='/charts.mako')
 def charts(request):
     settings = request.registry.settings
-    q = request.GET.get('q')
     spec = {}
-    if q:
-        q_words = slugify(q).split('-')
-        q_words_regexps = [re.compile(u'^{0}'.format(re.escape(word))) for word in q_words]
-        spec['keywords'] = {'$all': q_words_regexps}
+    if request.GET.get('q'):
+        q_slug = slugify(request.GET['q'])
+        if q_slug:
+            spec['keywords'] = Chart.get_search_by_keywords_spec(q_slug.split('-'))
     charts = Chart.find(spec).limit(int(settings['charts.limit']))
     return dict(
         charts=charts,

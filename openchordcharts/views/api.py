@@ -23,8 +23,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import re
-
+from biryani.baseconv import cleanup_line
 from biryani.strings import slugify
 from pyramid.view import view_config
 
@@ -33,13 +32,13 @@ from openchordcharts.model.chart import Chart
 
 @view_config(renderer='jsonp', route_name='charts.json')
 def charts_json(request):
-    title = request.GET.get('title')
-    user = request.GET.get('user')
     spec = {}
-    if title:
-        title_words = slugify(title).split('-')
-        title_words_regexps = [re.compile(u'^{0}'.format(re.escape(word))) for word in title_words]
-        spec['keywords'] = {'$all': title_words_regexps}
-    if user:
-        spec['user'] = user
+    if request.GET.get('title'):
+        title_slug = slugify(request.GET['title'])
+        if title_slug:
+            spec['keywords'] = Chart.get_search_by_keywords_spec(title_slug.split('-'))
+    if request.GET.get('user'):
+        user = cleanup_line(request.GET['user'])
+        if user:
+            spec['user'] = user
     return [chart.to_json() for chart in Chart.find(spec)]
