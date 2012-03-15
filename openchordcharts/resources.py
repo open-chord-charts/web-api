@@ -23,6 +23,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+from pyramid.security import Allow, Authenticated, Everyone
+
+
 class Root(object):
+    __acl__ = [
+        (Allow, Everyone, 'view'),
+        (Allow, Authenticated, 'edit'),
+        ]
+
     def __init__(self, request):
         self.request = request

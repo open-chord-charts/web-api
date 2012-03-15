@@ -61,7 +61,31 @@ def chart(request):
         )
 
 
-@view_config(route_name='charts', renderer='/charts.mako')
+@view_config(permission='edit', renderer='/chart_edit.mako', route_name='chart.edit')
+def chart_edit(request):
+    slug = request.matchdict.get('slug')
+    if not slug:
+        raise Forbidden()
+    chart = Chart.find_one(dict(slug=slug))
+    if chart is None:
+        raise NotFound()
+    return dict(
+        chart=chart,
+        )
+
+
+@view_config(renderer='jsonp', route_name='chart.json')
+def chart_json(request):
+    slug = request.matchdict.get('slug')
+    if not slug:
+        raise Forbidden()
+    chart = Chart.find_one(dict(slug=slug))
+    if chart is None:
+        raise NotFound()
+    return chart.to_json()
+
+
+@view_config(renderer='/charts.mako', route_name='charts')
 def charts(request):
     settings = request.registry.settings
     spec = {}

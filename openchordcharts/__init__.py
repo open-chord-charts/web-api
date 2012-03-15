@@ -24,6 +24,7 @@
 
 
 from pyramid.authentication import AuthTktAuthenticationPolicy
+from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
 from pyramid.renderers import JSONP
 
@@ -38,8 +39,10 @@ def main(global_config, **settings):
     initialize_model(settings)
 
     authentication_policy = AuthTktAuthenticationPolicy(settings['authentication.secret'])
+    authorization_policy = ACLAuthorizationPolicy()
     config = Configurator(
         authentication_policy=authentication_policy,
+        authorization_policy=authorization_policy,
         root_factory=Root,
         settings=settings,
         )
@@ -55,6 +58,8 @@ def main(global_config, **settings):
 
     config.add_route('index', '/')
     config.add_route('about', '/about')
+    config.add_route('chart.edit', '/charts/{slug}/edit')
+    config.add_route('chart.json', '/charts/{slug}.json')
     config.add_route('chart', '/charts/{slug}')
     config.add_route('charts', '/charts/')
     config.add_route('user', '/users/{slug}')

@@ -23,7 +23,7 @@
 <%inherit file="site.mako"/>
 
 <%!
-from babel.dates import format_datetime
+from pyramid.security import has_permission
 
 from openchordcharts.helpers import iter_chords, iter_parts, render_chord
 from openchordcharts.utils import common_chromatic_keys
@@ -76,16 +76,16 @@ from openchordcharts.utils import common_chromatic_keys
 % endfor
 </div>
 
-<%block filter="trim" name="footer">
-<p>
-  Created by <a class="user" href="${request.route_path('user', slug=chart.user)}">${chart.user}</a>
-  on ${format_datetime(chart.created_at)}.
-</p>
-
-% if chart.modified_at is not None and chart.modified_at != chart.created_at:
-<p>
-  Modified by <a class="user" href="${request.route_path('user', slug=chart.user)}">${chart.user}</a>
-  on ${format_datetime(chart.created_at)}.
-</p>
+<div class="form-actions">
+% if has_permission('edit', request.root, request):
+  <a class="btn" href="${request.route_path('chart.edit', slug=chart.slug)}" title="Click to edit this chart">Edit</a>
+% else:
+  <a class="btn disabled" href="#" title="Login to edit this chart">Edit</a>
 % endif
+  <a class="btn" href="${request.route_path('chart.json', slug=chart.slug)}" \
+title="Click to export this chart in JSON">Export in JSON</a>
+</div>
+
+<%block filter="trim" name="footer">
+<%include file="chart_footer.mako"/>
 </%block>
