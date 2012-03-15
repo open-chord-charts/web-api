@@ -40,14 +40,17 @@ def chart(request):
     slug = request.matchdict.get('slug')
     if not slug:
         raise Forbidden()
-    key, error = pipe(
-            cleanup_line,
-            function(lambda s: s.lower()),
-            test_in([key.lower() for key in iter_chromatic_keys()]),
-            function(lambda s: s.capitalize()),
-            )(request.GET.get('key'))
-    if error is not None:
-        raise HTTPBadRequest(detail=error)
+    if request.GET.get('key'):
+        key, error = pipe(
+                cleanup_line,
+                function(lambda s: s.lower()),
+                test_in([key.lower() for key in iter_chromatic_keys()]),
+                function(lambda s: s.capitalize()),
+                )(request.GET['key'])
+        if error is not None:
+            raise HTTPBadRequest(detail=error)
+    else:
+        key = None
     chart = Chart.find_one(dict(slug=slug))
     if chart is None:
         raise NotFound()
