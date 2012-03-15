@@ -35,7 +35,7 @@ from openchordcharts.model.chart import Chart
 from openchordcharts.utils import iter_chromatic_keys
 
 
-@view_config(route_name='chart', renderer='/chart.mako')
+@view_config(renderer='/chart.mako', route_name='chart')
 def chart(request):
     slug = request.matchdict.get('slug')
     if not slug:

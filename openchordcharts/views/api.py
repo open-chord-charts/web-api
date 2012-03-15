@@ -31,7 +31,7 @@ from pyramid.view import view_config
 from openchordcharts.model.chart import Chart
 
 
-@view_config(route_name='charts.json', renderer='jsonp')
+@view_config(renderer='jsonp', route_name='charts.json')
 def charts_json(request):
     title = request.GET.get('title')
     user = request.GET.get('user')

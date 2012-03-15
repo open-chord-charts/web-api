@@ -30,7 +30,7 @@ from openchordcharts.model.chart import Chart
 from openchordcharts.model.user import User
 
 
-@view_config(route_name='user', renderer='/user.mako')
+@view_config(renderer='/user.mako', route_name='user')
 def user(request):
     slug = request.matchdict.get('slug')
     if not slug:
