@@ -79,7 +79,7 @@ from openchordcharts.utils import common_chromatic_keys
       <label class="control-label" for="chords">Chords of part ${part_name}</label>
       <div class="controls">
         <textarea class="input-xlarge" id="chords-${part_name}" name="chords.${part_name}" \
-rows="${len(chart.parts[part_name]) / 8 + 1}"> ${' '.join(chart.parts[part_name])}</textarea>
+rows="${len(chart.parts[part_name]) / 8 + 1}">${' '.join(chart.parts[part_name])}</textarea>
       </div>
     </div>
 % endfor
