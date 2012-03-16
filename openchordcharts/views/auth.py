@@ -70,9 +70,9 @@ def login_callback(request):
             raise HTTPBadRequest(detail=resp.read())
         else:
             raise
-    access_token_infos = json.load(resp, encoding = 'utf-8')
+    access_token_infos = json.load(resp, encoding='utf-8')
     access_token_infos['expiration'] = datetime.datetime.now() + datetime.timedelta(
-        seconds = access_token_infos.get('expires_in'))
+        seconds=access_token_infos.get('expires_in'))
     print u'OAuth token response params: {0}'.format(access_token_infos).encode('utf-8')
 
     # get/extract email from access token

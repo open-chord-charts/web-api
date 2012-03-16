@@ -24,11 +24,12 @@
 
 
 from biryani.strings import slugify
+from formencode.variabledecode import variable_decode
 from pyramid.exceptions import Forbidden, NotFound
-from pyramid.httpexceptions import HTTPBadRequest
+from pyramid.httpexceptions import HTTPBadRequest, HTTPFound
 from pyramid.view import view_config
 
-from openchordcharts.conv import str_to_key
+from openchordcharts.conv import params_to_chart_data, str_to_key
 from openchordcharts.model.chart import Chart
 
 
@@ -61,8 +62,20 @@ def chart_edit(request):
     chart = Chart.find_one(dict(slug=slug))
     if chart is None:
         raise NotFound()
+    if request.method == 'POST':
+        params = variable_decode(request.POST)
+        chart_data, chart_errors = params_to_chart_data(params)
+        if chart_errors is None:
+            chart.update_from_dict(chart_data)
+            chart.save(safe=True)
+            return HTTPFound(location=request.route_path('chart', slug=chart.slug))
+    else:
+        chart_data = chart.to_dict()
+        chart_errors = None
     return dict(
         chart=chart,
+        chart_data=chart_data,
+        chart_errors=chart_errors or {},
         )
 
 
@@ -82,7 +95,7 @@ def chart_json(request):
         raise NotFound()
     if key is not None and key != chart.key:
         chart.transpose(key)
-    return chart.to_json()
+    return chart.to_dict()
 
 
 @view_config(renderer='/charts.mako', route_name='charts')

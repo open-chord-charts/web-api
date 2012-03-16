@@ -35,58 +35,104 @@ from openchordcharts.utils import common_chromatic_keys
 
 <form action="${request.route_path('chart.edit', slug=chart.slug)}" class="form-horizontal" method="post">
   <fieldset>
-    <legend>Edit chart: ${chart.title}</legend>
-    <div class="control-group">
+    <legend>Edit chart: ${chart_data['title']}</legend>
+
+<%
+error = chart_errors.get('title')
+%>\
+    <div class="control-group${' error' if error else ''}">
       <label class="control-label" for="title">Title</label>
       <div class="controls">
-        <input class="input-xlarge" id="title" name="title" type="text" value="${chart.title}">
+        <input class="input-xlarge" id="title" name="title" type="text" value="${chart_data['title']}">
+% if error:
+        <span class="help-inline">${error}</span>
+% endif
       </div>
     </div>
-    <div class="control-group">
+
+<%
+error = chart_errors.get('composers')
+%>\
+    <div class="control-group${' error' if error else ''}">
       <label class="control-label" for="composers">Composers</label>
       <div class="controls">
-        <input class="input-xlarge" id="composers" name="composers" type="text" value="${', '.join(chart.composers)}">
+        <input class="input-xlarge" id="composers" name="composers" type="text"\
+value="${', '.join(chart_data['composers'])}">
         <p class="help-block">Multiple values are comma-separated</p>
+% if error:
+        <span class="help-inline">${error}</span>
+% endif
       </div>
     </div>
-    <div class="control-group">
+
+<%
+error = chart_errors.get('genre')
+%>\
+    <div class="control-group${' error' if error else ''}">
+      <label class="control-label" for="genre">Genre</label>
+      <div class="controls">
+        <input class="input-medium" id="genre" name="genre" type="text" value="${chart_data['genre']}">
+% if error:
+        <span class="help-inline">${error}</span>
+% endif
+        <p class="help-block">Examples: medium, etc.</p>
+      </div>
+    </div>
+
+<%
+error = chart_errors.get('structure')
+%>\
+    <div class="control-group${' error' if error else ''}">
+      <label class="control-label" for="structure">Structure</label>
+      <div class="controls">
+        <input class="input-medium" id="structure" name="structure" type="text"\
+value="${', '.join(chart_data['structure'])}">
+% if error:
+        <span class="help-inline">${error}</span>
+% endif
+        <p class="help-block">Examples: "A, A, B, A", "A, B, A, C", etc.</p>
+      </div>
+    </div>
+
+<%
+error = chart_errors.get('key')
+%>\
+    <div class="control-group${' error' if error else ''}">
       <label class="control-label" for="key">Key</label>
       <div class="controls">
         <select class="input-mini" id="key" name="key">
 % for key in common_chromatic_keys:
-          <option${' selected' if key == chart.key else ''}>${key}</option>
+          <option${' selected' if key == chart_data['key'] else ''}>${key}</option>
 % endfor
         </select>
+% if error:
+        <span class="help-inline">${error}</span>
+% endif
         <p class="help-block">Default key for displaying chart.</p>
       </div>
     </div>
-    <div class="control-group">
-      <label class="control-label" for="genre">Genre</label>
+% for part_name in sorted(set(chart_data['structure'])):
+<%
+error = chart_errors.get('parts.{0}'.format(part_name))
+%>\
+    <div class="control-group${' error' if error else ''}">
+      <label class="control-label" for="part-${part_name}">Chords of part ${part_name}</label>
       <div class="controls">
-        <input class="input-medium" id="genre" name="genre" type="text" value="${chart.genre}">
-        <p class="help-block">Examples: medium, etc.</p>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="structure">Structure</label>
-      <div class="controls">
-        <input class="input-medium" id="structure" name="structure" type="text" value="${''.join(chart.structure)}">
-        <p class="help-block">Examples: AABA, ABAC, etc.</p>
-      </div>
-    </div>
-% for part_name in sorted(set(chart.structure)):
-    <div class="control-group">
-      <label class="control-label" for="chords">Chords of part ${part_name}</label>
-      <div class="controls">
-        <textarea class="input-xlarge" id="chords-${part_name}" name="chords.${part_name}" \
-rows="${len(chart.parts[part_name]) / 8 + 1}">${' '.join(chart.parts[part_name])}</textarea>
+        <textarea class="input-xlarge" id="part-${part_name}" name="parts.${part_name}" \
+rows="${len(chart_data['parts'][part_name]) / 8 + 1}">${' '.join(chart_data['parts'][part_name])}</textarea>
+% if error:
+        <span class="help-inline">${error}</span>
+% endif
       </div>
     </div>
 % endfor
+
     <div class="form-actions">
-      <a class="btn" href="${request.route_path('chart', slug=chart.slug)}" title="Click to cancel changes and go back to chart">Cancel</a>
+      <a class="btn" href="${request.route_path('chart', slug=chart.slug)}" \
+title="Click to cancel changes and go back to chart">Cancel</a>
       <button class="btn btn-primary" type="submit" title="Click to save changes">Save changes</button>
     </div>
+
   </fieldset>
 </form>
 

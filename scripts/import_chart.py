@@ -52,16 +52,21 @@ def main(args=None):
 
     with open(arguments.json) as f:
         chart_str = f.read()
-    chart_json = json.loads(chart_str)
-    chart = Chart.from_bson(chart_json)
+    chart_bson = json.loads(chart_str)
+    chart = Chart.from_bson(chart_bson)
     if arguments.user:
         chart.user = arguments.user
-    if arguments.create and User.find_one(dict(slug=chart.user)) is None:
-        user = User()
-        user.slug = chart.user
-        user.save(safe=True)
-    chart_id = chart.save(safe=True)
-    print unicode(chart_id).encode('utf-8')
+    user = User.find_one(dict(slug=chart.user))
+    if user is None:
+        if arguments.create:
+            user = User()
+            user.slug = chart.user
+            user.save(safe=True)
+        else:
+            print u'Chart user does not exist.'.encode('utf-8')
+    if user:
+        chart_id = chart.save(safe=True)
+        print unicode(chart_id).encode('utf-8')
 
     return 0
 

@@ -68,10 +68,16 @@ from openchordcharts.utils import common_chromatic_keys
 <div class="form-actions">
 
   <div class="control-group">
-    <div class="btn-group" data-toggle="buttons-radio" title="Click to transpose chart in this key.">
+    <div class="btn-group transpose-buttons" data-toggle="buttons-radio" title="Click to transpose chart in this key.">
 % for key in common_chromatic_keys:
-      <a class="${'active ' if key == chart.key else ''}btn${' btn-primary' if chart.default_key == key else ''}"\
-href="${request.route_path('chart', slug=chart.slug, _query=dict(key=key))}">${key}</a>
+      <a class="${'active ' if key == chart.key else ''}btn"\
+href="${request.route_path('chart', slug=chart.slug, _query=dict(key=key))}">\
+  % if chart.default_key == key:
+<strong>${key}</strong>
+  % else:
+${key}\
+  % endif
+</a>
 % endfor
 % if chart.key not in common_chromatic_keys:
       <a class="active btn"\

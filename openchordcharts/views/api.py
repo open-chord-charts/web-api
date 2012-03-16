@@ -41,4 +41,4 @@ def charts_json(request):
         user = cleanup_line(request.GET['user'])
         if user:
             spec['user'] = user
-    return [chart.to_json() for chart in Chart.find(spec)]
+    return [chart.to_dict() for chart in Chart.find(spec)]

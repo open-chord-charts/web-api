@@ -27,9 +27,10 @@ from markupsafe import Markup
 
 
 def iter_chords(chart, part_name):
-    previous_chord = chart.parts[part_name][0]
+    part_chords = chart.parts[part_name]
+    previous_chord = part_chords[0]
     yield previous_chord
-    for chord in chart.parts[part_name][1:]:
+    for chord in part_chords[1:]:
         if chord == previous_chord:
             yield None
         else:
