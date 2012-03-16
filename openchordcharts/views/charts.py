@@ -23,14 +23,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from biryani.baseconv import cleanup_line, function, pipe, test_in
 from biryani.strings import slugify
 from pyramid.exceptions import Forbidden, NotFound
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.view import view_config
 
+from openchordcharts.conv import str_to_key
 from openchordcharts.model.chart import Chart
-from openchordcharts.utils import iter_chromatic_keys
 
 
 @view_config(renderer='/chart.mako', route_name='chart')
@@ -39,12 +38,7 @@ def chart(request):
     if not slug:
         raise Forbidden()
     if request.GET.get('key'):
-        key, error = pipe(
-                cleanup_line,
-                function(lambda s: s.lower()),
-                test_in([key.lower() for key in iter_chromatic_keys()]),
-                function(lambda s: s.capitalize()),
-                )(request.GET['key'])
+        key, error = str_to_key(request.GET['key'])
         if error is not None:
             raise HTTPBadRequest(detail=error)
     else:
@@ -53,9 +47,7 @@ def chart(request):
     if chart is None:
         raise NotFound()
     if key is not None and key != chart.key:
-        for part_name in chart.parts:
-            chart.parts[part_name] = list(chart.iter_chords(key=key, part_name=part_name))
-        chart.key = key
+        chart.transpose(key)
     return dict(
         chart=chart,
         )
@@ -79,9 +71,17 @@ def chart_json(request):
     slug = request.matchdict.get('slug')
     if not slug:
         raise Forbidden()
+    if request.GET.get('key'):
+        key, error = str_to_key(request.GET['key'])
+        if error is not None:
+            raise HTTPBadRequest(detail=error)
+    else:
+        key = None
     chart = Chart.find_one(dict(slug=slug))
     if chart is None:
         raise NotFound()
+    if key is not None and key != chart.key:
+        chart.transpose(key)
     return chart.to_json()
 
 

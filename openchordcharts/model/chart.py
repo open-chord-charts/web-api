@@ -48,6 +48,7 @@ class Chart(Mapper, Wrapper):
     chords = None
     composers = None
     created_at = None
+    default_key = None
     genre = None
     key = None
     keywords = None
@@ -99,6 +100,12 @@ class Chart(Mapper, Wrapper):
                 default=noop,
                 ),
             ))(self)
+
+    def transpose(self, key):
+        for part_name in self.parts:
+            self.parts[part_name] = list(self.iter_chords(key=key, part_name=part_name))
+        self.default_key = self.key
+        self.key = key
 
     def validate(self):
         if not self.title:

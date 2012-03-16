@@ -43,17 +43,6 @@ from openchordcharts.utils import common_chromatic_keys
   </h1>
 </div>
 
-<form action="${request.route_path('chart', slug=chart.slug)}">
-  <div class="btn-group" data-toggle="buttons-radio" title="Click to transpose chart in this key.">
-% for key in common_chromatic_keys:
-    <button class="${'active ' if key == chart.key else ''}btn" name="key" value="${key}">${key}</button>
-% endfor
-% if chart.key not in common_chromatic_keys:
-    <button class="active btn" name="key" value="${chart.key}">${chart.key}</button>
-% endif
-  </div>
-</form>
-
 % if chart.genre or chart.structure:
 <p class="structure-genre">
   % if chart.structure:
@@ -77,13 +66,30 @@ from openchordcharts.utils import common_chromatic_keys
 </div>
 
 <div class="form-actions">
-% if has_permission('edit', request.root, request):
-  <a class="btn" href="${request.route_path('chart.edit', slug=chart.slug)}" title="Click to edit this chart">Edit</a>
-% else:
-  <a class="btn disabled" href="#" title="Login to edit this chart">Edit</a>
+
+  <div class="control-group">
+    <div class="btn-group" data-toggle="buttons-radio" title="Click to transpose chart in this key.">
+% for key in common_chromatic_keys:
+      <a class="${'active ' if key == chart.key else ''}btn${' btn-primary' if chart.default_key == key else ''}"\
+href="${request.route_path('chart', slug=chart.slug, _query=dict(key=key))}">${key}</a>
+% endfor
+% if chart.key not in common_chromatic_keys:
+      <a class="active btn"\
+href="${request.route_path('chart', slug=chart.slug, _query=dict(key=chart.key))}">${chart.key}</a>
 % endif
-  <a class="btn" href="${request.route_path('chart.json', slug=chart.slug)}" \
+    </div>
+  </div>
+
+  <div class="control-group">
+% if has_permission('edit', request.root, request):
+    <a class="btn" href="${request.route_path('chart.edit', slug=chart.slug)}" title="Click to edit this chart">Edit</a>
+% else:
+    <a class="btn disabled" href="#" title="Login to edit this chart">Edit</a>
+% endif
+    <a class="btn" href="${request.route_path('chart.json', slug=chart.slug, _query=dict(key=chart.key))}" \
 title="Click to export this chart in JSON">Export in JSON</a>
+  </div>
+
 </div>
 
 <%block filter="trim" name="footer">
