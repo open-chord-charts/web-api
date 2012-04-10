@@ -41,13 +41,14 @@ from openchordcharts.model.user import User
 @view_config(route_name='fake_login')
 def fake_login(request):
     settings = request.registry.settings
-    if not settings['authentication.fake_login']:
+    fake_login_value = settings.get('authentication.fake_login')
+    if not fake_login_value:
         raise Forbidden()
-    headers = remember(request, settings['authentication.fake_login'])
-    user = User.find_one(dict(email=settings['authentication.fake_login']))
+    headers = remember(request, fake_login_value)
+    user = User.find_one(dict(email=fake_login_value))
     if user is None:
         user = User()
-        user.email = settings['authentication.fake_login']
+        user.email = fake_login_value
         user.save(safe=True)
     state = request.GET.get('state')
     return HTTPFound(headers=headers, location=state)

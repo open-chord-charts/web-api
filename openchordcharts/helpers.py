@@ -30,7 +30,7 @@ from markupsafe import Markup
 
 def get_login_url(request):
     settings = request.registry.settings
-    if settings['authentication.fake_login']:
+    if settings.get('authentication.fake_login'):
         login_url = request.route_path('fake_login', _query=dict(
             state=request.path_qs,
             ))
