@@ -55,6 +55,7 @@ def main(global_config, **settings):
     # Authentication
     if settings.get('authentication.fake_login'):
         config.add_route('fake_login', '/fake-login/')
+        config.add_view('openchordcharts.views.auth.fake_login', route_name='fake_login')
     config.add_route('login_callback', '/login-callback/')
     config.add_route('logout', '/logout/')
 

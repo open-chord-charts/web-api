@@ -38,7 +38,6 @@ from pyramid.view import view_config
 from openchordcharts.model.user import User
 
 
-@view_config(route_name='fake_login')
 def fake_login(request):
     settings = request.registry.settings
     fake_login_value = settings.get('authentication.fake_login')
