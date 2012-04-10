@@ -19,7 +19,7 @@
 ## You should have received a copy of the GNU Affero General Public License
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <%!
-import urllib
+from openchordcharts.helpers import get_login_url
 %>\
 <%def name="css()" filter="trim">
 <link href="/static/lib/bootstrap-2.0.1/css/bootstrap.min.css" rel="stylesheet">
@@ -83,21 +83,7 @@ import urllib
 % if request.user:
                 <a href="${request.route_path('logout', _query=dict(state=request.current_route_path()))}">Logout</a>
 % else:
-<%
-settings = request.registry.settings
-login_url = settings['oauth.authorize_url'] + '?' + urllib.urlencode(dict(
-    (name, value)
-    for name, value in dict(
-        client_id=settings['oauth.client_id'],
-        redirect_uri=request.route_url('login_callback'),
-        response_type='code',
-        scope=settings['oauth.scope.auth'],
-        state=request.path_qs,
-        ).iteritems()
-    if value is not None
-    ))
-%>\
-                <a href="${login_url}">Login</a>
+                <a href="${get_login_url(request)}">Login</a>
 % endif
               </li>
             </ul>

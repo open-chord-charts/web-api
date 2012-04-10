@@ -53,6 +53,8 @@ def main(global_config, **settings):
     config.add_route('charts.json', '/api/1/charts.json')
 
     # Authentication
+    if settings['authentication.fake_login']:
+        config.add_route('fake_login', '/fake-login/')
     config.add_route('login_callback', '/login-callback/')
     config.add_route('logout', '/logout/')
 

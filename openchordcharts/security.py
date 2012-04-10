@@ -34,5 +34,7 @@ class RequestWithUserAttribute(Request):
     @reify
     def user(self):
         user_email = unauthenticated_userid(self)
-        if user_email is not None:
+        if user_email is None:
+            return None
+        else:
             return User.find_one(dict(email=user_email))

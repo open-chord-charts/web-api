@@ -23,7 +23,30 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+import urllib
+
 from markupsafe import Markup
+
+
+def get_login_url(request):
+    settings = request.registry.settings
+    if settings['authentication.fake_login']:
+        login_url = request.route_path('fake_login', _query=dict(
+            state=request.path_qs,
+            ))
+    else:
+        login_url = settings['oauth.authorize_url'] + '?' + urllib.urlencode(dict(
+            (name, value)
+            for name, value in dict(
+                client_id=settings['oauth.client_id'],
+                redirect_uri=request.route_url('login_callback'),
+                response_type='code',
+                scope=settings['oauth.scope.auth'],
+                state=request.path_qs,
+                ).iteritems()
+            if value is not None
+            ))
+    return login_url
 
 
 def iter_chords(chart, part_name):

@@ -30,11 +30,27 @@ import urllib
 import urllib2
 import urlparse
 
+from pyramid.exceptions import Forbidden
 from pyramid.httpexceptions import HTTPBadRequest, HTTPFound
 from pyramid.security import forget, remember
 from pyramid.view import view_config
 
 from openchordcharts.model.user import User
+
+
+@view_config(route_name='fake_login')
+def fake_login(request):
+    settings = request.registry.settings
+    if not settings['authentication.fake_login']:
+        raise Forbidden()
+    headers = remember(request, settings['authentication.fake_login'])
+    user = User.find_one(dict(email=settings['authentication.fake_login']))
+    if user is None:
+        user = User()
+        user.email = settings['authentication.fake_login']
+        user.save(safe=True)
+    state = request.GET.get('state')
+    return HTTPFound(headers=headers, location=state)
 
 
 @view_config(route_name='login_callback')
