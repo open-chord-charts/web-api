@@ -106,7 +106,7 @@ def charts(request):
         q_slug = slugify(request.GET['q'])
         if q_slug:
             spec['keywords'] = Chart.get_search_by_keywords_spec(q_slug.split('-'))
-    charts = Chart.find(spec).limit(int(settings['charts.limit']))
+    charts = Chart.find(spec).sort('title').limit(int(settings['charts.limit']))
     return dict(
         charts=charts,
         )
