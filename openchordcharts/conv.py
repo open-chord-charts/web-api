@@ -66,14 +66,19 @@ def params_to_chart_data(params):
                 exists,
                 ),
             ),
-        default='ignore',
+        default=noop,
         keep_missing_values=True,
         )(params)
     if error is not None:
         all_errors.update(error)
-    for part_name in value['structure']:
-        value['parts'].setdefault(part_name, [])
-        part_value, error = test(lambda value: len(value) > 0, error=u'Missing value')(value['parts'][part_name])
-        if error is not None:
-            all_errors.update({'parts.{0}'.format(part_name): error})
+    if value is None:
+        return None, all_errors or None
+    if value['structure'] is not None:
+        if value['parts'] is None:
+            value['parts'] = dict()
+        for part_name in value['structure']:
+            value['parts'].setdefault(part_name, [])
+            part_value, error = test(lambda value: len(value) > 0, error=u'Missing value')(value['parts'][part_name])
+            if error is not None:
+                all_errors.update({'parts.{0}'.format(part_name): error})
     return value, all_errors or None

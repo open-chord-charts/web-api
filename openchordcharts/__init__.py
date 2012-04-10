@@ -60,6 +60,7 @@ def main(global_config, **settings):
 
     config.add_route('index', '/')
     config.add_route('about', '/about')
+    config.add_route('chart.create', '/charts/create')
     config.add_route('chart.edit', '/charts/{slug}/edit')
     config.add_route('chart.json', '/charts/{slug}.json')
     config.add_route('chart', '/charts/{slug}')

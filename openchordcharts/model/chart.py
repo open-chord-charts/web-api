@@ -83,7 +83,7 @@ class Chart(Mapper, Wrapper):
         if self.created_at is None:
             self.created_at = datetime.datetime.utcnow()
         self.modified_at = datetime.datetime.utcnow()
-        if self.slug is None:
+        if self.slug is None or self.slug != slugify(self.title):
             self.slug = self.generate_unique_slug()
         if self.keywords is None:
             self.keywords = self.slug.split('-')

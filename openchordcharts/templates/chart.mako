@@ -54,16 +54,18 @@ from openchordcharts.utils import common_chromatic_keys
 </p>
 % endif
 
+% if chart.structure:
 <div class="chords">
-% for part_name, part_occurence in iter_parts(chart):
+  % for part_name, part_occurence in iter_parts(chart):
   <div class="part ${'repeated' if part_occurence > 0 else ''}">
     <span class="part-name">${part_name}</span>
-  % for chord in iter_chords(chart, part_name):
+    % for chord in iter_chords(chart, part_name):
     <span class="bar">${u'—' if chord is None or part_occurence > 0 else render_chord(chord)}</span>
-  % endfor
+    % endfor
   </div>
-% endfor
+  % endfor
 </div>
+% endif
 
 <div class="form-actions">
 

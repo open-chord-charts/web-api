@@ -54,6 +54,28 @@ def chart(request):
         )
 
 
+@view_config(permission='edit', renderer='/chart_edit.mako', route_name='chart.create')
+def chart_create(request):
+    chart = Chart()
+    if request.method == 'POST':
+        params = variable_decode(request.POST)
+        chart_data, chart_errors = params_to_chart_data(params)
+        if chart_errors is None:
+            chart.update_from_dict(chart_data)
+            chart.save(safe=True)
+            return HTTPFound(location=request.route_path('chart', slug=chart.slug))
+    else:
+        chart_data = dict()
+        chart_errors = None
+    return dict(
+        cancel_url=request.route_path('charts'),
+        chart=chart,
+        chart_data=chart_data,
+        chart_errors=chart_errors or {},
+        form_action_url=request.route_path('chart.create'),
+        )
+
+
 @view_config(permission='edit', renderer='/chart_edit.mako', route_name='chart.edit')
 def chart_edit(request):
     slug = request.matchdict.get('slug')
@@ -73,9 +95,11 @@ def chart_edit(request):
         chart_data = chart.to_dict()
         chart_errors = None
     return dict(
+        cancel_url=request.route_path('chart', slug=chart.slug),
         chart=chart,
         chart_data=chart_data,
         chart_errors=chart_errors or {},
+        form_action_url=request.route_path('chart.edit', slug=chart.slug),
         )
 
 

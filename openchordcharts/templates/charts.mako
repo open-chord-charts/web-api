@@ -20,6 +20,10 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+<%!
+from pyramid.security import has_permission
+%>
+
 <%inherit file="site.mako"/>
 
 <div class="page-header">
@@ -38,4 +42,13 @@
 </ul>
 % else:
 <p>No charts found.</p>
+% endif
+
+% if has_permission('edit', request.root, request):
+<p><a class="btn btn-primary" href="${request.route_path('chart.create')}">Add a new chart</a></p>
+% else:
+<p>
+  <a class="btn btn-primary disabled" href="#">Add a new chart</a>
+  <small>Please login to add a new chart.</small>
+</p>
 % endif

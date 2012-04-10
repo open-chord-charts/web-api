@@ -33,9 +33,9 @@ from openchordcharts.utils import common_chromatic_keys
   <p>You won't be able to save data if you use it!</p>
 </div>
 
-<form action="${request.route_path('chart.edit', slug=chart.slug)}" class="form-horizontal" method="post">
+<form action="${form_action_url}" class="form-horizontal" method="post">
   <fieldset>
-    <legend>Edit chart: ${chart_data['title']}</legend>
+    <legend>Edit chart: ${chart_data.get('title')}</legend>
 
 <%
 error = chart_errors.get('title')
@@ -43,7 +43,7 @@ error = chart_errors.get('title')
     <div class="control-group${' error' if error else ''}">
       <label class="control-label" for="title">Title</label>
       <div class="controls">
-        <input class="input-xlarge" id="title" name="title" type="text" value="${chart_data['title']}">
+        <input class="input-xlarge" id="title" name="title" type="text" value="${chart_data.get('title')}">
 % if error:
         <span class="help-inline">${error}</span>
 % endif
@@ -57,7 +57,7 @@ error = chart_errors.get('composers')
       <label class="control-label" for="composers">Composers</label>
       <div class="controls">
         <input class="input-xlarge" id="composers" name="composers" type="text"\
-value="${', '.join(chart_data['composers'])}">
+value="${', '.join(chart_data['composers'] if chart_data.get('composers') else '')}">
         <p class="help-block">Multiple values are comma-separated</p>
 % if error:
         <span class="help-inline">${error}</span>
@@ -71,7 +71,7 @@ error = chart_errors.get('genre')
     <div class="control-group${' error' if error else ''}">
       <label class="control-label" for="genre">Genre</label>
       <div class="controls">
-        <input class="input-medium" id="genre" name="genre" type="text" value="${chart_data['genre']}">
+        <input class="input-medium" id="genre" name="genre" type="text" value="${chart_data.get('genre')}">
 % if error:
         <span class="help-inline">${error}</span>
 % endif
@@ -86,7 +86,7 @@ error = chart_errors.get('structure')
       <label class="control-label" for="structure">Structure</label>
       <div class="controls">
         <input class="input-medium" id="structure" name="structure" type="text"\
-value="${', '.join(chart_data['structure'])}">
+value="${', '.join(chart_data['structure']) if chart_data.get('structure') else ''}">
 % if error:
         <span class="help-inline">${error}</span>
 % endif
@@ -102,7 +102,7 @@ error = chart_errors.get('key')
       <div class="controls">
         <select class="input-mini" id="key" name="key">
 % for key in common_chromatic_keys:
-          <option${' selected' if key == chart_data['key'] else ''}>${key}</option>
+          <option${' selected' if key == chart_data.get('key') else ''}>${key}</option>
 % endfor
         </select>
 % if error:
@@ -111,7 +111,8 @@ error = chart_errors.get('key')
         <p class="help-block">Default key for displaying chart.</p>
       </div>
     </div>
-% for part_name in sorted(set(chart_data['structure'])):
+% if chart_data.get('structure'):
+  % for part_name in sorted(set(chart_data['structure'])):
 <%
 error = chart_errors.get('parts.{0}'.format(part_name))
 %>\
@@ -120,15 +121,16 @@ error = chart_errors.get('parts.{0}'.format(part_name))
       <div class="controls">
         <textarea class="input-xlarge" id="part-${part_name}" name="parts.${part_name}" \
 rows="${len(chart_data['parts'][part_name]) / 8 + 1}">${' '.join(chart_data['parts'][part_name])}</textarea>
-% if error:
+  % if error:
         <span class="help-inline">${error}</span>
-% endif
+  % endif
       </div>
     </div>
-% endfor
+  % endfor
+% endif
 
     <div class="form-actions">
-      <a class="btn" href="${request.route_path('chart', slug=chart.slug)}" \
+      <a class="btn" href="${cancel_url}" \
 title="Click to cancel changes and go back to chart">Cancel</a>
       <button class="btn btn-primary" type="submit" title="Click to save changes">Save changes</button>
     </div>
