@@ -28,7 +28,7 @@ import re
 
 from biryani.baseconv import check, noop, pipe, struct
 from biryani.bsonconv import object_id_to_str
-from biryani.datetimeconv import datetime_to_iso8601
+from biryani.datetimeconv import datetime_to_iso8601_str
 from biryani.objectconv import object_to_clean_dict
 from biryani.strings import slugify
 
@@ -96,8 +96,8 @@ class Chart(Mapper, Wrapper):
                 struct(
                     dict(
                         _id=object_id_to_str,
-                        created_at=datetime_to_iso8601,
-                        modified_at=datetime_to_iso8601,
+                        created_at=datetime_to_iso8601_str,
+                        modified_at=datetime_to_iso8601_str,
                         ),
                     default=noop,
                     ),

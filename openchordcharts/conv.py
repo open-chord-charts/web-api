@@ -63,11 +63,11 @@ def params_to_chart_data(params):
                 ),
             title=pipe(
                 cleanup_line,
-                exists,
+                not_none,
                 ),
             ),
         default=noop,
-        keep_missing_values=True,
+        keep_none_values=True,
         )(params)
     if error is not None:
         all_errors.update(error)
