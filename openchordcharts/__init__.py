@@ -27,10 +27,13 @@ from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
 from pyramid.renderers import JSONP
+from pyramid.session import UnencryptedCookieSessionFactoryConfig
 
 from openchordcharts.model import initialize_model
 from openchordcharts.resources import Root
 from openchordcharts.security import RequestWithUserAttribute
+import openchordcharts.views
+import openchordcharts.views.auth
 
 
 def main(global_config, **settings):
@@ -40,10 +43,12 @@ def main(global_config, **settings):
 
     authentication_policy = AuthTktAuthenticationPolicy(settings['authentication.secret'])
     authorization_policy = ACLAuthorizationPolicy()
+    session_factory = UnencryptedCookieSessionFactoryConfig(settings['authentication.secret'])
     config = Configurator(
         authentication_policy=authentication_policy,
         authorization_policy=authorization_policy,
         root_factory=Root,
+        session_factory=session_factory,
         settings=settings,
         )
 
@@ -55,12 +60,19 @@ def main(global_config, **settings):
     # Authentication
     if settings.get('authentication.fake_login'):
         config.add_route('fake_login', '/fake-login/')
-        config.add_view('openchordcharts.views.auth.fake_login', route_name='fake_login')
+        config.add_view(openchordcharts.views.auth.fake_login, route_name='fake_login')
+    config.add_route('login', '/login/')
+    config.add_view(openchordcharts.views.auth.login, route_name='login')
     config.add_route('login_callback', '/login-callback/')
+    config.add_view(openchordcharts.views.auth.login_callback, route_name='login_callback')
     config.add_route('logout', '/logout/')
+    config.add_view(openchordcharts.views.auth.logout, route_name='logout')
 
     config.add_route('index', '/')
+    config.add_view(openchordcharts.views.index, renderer='/index.mako', route_name='index')
     config.add_route('about', '/about')
+    config.add_view(openchordcharts.views.about, renderer='/about.mako', route_name='about')
+
     config.add_route('chart.create', '/charts/create')
     config.add_route('chart.edit', '/charts/{slug}/edit')
     config.add_route('chart.json', '/charts/{slug}.json')

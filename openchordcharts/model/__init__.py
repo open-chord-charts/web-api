@@ -25,6 +25,9 @@
 
 import pymongo
 from suq.monpyjama import Wrapper
+import wannanou
+
+from openchordcharts.model.openidconnect import Authentication, Client, Provider
 
 
 db = None
@@ -38,3 +41,18 @@ def initialize_model(settings):
     global db
     db = connection[database_name]
     Wrapper.db = db
+
+    # OpenID Connect authentications collection
+    Authentication.ensure_index('expiration')
+    Authentication.ensure_index([
+        ('provider_url', pymongo.ASCENDING),
+        ('grant_type', pymongo.ASCENDING),
+        ('scope', pymongo.ASCENDING),
+        ])
+    Authentication.ensure_index('state', sparse=True, unique=True)
+
+    # OpenID Connect providers collection
+    Provider.ensure_index('expiration', sparse=True)
+    Provider.ensure_index('url')
+
+    wannanou.init(Authentication=Authentication, Client=Client, Provider=Provider, RequestFile=None)

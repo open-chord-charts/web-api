@@ -26,11 +26,9 @@
 from pyramid.view import view_config
 
 
-@view_config(renderer='/about.mako', route_name='about')
 def about(request):
-    return {}
+    return dict()
 
 
-@view_config(renderer='/index.mako', route_name='index')
 def index(request):
-    return {}
+    return dict()

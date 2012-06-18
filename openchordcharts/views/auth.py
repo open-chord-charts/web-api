@@ -23,18 +23,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import base64
-import datetime
-import json
-import urllib
-import urllib2
 import urlparse
 
 from pyramid.exceptions import Forbidden
 from pyramid.httpexceptions import HTTPBadRequest, HTTPFound
 from pyramid.security import forget, remember
-from pyramid.view import view_config
+import wannanou
 
+from openchordcharts.model.openidconnect import Authentication, Provider
 from openchordcharts.model.user import User
 
 
@@ -53,47 +49,94 @@ def fake_login(request):
     return HTTPFound(headers=headers, location=state)
 
 
-@view_config(route_name='login_callback')
+def login(request):
+    callback_path = request.GET.get('callback_path')
+    if callback_path and urlparse.urlsplit(callback_path)[1]:
+        raise HTTPBadRequest(explanation=u'Error for "state" parameter: Value must not be an absolute URL.')
+    if callback_path and callback_path.startswith('/login-callback'):
+        callback_path = None
+
+    provider, error = Provider.retrieve_updated(request)
+    if error is not None:
+        raise HTTPBadRequest(explanation=u'Error when looking for provider and registering as client: {}'.format(
+            error))
+
+    authentication, error = provider.new_authorize_authentication(
+        prompt='select_account',
+        redirect_uri=request.route_url('login_callback'),
+        response_type=u'code',
+        scope=u'openid email',
+        use_request_object=True,
+        userinfo_request=dict(
+            claims=dict(
+                email=dict(essential=True),
+                email_verified=dict(essential=True),
+                ),
+            ),
+        )
+    if error is not None:
+        raise HTTPBadRequest(explanation=u'Error when creating OpenID Connect authentication: {}'.format(error))
+
+    authorize_url, error = authentication.generate_authorization_url()
+    if error is not None:
+        raise HTTPBadRequest(explanation=u'Error when generating URL of OpenID Connect authorization: {}'.format(error))
+
+    request.session['callback_path'] = callback_path
+#    request.session.save()
+
+    return HTTPFound(location=authorize_url)
+
+
 def login_callback(request):
-    params = request.GET
-    settings = request.registry.settings
+    inputs = wannanou.extract_authorization_callback_inputs_from_params(request.GET)
+    data, errors = wannanou.make_authorization_callback_inputs_to_data('code')(inputs, state=None)
+    if errors is not None or data.get('error') is not None:
+        raise HTTPBadRequest(
+#            data=data,  # data contains a "code" item that is also a bad_request parameter => We can't use **data.
+#            errors=errors,
+            explanation=u'An error occurred during remote authentication',
+#            inputs=inputs,
+#            template_path='/login-error.mako',
+            )
 
-    if params.get('error') is not None:
-        raise HTTPBadRequest(detail=params['error'])
+    authentication, error = Authentication.pop_by_authorization_callback_data(data, state=None)
+    if error is not None:
+        if request.session is None or request.authenticated_user is None:
+            # Token is not valid and no session => Error.
+            raise HTTPBadRequest(
+                explanation=u'The user has already been validated or the confirmation delay has expired.',
+                title=u'Remote Authentication Failed',
+                )
+        # Token is not valid, but a session already exists => Warn user.
+        raise HTTPBadRequest(
+            explanation=u'Authentication has failed, but you are already signed-in.',
+            title=u'Remote Authentication Failed, but user is already authenticated',
+            )
 
-    code = params.get('code')
-    if not code:
-        raise HTTPBadRequest(detail=u'Missing value')
+    token_data, error = authentication.request_token_by_authorization_code(state=None)
+    if error is not None:
+        raise HTTPBadRequest(
+#            dump=error,
+            explanation=u'An error occurred during remote authentication.',
+            )
 
-    state = params.get('state')
-    if state and urlparse.urlsplit(state)[1]:
-        raise HTTPBadRequest(detail=u'state must not be an absolute URL.')
-    if not state:
-        state = request.route_path('index')
+    userinfo, error = authentication.request_userinfo(state=None)
+    if error is not None:
+        raise HTTPBadRequest(
+#            dump=error,
+            explanation=u'An error occurred when retrieving user informations.',
+            )
 
-    # Request access token.
-    try:
-        resp = urllib2.urlopen(settings['oauth.token_url'], urllib.urlencode(dict(
-            client_id=settings['oauth.client_id'],
-            client_secret=settings['oauth.client_secret'],
-            code=code,
-            grant_type='authorization_code',
-            redirect_uri=request.route_url('login_callback'),
-            scope=settings['oauth.scope.auth'],
-            )))
-    except urllib2.HTTPError, resp:
-        if resp.code == 400:
-            raise HTTPBadRequest(detail=resp.read())
-        else:
-            raise
-    access_token_infos = json.load(resp, encoding='utf-8')
-    access_token_infos['expiration'] = datetime.datetime.now() + datetime.timedelta(
-        seconds=access_token_infos.get('expires_in'))
-    print u'OAuth token response params: {0}'.format(access_token_infos).encode('utf-8')
-
-    # get/extract email from access token
-    email = json.loads(
-        base64.urlsafe_b64decode(str(access_token_infos['access_token']).split('.')[1]))['prn']['email']
+    email = userinfo.get('email')
+    if email is None:
+        raise HTTPBadRequest(
+            explanation=u'Email missing.',
+            )
+    email_verified = userinfo.get('email_verified')
+    if not email_verified:
+        raise HTTPBadRequest(
+            explanation=u'Email not confirmed.',
+            )
 
     user = User.find_one(dict(email=email))
     if user is None:
@@ -101,10 +144,14 @@ def login_callback(request):
         user.email = email
         user.save(safe=True)
     headers = remember(request, user.email)
-    return HTTPFound(headers=headers, location=state)
+
+    callback_path = request.session.pop('callback_path', None)
+    request.session['openid_expiration'] = authentication.expiration
+#    request.session.save()
+
+    return HTTPFound(headers=headers, location=callback_path)
 
 
-@view_config(route_name='logout')
 def logout(request):
     state = request.GET.get('state')
     if state is None:

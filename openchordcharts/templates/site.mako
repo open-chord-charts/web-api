@@ -1,3 +1,7 @@
+<!DOCTYPE html>
+<html>
+
+
 ## Open Chord Charts -- Database of free chord charts
 ## By: Christophe Benz <christophe.benz@gmail.com>
 ##
@@ -18,9 +22,8 @@
 ##
 ## You should have received a copy of the GNU Affero General Public License
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
-<%!
-from openchordcharts.helpers import get_login_url
-%>\
+
+
 <%def name="css()" filter="trim">
 <link href="/static/lib/bootstrap-2.0.1/css/bootstrap.min.css" rel="stylesheet">
 <style>
@@ -30,13 +33,17 @@ from openchordcharts.helpers import get_login_url
 </style>
 <link href="/static/lib/bootstrap-2.0.1/css/bootstrap-responsive.min.css" rel="stylesheet">
 <link href="/static/css/style.css" rel="stylesheet">
-</%def>\
+</%def>
+
+
 <%def name="scripts()" filter="trim">
 <script data-main="/static/js/main" src="/static/lib/requirejs-1.0.7/require.min.js"></script>
-</%def>\
-<%def name="title()" filter="trim">OpenChordCharts.org</%def>\
-<!DOCTYPE html>
-<html>
+</%def>
+
+
+<%def name="title()" filter="trim">OpenChordCharts.org</%def>
+
+
   <head>
     <meta charset="utf-8">
     <meta name="description" content="Open Chord Charts project">
@@ -83,7 +90,7 @@ from openchordcharts.helpers import get_login_url
 % if request.user:
                 <a href="${request.route_path('logout', _query=dict(state=request.current_route_path()))}">Logout</a>
 % else:
-                <a href="${get_login_url(request)}">Login</a>
+                <a href="${request.route_path('login', _query=dict(callback_path=request.path_qs))}">Login</a>
 % endif
               </li>
             </ul>

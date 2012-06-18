@@ -23,7 +23,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from biryani.baseconv import *
+from biryani.baseconv import (check, cleanup_line, function, noop, not_none,pipe, struct, test, test_in,
+    uniform_mapping, uniform_sequence)
+from biryani.objectconv import make_dict_to_object, object_to_clean_dict
+from wannanou.conv import default_state
 
 from openchordcharts.utils import iter_chromatic_keys
 

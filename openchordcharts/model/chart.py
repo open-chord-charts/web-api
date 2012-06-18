@@ -31,7 +31,6 @@ from biryani.bsonconv import object_id_to_str
 from biryani.datetimeconv import datetime_to_iso8601_str
 from biryani.objectconv import object_to_clean_dict
 from biryani.strings import slugify
-
 from suq.monpyjama import Mapper, Wrapper
 
 from openchordcharts.utils import get_transposed_chord
