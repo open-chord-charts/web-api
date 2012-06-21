@@ -25,8 +25,7 @@
 
 import urlparse
 
-from pyramid.exceptions import Forbidden
-from pyramid.httpexceptions import HTTPBadRequest, HTTPFound
+from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPFound
 from pyramid.security import forget, remember
 import wannanou
 
@@ -38,15 +37,15 @@ def fake_login(request):
     settings = request.registry.settings
     fake_login_value = settings.get('authentication.fake_login')
     if not fake_login_value:
-        raise Forbidden()
+        raise HTTPForbidden()
     headers = remember(request, fake_login_value)
     user = User.find_one(dict(email=fake_login_value))
     if user is None:
         user = User()
         user.email = fake_login_value
         user.save(safe=True)
-    state = request.GET.get('state')
-    return HTTPFound(headers=headers, location=state)
+    callback_path = request.GET.get('callback_path')
+    return HTTPFound(headers=headers, location=callback_path or request.route_path('index'))
 
 
 def login(request):

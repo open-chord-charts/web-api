@@ -25,18 +25,19 @@
 
 import datetime
 
+from biryani.baseconv import check, function, noop, pipe, struct
+from biryani.objectconv import make_dict_to_object, object_to_clean_dict
 import pyramid.threadlocal
 from suq.monpyjama import Mapper, Wrapper
 import wannanou
-
-from openchordcharts import conv
+import wannanou.conv
 
 
 class Authentication(wannanou.abstract.Authentication, Mapper, Wrapper):
     collection_name = 'wannanou_authentications'
-    to_bson = conv.check(conv.pipe(
-        conv.object_to_clean_dict,
-        conv.function(lambda bson: (bson.pop('_provider', None) or True) and bson),
+    to_bson = check(pipe(
+        object_to_clean_dict,
+        function(lambda bson: (bson.pop('_provider', None) or True) and bson),
         ))
 
     @classmethod
@@ -56,31 +57,31 @@ class Authentication(wannanou.abstract.Authentication, Mapper, Wrapper):
 
 
 class Client(wannanou.ramdb.Client, Mapper):
-    to_bson = conv.check(conv.object_to_clean_dict)
+    to_bson = check(object_to_clean_dict)
 
 
 class Provider(wannanou.abstract.Provider, Wrapper):
     collection_name = 'cosmetic_providers'
-    to_bson = conv.check(conv.pipe(
-        conv.object_to_clean_dict,
-        conv.struct(
+    to_bson = check(pipe(
+        object_to_clean_dict,
+        struct(
             dict(
-                client=conv.function(lambda client: client.to_bson()),
+                client=function(lambda client: client.to_bson()),
                 ),
-            default=conv.noop,
+            default=noop,
             ),
         ))
 
     @classmethod
     def from_bson(cls, bson):
-        return conv.check(conv.pipe(
-            conv.struct(
+        return check(pipe(
+            struct(
                 dict(
-                    client=conv.function(Client.from_bson),
+                    client=function(Client.from_bson),
                     ),
-                default=conv.noop,
+                default=noop,
                 ),
-            conv.make_dict_to_object(cls),
+            make_dict_to_object(cls),
             ))(bson)
 
     @classmethod
@@ -99,7 +100,7 @@ class Provider(wannanou.abstract.Provider, Wrapper):
     def retrieve_updated(cls, request, state=None):
         settings = pyramid.threadlocal.get_current_registry().settings
         if state is None:
-            state = conv.default_state
+            state = wannanou.conv.default_state
         self, error = cls.retrieve(settings['openid.provider_url'], state=state)
         if error is not None:
             return self, state._(u'Error while retrieving configuration of OpenID Connect server: {0}').format(error)

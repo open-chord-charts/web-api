@@ -23,9 +23,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from pyramid.view import view_config
-
-
 def about(request):
     return dict()
 

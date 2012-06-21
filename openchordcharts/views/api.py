@@ -25,13 +25,11 @@
 
 from biryani.baseconv import cleanup_line
 from biryani.strings import slugify
-from pyramid.view import view_config
 
 from openchordcharts.model.chart import Chart
 
 
-@view_config(renderer='jsonp', route_name='charts.json')
-def charts_json(request):
+def charts(request):
     spec = {}
     if request.GET.get('title'):
         title_slug = slugify(request.GET['title'])
