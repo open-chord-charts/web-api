@@ -90,7 +90,9 @@
 % if request.user:
                 <a href="${request.route_path('logout', _query=dict(state=request.current_route_path()))}">Logout</a>
 % else:
-                <a href="${request.route_path('login', _query=dict(callback_path=request.path_qs))}">Login</a>
+                <a href="${request.route_path('fake_login' \
+if request.registry.settings.get('authentication.fake_login') else 'login', \
+_query=dict(callback_path=request.path_qs))}">Login</a>
 % endif
               </li>
             </ul>
