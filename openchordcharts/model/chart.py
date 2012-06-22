@@ -89,6 +89,7 @@ class Chart(Mapper, Wrapper):
         return super(Chart, self).save(*args, **kwargs)
 
     def to_dict(self):
+        # FIXME: use to_bson
         return check(
             pipe(
                 object_to_clean_dict,
