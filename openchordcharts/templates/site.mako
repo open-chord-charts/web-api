@@ -88,11 +88,12 @@
 % endif
               <li>
 % if request.user:
-                <a href="${request.route_path('logout', _query=dict(state=request.current_route_path()))}">Logout</a>
+                <a href="${request.route_path('logout', _query=dict(state=request.current_route_path()))}" \
+rel="nofollow">Logout</a>
 % else:
                 <a href="${request.route_path('fake_login' \
 if request.registry.settings.get('authentication.fake_login') else 'login', \
-_query=dict(callback_path=request.path_qs))}">Login</a>
+_query=dict(callback_path=request.path_qs))}" rel="nofollow">Login</a>
 % endif
               </li>
             </ul>
