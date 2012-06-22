@@ -69,6 +69,8 @@ def main(global_config, **settings):
     config.add_view(openchordcharts.views.auth.login, route_name='login')
     config.add_route('login_callback', '/login-callback/')
     config.add_view(openchordcharts.views.auth.login_callback, route_name='login_callback')
+    config.add_route('login_local', '/login-local/')
+    config.add_view(openchordcharts.views.auth.login_local, renderer='/login_local.mako', route_name='login_local')
     config.add_route('logout', '/logout/')
     config.add_view(openchordcharts.views.auth.logout, route_name='logout')
 

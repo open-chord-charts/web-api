@@ -29,6 +29,7 @@ from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPFound
 from pyramid.security import forget, remember
 import wannanou
 
+from openchordcharts.auth import encrypt_password
 from openchordcharts.model.openidconnect import Authentication, Provider
 from openchordcharts.model.user import User
 
@@ -149,6 +150,28 @@ def login_callback(request):
 #    request.session.save()
 
     return HTTPFound(headers=headers, location=callback_path)
+
+
+def login_local(request):
+    if request.method == 'POST':
+        data = dict(
+            email=request.params.get('email'),
+            password=request.params.get('password'),
+            )
+        user = User.find_one(dict(email=data['email']))
+        if user is None:
+            errors = dict(email=u'Invalid email')
+        elif user.password_sha256 != encrypt_password(data['password']):
+            errors = dict(password=u'Invalid password')
+        if errors is None:
+            headers = remember(request, user.email)
+            return HTTPFound(headers=headers, location=request.params.get('state') or request.route_path('index'))
+    else:
+        data = errors = None
+    return dict(
+        data=data or dict(),
+        errors=errors or dict(),
+        )
 
 
 def logout(request):

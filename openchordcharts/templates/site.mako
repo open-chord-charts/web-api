@@ -24,6 +24,11 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+<%!
+from openchordcharts.helpers import get_login_url
+%>
+
+
 <%def name="css()" filter="trim">
 <link href="/static/lib/bootstrap-2.0.1/css/bootstrap.min.css" rel="stylesheet">
 <style>
@@ -90,10 +95,8 @@
 % if request.user:
                 <a href="${request.route_path('logout', _query=dict(state=request.current_route_path()))}" \
 rel="nofollow">Logout</a>
-% else:
-                <a href="${request.route_path('fake_login' \
-if request.registry.settings.get('authentication.fake_login') else 'login', \
-_query=dict(callback_path=request.path_qs))}" rel="nofollow">Login</a>
+% elif request.matched_route and request.matched_route.name != 'login_local':
+                <a href="${get_login_url(request)}" rel="nofollow">Login</a>
 % endif
               </li>
             </ul>

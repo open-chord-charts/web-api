@@ -35,12 +35,15 @@ class User(Mapper, Wrapper):
     created_at = None
     email = None
     modified_at = None
+    password_sha256 = None  # Only useful for local login
     slug = None
 
     def save(self, *args, **kwargs):
         if self.created_at is None:
             self.created_at = datetime.datetime.utcnow()
         self.modified_at = datetime.datetime.utcnow()
+        return super(User, self).save(*args, **kwargs)
+
+    def to_bson(self):
         if self.slug is None:
             self.slug = slugify(self.email)
-        return super(User, self).save(*args, **kwargs)

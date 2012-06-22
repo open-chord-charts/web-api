@@ -26,6 +26,17 @@
 from markupsafe import Markup
 
 
+def get_login_url(request):
+    settings = request.registry.settings
+    if settings['authentication.fake_login']:
+        return request.route_path('fake_login', _query=dict(callback_path=request.path_qs))
+    elif settings['openid.application_name'] and settings['openid.client_id'] and \
+        settings['openid.client_secret'] and settings['openid.provider_url']:
+        return request.route_path('login', _query=dict(callback_path=request.path_qs))
+    else:
+        return request.route_path('login_local', _query=dict(state=request.path_qs))
+
+
 def iter_chords(chart, part_name):
     part_chords = chart.parts[part_name]
     previous_chord = part_chords[0]
