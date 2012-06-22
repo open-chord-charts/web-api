@@ -29,9 +29,9 @@ from pyramid.config import Configurator
 from pyramid.renderers import JSONP
 from pyramid.session import UnencryptedCookieSessionFactoryConfig
 
+from openchordcharts.auth import RequestWithUserAttribute
 from openchordcharts.model import initialize_model
 from openchordcharts.resources import Root
-from openchordcharts.security import RequestWithUserAttribute
 import openchordcharts.views
 import openchordcharts.views.api
 import openchordcharts.views.auth

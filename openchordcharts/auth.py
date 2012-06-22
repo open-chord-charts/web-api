@@ -23,11 +23,17 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+import hashlib
+
 from pyramid.decorator import reify
 from pyramid.request import Request
 from pyramid.security import unauthenticated_userid
 
 from openchordcharts.model.user import User
+
+
+def encrypt_password(password):
+    return hashlib.sha256(password).hexdigest()
 
 
 class RequestWithUserAttribute(Request):
