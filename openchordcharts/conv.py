@@ -23,11 +23,19 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from biryani.baseconv import (cleanup_line, function, noop, not_none, pipe, struct, test, test_in, uniform_mapping,
-    uniform_sequence)
+from biryani.baseconv import (check, cleanup_line, function, guess_bool, input_to_email, input_to_int,
+    make_input_to_url, noop, not_none, pipe, struct, test, test_in, uniform_mapping, uniform_sequence)
+import biryani.states
 
 from openchordcharts.utils import iter_chromatic_keys
 
+
+# State
+
+default_state = biryani.states.default_state
+
+
+# Converters
 
 csv_str_to_list = pipe(
     function(lambda value: value.split(',')),
@@ -41,8 +49,35 @@ str_to_key = pipe(
     function(lambda s: s.capitalize()),
     )
 
+validate_settings = check(
+        pipe(
+            struct(
+                {
+                    'authentication.fake_login': pipe(cleanup_line, input_to_email),
+                    'authentication.localdb_login_enabled': pipe(cleanup_line, guess_bool),
+                    'authentication.openid.application_name': cleanup_line,
+                    'authentication.openid.client_id': cleanup_line,
+                    'authentication.openid.client_secret': cleanup_line,
+                    'authentication.openid.provider_url': pipe(cleanup_line, make_input_to_url()),
+                    'authentication.secret': pipe(cleanup_line, not_none),
+                    'charts.limit': pipe(cleanup_line, input_to_int),
+                    'database.uri': pipe(cleanup_line, not_none),
+                    },
+                default=noop,
+                keep_none_values=True,
+                ),
+            test(lambda values: len(filter(None, [value for key, value in values.iteritems() if key in [
+                    'authentication.openid.application_name',
+                    'authentication.openid.client_id',
+                    'authentication.openid.client_secret',
+                    'authentication.openid.provider_url',
+                    ]])) in [0, 4], default_state._(u'Not all authentication.openid keys are set')
+                ),
+            )
+        )
 
-def params_to_chart_data(params):
+
+def params_to_chart_data(params, state=default_state):
     all_errors = {}
     value, error = struct(
         dict(
@@ -79,7 +114,8 @@ def params_to_chart_data(params):
             value['parts'] = dict()
         for part_name in value['structure']:
             value['parts'].setdefault(part_name, [])
-            part_value, error = test(lambda value: len(value) > 0, error=u'Missing value')(value['parts'][part_name])
+            part_value, error = test(lambda value: len(value) > 0, error=state._(u'Missing value'))(
+                value['parts'][part_name])
             if error is not None:
                 all_errors.update({'parts.{0}'.format(part_name): error})
     return value, all_errors or None

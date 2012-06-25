@@ -28,13 +28,13 @@ from markupsafe import Markup
 
 def get_login_url(request):
     settings = request.registry.settings
-    if settings.get('authentication.fake_login'):
+    if settings['authentication.fake_login']:
         return request.route_path('fake_login', _query=dict(callback_path=request.path_qs))
-    elif settings.get('authentication.openid.application_name') and \
-        settings.get('authentication.openid.client_id') and settings.get('authentication.openid.client_secret') and \
-        settings.get('authentication.openid.provider_url'):
+    elif settings['authentication.openid.application_name'] and \
+        settings['authentication.openid.client_id'] and settings['authentication.openid.client_secret'] and \
+        settings['authentication.openid.provider_url']:
         return request.route_path('openidconnect_login', _query=dict(callback_path=request.path_qs))
-    elif settings.get('authentication.localdb_login'):
+    elif settings['authentication.localdb_login_enabled']:
         return request.route_path('localdb_login', _query=dict(state=request.path_qs))
     else:
         return None

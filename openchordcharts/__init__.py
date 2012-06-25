@@ -30,6 +30,7 @@ from pyramid.renderers import JSONP
 from pyramid.session import UnencryptedCookieSessionFactoryConfig
 
 from openchordcharts.auth import RequestWithUserAttribute
+from openchordcharts.conv import validate_settings
 from openchordcharts.model import initialize_model
 from openchordcharts.resources import Root
 import openchordcharts.views
@@ -45,6 +46,8 @@ import openchordcharts.views.users
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
+
+    settings = validate_settings(settings)
     initialize_model(settings)
 
     authentication_policy = AuthTktAuthenticationPolicy(settings['authentication.secret'])
@@ -65,14 +68,14 @@ def main(global_config, **settings):
     config.add_view(openchordcharts.views.api.charts, renderer='jsonp', route_name='charts.json')
 
     # Authentication
-    if settings.get('authentication.fake_login'):
+    if settings['authentication.fake_login']:
         config.add_route('fake_login', '/login-fake/')
         config.add_view(openchordcharts.views.auth.fake.login, route_name='fake_login')
-    if settings.get('authentication.localdb_login'):
+    if settings['authentication.localdb_login_enabled']:
         config.add_route('localdb_login', '/login-localdb/')
         config.add_view(openchordcharts.views.auth.localdb.login, renderer='/login_local.mako',
             route_name='localdb_login')
-    if settings.get('authentication.openid.client_id'):
+    if settings['authentication.openid.client_id']:
         config.add_route('login_callback', '/login-callback/')
         config.add_view(openchordcharts.views.auth.openidconnect.login_callback, route_name='login_callback')
         config.add_route('openidconnect_login', '/login-openidconnect/')

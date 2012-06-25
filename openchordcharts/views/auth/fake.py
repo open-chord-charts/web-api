@@ -23,7 +23,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from pyramid.httpexceptions import HTTPForbidden, HTTPFound
+from pyramid.httpexceptions import HTTPFound
 from pyramid.security import remember
 
 from openchordcharts.model.user import User
@@ -31,14 +31,11 @@ from openchordcharts.model.user import User
 
 def login(request):
     settings = request.registry.settings
-    fake_login_value = settings.get('authentication.fake_login')
-    if not fake_login_value:
-        raise HTTPForbidden()
-    headers = remember(request, fake_login_value)
-    user = User.find_one(dict(email=fake_login_value))
+    headers = remember(request, settings['authentication.fake_login'])
+    user = User.find_one(dict(email=settings['authentication.fake_login']))
     if user is None:
         user = User()
-        user.email = fake_login_value
+        user.email = settings['authentication.fake_login']
         user.save(safe=True)
     callback_path = request.GET.get('callback_path')
     return HTTPFound(headers=headers, location=callback_path or request.route_path('index'))
