@@ -30,11 +30,14 @@ def get_login_url(request):
     settings = request.registry.settings
     if settings.get('authentication.fake_login'):
         return request.route_path('fake_login', _query=dict(callback_path=request.path_qs))
-    elif settings.get('openid.application_name') and settings.get('openid.client_id') and \
-        settings.get('openid.client_secret') and settings.get('openid.provider_url'):
-        return request.route_path('login', _query=dict(callback_path=request.path_qs))
+    elif settings.get('authentication.openid.application_name') and \
+        settings.get('authentication.openid.client_id') and settings.get('authentication.openid.client_secret') and \
+        settings.get('authentication.openid.provider_url'):
+        return request.route_path('openidconnect_login', _query=dict(callback_path=request.path_qs))
+    elif settings.get('authentication.localdb_login'):
+        return request.route_path('localdb_login', _query=dict(state=request.path_qs))
     else:
-        return request.route_path('login_local', _query=dict(state=request.path_qs))
+        return None
 
 
 def iter_chords(chart, part_name):

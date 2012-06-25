@@ -91,14 +91,19 @@ from openchordcharts.helpers import get_login_url
                 </a>
               </li>
 % endif
+<%
+login_url = get_login_url(request)
+%>
+% if request.user or login_url:
               <li>
-% if request.user:
+  % if request.user:
                 <a href="${request.route_path('logout', _query=dict(state=request.current_route_path()))}" \
 rel="nofollow">Logout</a>
-% elif request.matched_route and request.matched_route.name != 'login_local':
-                <a href="${get_login_url(request)}" rel="nofollow">Login</a>
-% endif
+  % elif login_url:
+                <a href="${login_url}" rel="nofollow">Login</a>
+  % endif
               </li>
+% endif
             </ul>
           </div>
         </div>

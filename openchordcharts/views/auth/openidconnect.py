@@ -25,28 +25,12 @@
 
 import urlparse
 
-from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPFound
-from pyramid.security import forget, remember
+from pyramid.httpexceptions import HTTPBadRequest, HTTPFound
+from pyramid.security import remember
 import wannanou
 
-from openchordcharts.auth import encrypt_password
 from openchordcharts.model.openidconnect import Authentication, Provider
 from openchordcharts.model.user import User
-
-
-def fake_login(request):
-    settings = request.registry.settings
-    fake_login_value = settings.get('authentication.fake_login')
-    if not fake_login_value:
-        raise HTTPForbidden()
-    headers = remember(request, fake_login_value)
-    user = User.find_one(dict(email=fake_login_value))
-    if user is None:
-        user = User()
-        user.email = fake_login_value
-        user.save(safe=True)
-    callback_path = request.GET.get('callback_path')
-    return HTTPFound(headers=headers, location=callback_path or request.route_path('index'))
 
 
 def login(request):
@@ -91,13 +75,7 @@ def login_callback(request):
     inputs = wannanou.extract_authorization_callback_inputs_from_params(request.GET)
     data, errors = wannanou.make_authorization_callback_inputs_to_data('code')(inputs, state=None)
     if errors is not None or data.get('error') is not None:
-        raise HTTPBadRequest(
-#            data=data,  # data contains a "code" item that is also a bad_request parameter => We can't use **data.
-#            errors=errors,
-            explanation=u'An error occurred during remote authentication',
-#            inputs=inputs,
-#            template_path='/login-error.mako',
-            )
+        raise HTTPBadRequest(explanation=u'An error occurred during remote authentication')
 
     authentication, error = Authentication.pop_by_authorization_callback_data(data, state=None)
     if error is not None:
@@ -115,17 +93,11 @@ def login_callback(request):
 
     token_data, error = authentication.request_token_by_authorization_code(state=None)
     if error is not None:
-        raise HTTPBadRequest(
-#            dump=error,
-            explanation=u'An error occurred during remote authentication.',
-            )
+        raise HTTPBadRequest(explanation=u'An error occurred during remote authentication.')
 
     userinfo, error = authentication.request_userinfo(state=None)
     if error is not None:
-        raise HTTPBadRequest(
-#            dump=error,
-            explanation=u'An error occurred when retrieving user informations.',
-            )
+        raise HTTPBadRequest(explanation=u'An error occurred when retrieving user informations.')
 
     email = userinfo.get('email')
     if email is None:
@@ -150,33 +122,3 @@ def login_callback(request):
 #    request.session.save()
 
     return HTTPFound(headers=headers, location=callback_path)
-
-
-def login_local(request):
-    if request.method == 'POST':
-        data = dict(
-            email=request.params.get('email'),
-            password=request.params.get('password'),
-            )
-        user = User.find_one(dict(email=data['email']))
-        if user is None:
-            errors = dict(email=u'Invalid email')
-        elif user.password_sha256 != encrypt_password(data['password']):
-            errors = dict(password=u'Invalid password')
-        if errors is None:
-            headers = remember(request, user.email)
-            return HTTPFound(headers=headers, location=request.params.get('state') or request.route_path('index'))
-    else:
-        data = errors = None
-    return dict(
-        data=data or dict(),
-        errors=errors or dict(),
-        )
-
-
-def logout(request):
-    state = request.GET.get('state')
-    if state is None:
-        state = request.route_path('index')
-    headers = forget(request)
-    return HTTPFound(headers=headers, location=state)

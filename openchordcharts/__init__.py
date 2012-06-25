@@ -35,6 +35,9 @@ from openchordcharts.resources import Root
 import openchordcharts.views
 import openchordcharts.views.api
 import openchordcharts.views.auth
+import openchordcharts.views.auth.fake
+import openchordcharts.views.auth.localdb
+import openchordcharts.views.auth.openidconnect
 import openchordcharts.views.charts
 import openchordcharts.views.users
 
@@ -63,14 +66,17 @@ def main(global_config, **settings):
 
     # Authentication
     if settings.get('authentication.fake_login'):
-        config.add_route('fake_login', '/fake-login/')
-        config.add_view(openchordcharts.views.auth.fake_login, route_name='fake_login')
-    config.add_route('login', '/login/')
-    config.add_view(openchordcharts.views.auth.login, route_name='login')
-    config.add_route('login_callback', '/login-callback/')
-    config.add_view(openchordcharts.views.auth.login_callback, route_name='login_callback')
-    config.add_route('login_local', '/login-local/')
-    config.add_view(openchordcharts.views.auth.login_local, renderer='/login_local.mako', route_name='login_local')
+        config.add_route('fake_login', '/login-fake/')
+        config.add_view(openchordcharts.views.auth.fake.login, route_name='fake_login')
+    if settings.get('authentication.localdb_login'):
+        config.add_route('localdb_login', '/login-localdb/')
+        config.add_view(openchordcharts.views.auth.localdb.login, renderer='/login_local.mako',
+            route_name='localdb_login')
+    if settings.get('authentication.openid.client_id'):
+        config.add_route('login_callback', '/login-callback/')
+        config.add_view(openchordcharts.views.auth.openidconnect.login_callback, route_name='login_callback')
+        config.add_route('openidconnect_login', '/login-openidconnect/')
+        config.add_view(openchordcharts.views.auth.openidconnect.login, route_name='openidconnect_login')
     config.add_route('logout', '/logout/')
     config.add_view(openchordcharts.views.auth.logout, route_name='logout')
 
