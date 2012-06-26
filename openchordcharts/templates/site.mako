@@ -71,29 +71,29 @@ from openchordcharts.helpers import get_login_url
                 <a href="${request.route_path('about')}">About</a>
               </li>
             </ul>
-            <ul class="nav pull-right">
 % if request.user:
-              <li${u' class="active"' if request.current_route_path() == \
-                request.route_path('user', slug=request.user.slug) else '' | n}>
-                <a href="${request.route_path('user', slug=request.user.slug)}">
-                  <i class="icon-user icon-white"></i> ${request.user.slug}
-                </a>
-              </li>
-% endif
+            <div class="btn-group pull-right">
+              <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                <i class="icon-user"></i> ${request.user.email}
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="${request.route_path('user', slug=request.user.slug)}">Profile</a></li>
+                <li class="divider"></li>
+                <li><a href="${request.route_path('logout', _query=dict(state=request.current_route_path()))}" \
+rel="nofollow">Logout</a></li>
+              </ul>
+            </div>
+% else:
 <%
 login_url = get_login_url(request)
 %>
-% if request.user or login_url:
+            <ul class="nav pull-right">
               <li>
-  % if request.user:
-                <a href="${request.route_path('logout', _query=dict(state=request.current_route_path()))}" \
-rel="nofollow">Logout</a>
-  % elif login_url:
                 <a href="${login_url}" rel="nofollow">Login</a>
-  % endif
               </li>
-% endif
             </ul>
+% endif
           </div>
         </div>
       </div>
