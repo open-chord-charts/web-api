@@ -71,7 +71,6 @@ validate_settings = check(
             struct(
                 {
                     'authentication.fake_login': pipe(cleanup_line, input_to_email),
-                    'authentication.localdb_login_enabled': pipe(cleanup_line, guess_bool),
                     'authentication.openid.application_name': cleanup_line,
                     'authentication.openid.client_id': cleanup_line,
                     'authentication.openid.client_secret': cleanup_line,

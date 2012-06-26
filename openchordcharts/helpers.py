@@ -32,8 +32,6 @@ def get_login_url(request):
         return request.route_path('fake_login', _query=dict(callback_path=request.path_qs))
     elif settings['authentication.openid.application_name']:
         return request.route_path('openidconnect_login', _query=dict(callback_path=request.path_qs))
-    elif settings['authentication.localdb_login_enabled']:
-        return request.route_path('localdb_login', _query=dict(state=request.path_qs))
     else:
         return None
 
