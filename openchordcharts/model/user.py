@@ -37,7 +37,6 @@ class User(Mapper, Wrapper):
     created_at = None
     email = None
     modified_at = None
-    password_sha256 = None  # Only useful for local login
     slug = None
 
     def save(self, *args, **kwargs):
