@@ -86,6 +86,8 @@ def main(global_config, **settings):
     config.add_route('chart.create', '/charts/create')
     config.add_view(openchordcharts.views.charts.create, permission='edit', renderer='/chart_edit.mako',
         route_name='chart.create')
+    config.add_route('chart.delete', '/charts/{slug}/delete')
+    config.add_view(openchordcharts.views.charts.delete, permission='edit', route_name='chart.delete')
     config.add_route('chart.edit', '/charts/{slug}/edit')
     config.add_view(openchordcharts.views.charts.edit, permission='edit', renderer='/chart_edit.mako',
         route_name='chart.edit')

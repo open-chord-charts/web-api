@@ -43,6 +43,14 @@ from openchordcharts.utils import common_chromatic_keys
   </h1>
 </div>
 
+% if chart.is_deleted:
+<div class="alert alert-block">
+  <a class="close" data-dismiss="alert">×</a>
+  <h4 class="alert-heading">Warning!</h4>
+  <p>This chart is marked as deleted.</p>
+</div>
+% endif
+
 % if chart.genre or chart.structure:
 <p class="structure-genre">
   % if chart.structure:
@@ -90,9 +98,11 @@ href="${request.route_path('chart', slug=chart.slug, _query=dict(key=chart.key))
 
   <div class="control-group">
 % if has_permission('edit', request.root, request):
-    <a class="btn" href="${request.route_path('chart.edit', slug=chart.slug)}" title="Click to edit this chart">Edit</a>
+    <a class="btn" href="${request.route_path('chart.edit', slug=chart.slug)}">Edit</a>
+    <a class="btn" href="${request.route_path('chart.delete', slug=chart.slug)}">Delete</a>
 % else:
     <a class="btn disabled" href="#" title="Login to edit this chart">Edit</a>
+    <a class="btn disabled" href="#" title="Login to delete this chart">Delete</a>
 % endif
     <a class="btn" href="${request.route_path('chart.json', slug=chart.slug, _query=dict(key=chart.key))}" \
 title="Click to export this chart in JSON">Export in JSON</a>

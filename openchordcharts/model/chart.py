@@ -42,6 +42,7 @@ class Chart(Mapper, Wrapper):
     created_at = None
     default_key = None
     genre = None
+    is_deleted = None
     key = None
     keywords = None
     modified_at = None

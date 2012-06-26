@@ -92,7 +92,9 @@ def chart_json(request):
 
 def charts(request):
     settings = request.registry.settings
-    spec = {}
+    spec = dict(
+        is_deleted={'$exists': False},
+        )
     if request.GET.get('q'):
         q_slug = slugify(request.GET['q'])
         if q_slug:
@@ -101,6 +103,18 @@ def charts(request):
     return dict(
         charts=charts,
         )
+
+
+def delete(request):
+    slug = request.matchdict.get('slug')
+    if not slug:
+        raise HTTPForbidden()
+    chart = Chart.find_one(dict(slug=slug))
+    if chart is None:
+        raise HTTPNotFound()
+    chart.is_deleted = True
+    chart.save(safe=True)
+    return HTTPFound(location=request.route_path('chart', slug=chart.slug))
 
 
 def edit(request):
