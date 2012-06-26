@@ -40,7 +40,7 @@ def main(args=None):
         args = sys.argv[1:]
     parser = argparse.ArgumentParser(description=u'Import chords chart.')
     parser.add_argument('ini_file', help=u'Paster INI configuration file')
-    parser.add_argument('json', help=u'JSON file name')
+    parser.add_argument('json_file', help=u'JSON file name')
     parser.add_argument('-c', '--create', action='store_true', help=u'Create user if it does not exist')
     parser.add_argument('-u', '--user', help=u'Set user name chart')
     arguments = parser.parse_args(args)
@@ -50,7 +50,7 @@ def main(args=None):
 
     initialize_model(settings)
 
-    with open(arguments.json) as f:
+    with open(arguments.json_file) as f:
         chart_str = f.read()
     chart_bson = json.loads(chart_str)
     chart = Chart.from_bson(chart_bson)
