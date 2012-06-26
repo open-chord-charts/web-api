@@ -121,4 +121,4 @@ def login_callback(request):
     request.session['openid_expiration'] = authentication.expiration
 #    request.session.save()
 
-    return HTTPFound(headers=headers, location=callback_path)
+    return HTTPFound(headers=headers, location=callback_path or request.route_path('index'))
