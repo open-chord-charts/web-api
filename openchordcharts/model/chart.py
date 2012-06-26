@@ -26,9 +26,7 @@
 import datetime
 import re
 
-from biryani.baseconv import check, noop, pipe, struct
-from biryani.bsonconv import object_id_to_str
-from biryani.datetimeconv import datetime_to_iso8601_str
+from biryani.baseconv import check
 from biryani.objectconv import object_to_clean_dict
 from biryani.strings import slugify
 from suq.monpyjama import Mapper, Wrapper
@@ -82,27 +80,14 @@ class Chart(Mapper, Wrapper):
         if self.created_at is None:
             self.created_at = datetime.datetime.utcnow()
         self.modified_at = datetime.datetime.utcnow()
+        return super(Chart, self).save(*args, **kwargs)
+
+    def to_bson(self):
         if self.slug is None or self.slug != slugify(self.title):
             self.slug = self.generate_unique_slug()
         if self.keywords is None:
             self.keywords = self.slug.split('-')
-        return super(Chart, self).save(*args, **kwargs)
-
-    def to_dict(self):
-        # FIXME: use to_bson
-        return check(
-            pipe(
-                object_to_clean_dict,
-                struct(
-                    dict(
-                        _id=object_id_to_str,
-                        created_at=datetime_to_iso8601_str,
-                        modified_at=datetime_to_iso8601_str,
-                        ),
-                    default=noop,
-                    ),
-                )
-            )(self)
+        return check(object_to_clean_dict(self))
 
     def transpose(self, key):
         for part_name in self.parts:

@@ -26,6 +26,8 @@
 import datetime
 
 from biryani.strings import slugify
+from biryani.baseconv import check
+from biryani.objectconv import object_to_clean_dict
 from suq.monpyjama import Mapper, Wrapper
 
 
@@ -47,3 +49,4 @@ class User(Mapper, Wrapper):
     def to_bson(self):
         if self.slug is None:
             self.slug = slugify(self.email)
+        return check(object_to_clean_dict(self))

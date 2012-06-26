@@ -27,7 +27,7 @@ from biryani.strings import slugify
 from formencode.variabledecode import variable_decode
 from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPFound, HTTPNotFound
 
-from openchordcharts.conv import params_to_chart_data, str_to_key
+from openchordcharts.conv import chart_to_json_dict, params_to_chart_data, input_to_key
 from openchordcharts.model.chart import Chart
 
 
@@ -36,7 +36,7 @@ def chart(request):
     if not slug:
         raise HTTPForbidden()
     if request.GET.get('key'):
-        key, error = str_to_key(request.GET['key'])
+        key, error = input_to_key(request.GET['key'])
         if error is not None:
             raise HTTPBadRequest(detail=error)
     else:
@@ -77,7 +77,7 @@ def chart_json(request):
     if not slug:
         raise HTTPForbidden()
     if request.GET.get('key'):
-        key, error = str_to_key(request.GET['key'])
+        key, error = input_to_key(request.GET['key'])
         if error is not None:
             raise HTTPBadRequest(detail=error)
     else:
@@ -87,7 +87,7 @@ def chart_json(request):
         raise HTTPNotFound()
     if key is not None and key != chart.key:
         chart.transpose(key)
-    return chart.to_dict()
+    return chart_to_json_dict(chart)
 
 
 def charts(request):
@@ -118,7 +118,7 @@ def edit(request):
             chart.save(safe=True)
             return HTTPFound(location=request.route_path('chart', slug=chart.slug))
     else:
-        chart_data = chart.to_dict()
+        chart_data = chart.to_bson()
         chart_errors = None
     return dict(
         cancel_url=request.route_path('chart', slug=chart.slug),

@@ -26,6 +26,7 @@
 from biryani.baseconv import cleanup_line
 from biryani.strings import slugify
 
+from openchordcharts.conv import chart_to_json_dict
 from openchordcharts.model.chart import Chart
 
 
@@ -39,4 +40,4 @@ def charts(request):
         user = cleanup_line(request.GET['user'])
         if user:
             spec['user'] = user
-    return [chart.to_dict() for chart in Chart.find(spec)]
+    return [chart_to_json_dict(chart) for chart in Chart.find(spec)]

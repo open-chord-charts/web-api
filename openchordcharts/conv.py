@@ -25,6 +25,9 @@
 
 from biryani.baseconv import (check, cleanup_line, function, guess_bool, input_to_email, input_to_int,
     make_input_to_url, noop, not_none, pipe, struct, test, test_in, uniform_mapping, uniform_sequence)
+from biryani.bsonconv import object_id_to_str
+from biryani.datetimeconv import datetime_to_iso8601_str
+from biryani.objectconv import object_to_clean_dict
 import biryani.states
 
 from openchordcharts.utils import iter_chromatic_keys
@@ -37,12 +40,26 @@ default_state = biryani.states.default_state
 
 # Converters
 
-csv_str_to_list = pipe(
+chart_to_json_dict = check(
+    pipe(
+        object_to_clean_dict,
+        struct(
+            dict(
+                _id=object_id_to_str,
+                created_at=datetime_to_iso8601_str,
+                modified_at=datetime_to_iso8601_str,
+                ),
+            default=noop,
+            ),
+        )
+    )
+
+csv_input_to_list = pipe(
     function(lambda value: value.split(',')),
     uniform_sequence(cleanup_line),
     )
 
-str_to_key = pipe(
+input_to_key = pipe(
     cleanup_line,
     function(lambda s: s.lower()),
     test_in([key.lower() for key in iter_chromatic_keys()]),
@@ -81,9 +98,9 @@ def params_to_chart_data(params, state=default_state):
     all_errors = {}
     value, error = struct(
         dict(
-            composers=csv_str_to_list,
+            composers=csv_input_to_list,
             genre=cleanup_line,
-            key=str_to_key,
+            key=input_to_key,
             parts=uniform_mapping(
                 cleanup_line,
                 pipe(
@@ -92,7 +109,7 @@ def params_to_chart_data(params, state=default_state):
                     ),
                 ),
             structure=pipe(
-                csv_str_to_list,
+                csv_input_to_list,
                 uniform_sequence(
                     function(lambda value: value.upper()),
                     ),
