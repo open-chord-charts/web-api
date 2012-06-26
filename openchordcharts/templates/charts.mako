@@ -24,14 +24,22 @@
 from pyramid.security import has_permission
 %>
 
+
 <%inherit file="site.mako"/>
 
+
+<%def name="page_title()">
+${u'Search results' if request.GET.get('q') else u'Charts'}
+</%def>
+
+
+<%block name="title">
+<%parent:title/>: <%self:page_title/>
+</%block>
+
+
 <div class="page-header">
-% if request.GET.get('q'):
-  <h1>Search results</h1>
-% else:
-  <h1>All charts</h1>
-% endif
+  <h1><%self:page_title/></h1>
 </div>
 
 % if charts.count():

@@ -22,6 +22,7 @@
 
 <%inherit file="site.mako"/>
 
+
 <%!
 from pyramid.security import has_permission
 
@@ -29,10 +30,25 @@ from openchordcharts.helpers import iter_chords, iter_parts, render_chord
 from openchordcharts.utils import common_chromatic_keys
 %>
 
+
 <%def name="css()" filter="trim">
 <%parent:css/>
 <link href="/static/css/chart.css" rel="stylesheet">
 </%def>
+
+
+<%block name="title">
+${u'{0} ({1})'.format(chart.title, chart.key)} - <%parent:title/>
+</%block>
+
+
+% if chart.is_deleted:
+<div class="alert alert-block">
+  <a class="close" data-dismiss="alert">×</a>
+  <h4 class="alert-heading">Warning!</h4>
+  <p>This chart is marked as deleted.</p>
+</div>
+% endif
 
 <div class="page-header">
   <h1>
@@ -42,14 +58,6 @@ from openchordcharts.utils import common_chromatic_keys
 % endif
   </h1>
 </div>
-
-% if chart.is_deleted:
-<div class="alert alert-block">
-  <a class="close" data-dismiss="alert">×</a>
-  <h4 class="alert-heading">Warning!</h4>
-  <p>This chart is marked as deleted.</p>
-</div>
-% endif
 
 % if chart.genre or chart.structure:
 <p class="structure-genre">

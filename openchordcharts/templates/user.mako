@@ -22,12 +22,26 @@
 
 <%inherit file="site.mako"/>
 
+
+<%def name="is_own_user_page()">
 <%
-is_own_user_page = request.user and request.user.slug == request.matchdict.get('slug')
+return request.user and request.user.slug == request.matchdict.get('slug')
 %>
+</%def>
+
+
+<%def name="page_title()">
+${u'My' if is_own_user_page() else request.matchdict.get('slug')} charts
+</%def>
+
+
+<%block name="title">
+<%parent:title/>: <%self:page_title/>
+</%block>
+
 
 <div class="page-header">
-  <h1>${'My' if is_own_user_page else request.matchdict.get('slug')} charts</h1>
+  <h1><%self:page_title/></h1>
 </div>
 
 % if user_charts.count():
@@ -38,8 +52,9 @@ is_own_user_page = request.user and request.user.slug == request.matchdict.get('
 </ul>
 % else:
 <p>
-  % if is_own_user_page:
-  You have not created any chart. You can browse <a href="${request.route_path('charts')}">all the charts</a> from the project.
+  % if is_own_user_page():
+  You have not created any chart. You can browse <a href="${request.route_path('charts')}">all the charts</a>
+  from the project.
   % else:
   This user has not created any chart.
   % endif

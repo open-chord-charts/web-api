@@ -22,9 +22,16 @@
 
 <%inherit file="site.mako"/>
 
+
 <%!
 from openchordcharts.utils import common_chromatic_keys
 %>
+
+
+<%block name="title">
+Edit "${chart.title}" - <%parent:title/>
+</%block>
+
 
 <div class="alert alert-block">
   <a class="close" data-dismiss="alert">×</a>

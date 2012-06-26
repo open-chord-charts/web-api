@@ -22,6 +22,12 @@
 
 <%inherit file="site.mako"/>
 
+
+<%block name="title">
+<%parent:title/>: About
+</%block>
+
+
 <div class="hero-unit">
   <h2>Presentation</h2>
   <p>
