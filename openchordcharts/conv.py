@@ -23,7 +23,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from biryani.baseconv import (check, cleanup_line, function, guess_bool, input_to_email, input_to_int,
+from biryani.baseconv import (check, cleanup_line, function, input_to_email, input_to_int,
     make_input_to_url, noop, not_none, pipe, struct, test, test_in, uniform_mapping, uniform_sequence)
 from biryani.bsonconv import object_id_to_str
 from biryani.datetimeconv import datetime_to_iso8601_str
