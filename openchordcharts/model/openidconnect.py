@@ -101,16 +101,16 @@ class Provider(wannanou.abstract.Provider, Wrapper):
         settings = pyramid.threadlocal.get_current_registry().settings
         if state is None:
             state = wannanou.conv.default_state
-        self, error = cls.retrieve(settings['openid.provider_url'], state=state)
+        self, error = cls.retrieve(settings['authentication.openid.provider_url'], state=state)
         if error is not None:
             return self, state._(u'Error while retrieving configuration of OpenID Connect server: {0}').format(error)
 
         client = self.client
         if client is None:
             client, error = self.configure_client(
-                application_name=settings['openid.application_name'],
-                client_id=settings['openid.client_id'],
-                client_secret=settings['openid.client_secret'],
+                application_name=settings['authentication.openid.application_name'],
+                client_id=settings['authentication.openid.client_id'],
+                client_secret=settings['authentication.openid.client_secret'],
 #                contacts=[settings['email_to']] if settings['email_to'] is not None else None,
                 redirect_uris=[
                     request.route_url('login_callback'),
