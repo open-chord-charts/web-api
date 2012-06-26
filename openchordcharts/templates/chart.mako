@@ -31,10 +31,10 @@ from openchordcharts.utils import common_chromatic_keys
 %>
 
 
-<%def name="css()" filter="trim">
+<%block name="css">
 <%parent:css/>
 <link href="/static/css/chart.css" rel="stylesheet">
-</%def>
+</%block>
 
 
 <%block name="title">
@@ -118,6 +118,6 @@ title="Click to export this chart in JSON">Export in JSON</a>
 
 </div>
 
-<%block filter="trim" name="footer">
+<%block name="footer">
 <%include file="chart_footer.mako"/>
 </%block>

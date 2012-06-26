@@ -29,30 +29,22 @@ from openchordcharts.helpers import get_login_url
 %>
 
 
-<%def name="css()" filter="trim">
-<link href="/static/lib/bootstrap-2.0.1/css/bootstrap.min.css" rel="stylesheet">
-<style>
-  body {
-    padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-  }
-</style>
-<link href="/static/lib/bootstrap-2.0.1/css/bootstrap-responsive.min.css" rel="stylesheet">
-<link href="/static/css/style.css" rel="stylesheet">
-</%def>
-
-
-<%def name="scripts()" filter="trim">
-<script data-main="/static/js/main" src="/static/lib/requirejs-1.0.7/require.min.js"></script>
-</%def>
-
-
   <head>
     <meta charset="utf-8">
     <meta name="description" content="Open Chord Charts project">
     <meta name="author" content="Christophe Benz">
     <meta name="viewport" content="width=device-width; initial-scale=1.0; minimum-scale=1; maximum-scale=1.0; user-scalable=0;">
     <title><%block name="title">OpenChordCharts</%block></title>
-    <%self:css/>
+    <%block name="css">
+    <link href="${request.registry.settings['css.bootstrap']}" rel="stylesheet">
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+    </style>
+    <link href="${request.registry.settings['css.bootstrap_responsive']}" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
+    </%block>
    </head>
   <body>
 
@@ -116,6 +108,9 @@ rel="nofollow">Logout</a>
       </footer>
     </div>
 
-    <%self:scripts/>
+    <%block name="script">
+    <script src="${request.registry.settings['javascript.jquery']}"></script>
+    <script src="${request.registry.settings['javascript.bootstrap']}"></script>
+    </%block>
   </body>
 </html>

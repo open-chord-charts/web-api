@@ -145,6 +145,6 @@ title="Click to cancel changes and go back to chart">Cancel</a>
   </fieldset>
 </form>
 
-<%block filter="trim" name="footer">
+<%block name="footer">
 <%include file="chart_footer.mako"/>
 </%block>
