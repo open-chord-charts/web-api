@@ -66,6 +66,14 @@ input_to_key = pipe(
     function(lambda s: s.capitalize()),
     )
 
+params_to_chart_data = struct(
+    dict(
+        key=pipe(cleanup_line, input_to_key),
+        ),
+    default=noop,
+    keep_none_values=True,
+    )
+
 validate_settings = check(
         pipe(
             struct(
@@ -93,7 +101,7 @@ validate_settings = check(
         )
 
 
-def params_to_chart_data(params, state=default_state):
+def params_to_chart_edit_data(params, state=default_state):
     all_errors = {}
     value, error = struct(
         dict(

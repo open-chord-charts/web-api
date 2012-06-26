@@ -82,7 +82,7 @@ from openchordcharts.utils import common_chromatic_keys
 % for key in common_chromatic_keys:
       <a class="${'active ' if key == chart.key else ''}btn"\
 href="${request.route_path('chart', slug=chart.slug, _query=dict(key=key))}">\
-  % if chart.default_key == key:
+  % if original_key == key:
 <strong>${key}</strong>
   % else:
 ${key}\

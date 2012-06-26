@@ -40,12 +40,11 @@ class Chart(Mapper, Wrapper):
     chords = None
     composers = None
     created_at = None
-    default_key = None
     genre = None
     is_deleted = None
-    key = None
     keywords = None
     modified_at = None
+    key = None
     parts = None
     slug = None
     structure = None
@@ -68,14 +67,14 @@ class Chart(Mapper, Wrapper):
         keywords_regexps = [re.compile(u'^{0}'.format(re.escape(keyword))) for keyword in keywords]
         return {'$all': keywords_regexps}
 
-    def iter_chords(self, key=None, part_name=None):
+    def iter_chords(self, to_key=None, part_name=None):
         parts = self.structure if part_name is None else [part_name]
         for part_name in parts:
             for chord in self.parts[part_name]:
-                if key is None:
+                if to_key is None:
                     yield chord
                 else:
-                    yield get_transposed_chord(chord=chord, from_key=self.key, to_key=key)
+                    yield get_transposed_chord(chord=chord, from_key=self.key, to_key=to_key)
 
     def save(self, *args, **kwargs):
         if self.created_at is None:
@@ -90,11 +89,10 @@ class Chart(Mapper, Wrapper):
             self.keywords = self.slug.split('-')
         return check(object_to_clean_dict(self))
 
-    def transpose(self, key):
+    def transpose(self, to_key):
         for part_name in self.parts:
-            self.parts[part_name] = list(self.iter_chords(key=key, part_name=part_name))
-        self.default_key = self.key
-        self.key = key
+            self.parts[part_name] = list(self.iter_chords(part_name=part_name, to_key=to_key))
+        self.key = to_key
 
     def update_from_dict(self, data):
         for k, v in data.iteritems():

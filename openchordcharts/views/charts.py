@@ -27,7 +27,7 @@ from biryani.strings import slugify
 from formencode.variabledecode import variable_decode
 from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPFound, HTTPNotFound
 
-from openchordcharts.conv import chart_to_json_dict, params_to_chart_data, input_to_key
+from openchordcharts.conv import chart_to_json_dict, params_to_chart_data, params_to_chart_edit_data
 from openchordcharts.model.chart import Chart
 
 
@@ -35,40 +35,20 @@ def chart(request):
     slug = request.matchdict.get('slug')
     if not slug:
         raise HTTPForbidden()
-    if request.GET.get('key'):
-        key, error = input_to_key(request.GET['key'])
-        if error is not None:
-            raise HTTPBadRequest(detail=error)
-    else:
-        key = None
+    data, errors = params_to_chart_data(request.params)
+    if errors is not None:
+        raise HTTPBadRequest(detail=errors)
     chart = Chart.find_one(dict(slug=slug))
     if chart is None:
         raise HTTPNotFound()
-    if key is not None and key != chart.key:
-        chart.transpose(key)
-    return dict(
-        chart=chart,
-        )
-
-
-def create(request):
-    chart = Chart()
-    if request.method == 'POST':
-        params = variable_decode(request.POST)
-        chart_data, chart_errors = params_to_chart_data(params)
-        if chart_errors is None:
-            chart.update_from_dict(chart_data)
-            chart.save(safe=True)
-            return HTTPFound(location=request.route_path('chart', slug=chart.slug))
+    if data['key'] is not None and data['key'] != chart.key:
+        original_key = chart.key
+        chart.transpose(data['key'])
     else:
-        chart_data = dict()
-        chart_errors = None
+        original_key = None
     return dict(
-        cancel_url=request.route_path('charts'),
         chart=chart,
-        chart_data=chart_data,
-        chart_errors=chart_errors or {},
-        form_action_url=request.route_path('chart.create'),
+        original_key=original_key,
         )
 
 
@@ -76,17 +56,14 @@ def chart_json(request):
     slug = request.matchdict.get('slug')
     if not slug:
         raise HTTPForbidden()
-    if request.GET.get('key'):
-        key, error = input_to_key(request.GET['key'])
-        if error is not None:
-            raise HTTPBadRequest(detail=error)
-    else:
-        key = None
+    data, errors = params_to_chart_data(request.params)
+    if errors is not None:
+        raise HTTPBadRequest(detail=errors)
     chart = Chart.find_one(dict(slug=slug))
     if chart is None:
         raise HTTPNotFound()
-    if key is not None and key != chart.key:
-        chart.transpose(key)
+    if data['key'] is not None and data['key'] != chart.key:
+        chart.transpose(data['key'])
     return chart_to_json_dict(chart)
 
 
@@ -102,6 +79,27 @@ def charts(request):
     charts = Chart.find(spec).sort('title').limit(int(settings['charts.limit']))
     return dict(
         charts=charts,
+        )
+
+
+def create(request):
+    chart = Chart()
+    if request.method == 'POST':
+        params = variable_decode(request.POST)
+        chart_data, chart_errors = params_to_chart_edit_data(params)
+        if chart_errors is None:
+            chart.update_from_dict(chart_data)
+            chart.save(safe=True)
+            return HTTPFound(location=request.route_path('chart', slug=chart.slug))
+    else:
+        chart_data = dict()
+        chart_errors = None
+    return dict(
+        cancel_url=request.route_path('charts'),
+        chart=chart,
+        chart_data=chart_data,
+        chart_errors=chart_errors or {},
+        form_action_url=request.route_path('chart.create'),
         )
 
 
@@ -126,7 +124,7 @@ def edit(request):
         raise HTTPNotFound()
     if request.method == 'POST':
         params = variable_decode(request.POST)
-        chart_data, chart_errors = params_to_chart_data(params)
+        chart_data, chart_errors = params_to_chart_edit_data(params)
         if chart_errors is None:
             chart.update_from_dict(chart_data)
             chart.save(safe=True)
