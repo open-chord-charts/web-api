@@ -47,6 +47,7 @@ ${u'{0} ({1})'.format(chart.title, chart.key)} - <%parent:title/>
   <a class="close" data-dismiss="alert">×</a>
   <h4 class="alert-heading">Warning!</h4>
   <p>This chart is marked as deleted.</p>
+  <a class="btn" href="${request.route_path('chart.undelete', slug=chart.slug)}">Undelete</a>
 </div>
 % endif
 
@@ -107,10 +108,14 @@ href="${request.route_path('chart', slug=chart.slug, _query=dict(key=chart.key))
   <div class="control-group">
 % if has_permission('edit', request.root, request):
     <a class="btn" href="${request.route_path('chart.edit', slug=chart.slug)}">Edit</a>
+  % if not chart.is_deleted:
     <a class="btn" href="${request.route_path('chart.delete', slug=chart.slug)}">Delete</a>
+  % endif
 % else:
     <a class="btn disabled" href="#" title="Login to edit this chart">Edit</a>
+  % if not chart.is_deleted:
     <a class="btn disabled" href="#" title="Login to delete this chart">Delete</a>
+  % endif
 % endif
     <a class="btn" href="${request.route_path('chart.json', slug=chart.slug, _query=dict(key=chart.key))}" \
 title="Click to export this chart in JSON">Export in JSON</a>

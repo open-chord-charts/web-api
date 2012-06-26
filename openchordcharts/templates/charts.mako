@@ -39,7 +39,7 @@ ${u'Search results' if request.GET.get('q') else u'Charts'}
 
 
 <div class="page-header">
-  <h1><%self:page_title/></h1>
+  <h1><%self:page_title/>${u' (including deleted)' if data['include_deleted'] else ''}</h1>
 </div>
 
 % if charts.count():
@@ -58,5 +58,13 @@ ${u'Search results' if request.GET.get('q') else u'Charts'}
 <p>
   <a class="btn btn-primary disabled" href="#">Add a new chart</a>
   <small>Please login to add a new chart.</small>
+</p>
+% endif
+
+% if nb_deleted_charts and not data['include_deleted']:
+<p>
+  There are deleted charts.
+  <a href="${request.route_path('charts', _query=dict(include_deleted=1))}">Click here</a>
+  to display them.
 </p>
 % endif

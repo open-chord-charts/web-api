@@ -27,7 +27,8 @@ from biryani.strings import slugify
 from formencode.variabledecode import variable_decode
 from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPFound, HTTPNotFound
 
-from openchordcharts.conv import chart_to_json_dict, params_to_chart_data, params_to_chart_edit_data
+from openchordcharts.conv import (chart_to_json_dict, params_to_chart_data, params_to_chart_edit_data,
+    params_to_charts_data)
 from openchordcharts.model.chart import Chart
 
 
@@ -69,16 +70,22 @@ def chart_json(request):
 
 def charts(request):
     settings = request.registry.settings
-    spec = dict(
-        is_deleted={'$exists': False},
-        )
-    if request.GET.get('q'):
-        q_slug = slugify(request.GET['q'])
+    data, errors = params_to_charts_data(request.params)
+    if errors is not None:
+        raise HTTPBadRequest(detail=errors)
+    spec = dict()
+    if data['q']:
+        q_slug = slugify(data['q'])
         if q_slug:
             spec['keywords'] = Chart.get_search_by_keywords_spec(q_slug.split('-'))
+    if not data['include_deleted']:
+        spec['is_deleted'] = {'$exists': False}
     charts = Chart.find(spec).sort('title').limit(int(settings['charts.limit']))
+    nb_deleted_charts = Chart.find(dict(is_deleted=True)).count()
     return dict(
         charts=charts,
+        data=data or dict(),
+        nb_deleted_charts=nb_deleted_charts,
         )
 
 
@@ -110,6 +117,8 @@ def delete(request):
     chart = Chart.find_one(dict(slug=slug))
     if chart is None:
         raise HTTPNotFound()
+    if chart.is_deleted:
+        raise HTTPBadRequest(explanation=u'Chart is already deleted')
     chart.is_deleted = True
     chart.save(safe=True)
     return HTTPFound(location=request.route_path('chart', slug=chart.slug))
@@ -139,3 +148,17 @@ def edit(request):
         chart_errors=chart_errors or {},
         form_action_url=request.route_path('chart.edit', slug=chart.slug),
         )
+
+
+def undelete(request):
+    slug = request.matchdict.get('slug')
+    if not slug:
+        raise HTTPForbidden()
+    chart = Chart.find_one(dict(slug=slug))
+    if chart is None:
+        raise HTTPNotFound()
+    if not chart.is_deleted:
+        raise HTTPBadRequest(explanation=u'Chart is not deleted')
+    chart.is_deleted = None
+    chart.save(safe=True)
+    return HTTPFound(location=request.route_path('chart', slug=chart.slug))
