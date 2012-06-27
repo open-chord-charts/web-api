@@ -59,7 +59,7 @@ from openchordcharts.helpers.auth import get_login_url
           <a class="brand" href="${request.route_path('index')}">Open Chord Charts</a>
           <div class="nav-collapse">
             <ul class="nav">
-              <li${u' class="active"' if request.current_route_path() == request.route_path('charts') else '' | n}>
+              <li${u' class="active"' if request.matched_route.name == 'charts' else '' | n}>
                 <a href="${request.route_path('charts')}">Charts</a>
               </li>
             </ul>
@@ -67,7 +67,7 @@ from openchordcharts.helpers.auth import get_login_url
               <input class="search-query" name="q" placeholder="Search" type="text" value="${request.GET.get('q', '')}">
             </form>
             <ul class="nav">
-              <li${u' class="active"' if request.current_route_path() == request.route_path('about') else '' | n}>
+              <li${u' class="active"' if request.matched_route.name == 'about' else '' | n}>
                 <a href="${request.route_path('about')}">About</a>
               </li>
             </ul>
