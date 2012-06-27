@@ -74,7 +74,7 @@ ${u'{0} ({1})'.format(chart.title, chart.key)} - <%parent:title/>
 % if chart.structure:
 <div class="chords">
   % for part_name, part_occurence in iter_parts_and_occurences(chart):
-  <div class="part ${'repeated' if part_occurence > 0 else ''}">
+  <div class="part${' repeated' if part_occurence > 0 else ''}">
     <span class="part-name">${part_name}</span>
     % for chord in iter_rendered_chords(chart, part_name):
     <span class="bar">${u'—' if chord is None or part_occurence > 0 else render_chord(chord)}</span>
