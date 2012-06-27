@@ -26,17 +26,17 @@
 from markupsafe import Markup
 
 
-def get_login_url(request):
-    settings = request.registry.settings
-    if settings['authentication.fake_login']:
-        return request.route_path('fake_login', _query=dict(callback_path=request.path_qs))
-    elif settings['authentication.openid.application_name']:
-        return request.route_path('openidconnect_login', _query=dict(callback_path=request.path_qs))
-    else:
-        return None
+def iter_parts_and_occurences(chart):
+    nb_parts_occurencies = {}
+    for part_name in chart.structure:
+        if part_name in nb_parts_occurencies:
+            nb_parts_occurencies[part_name] += 1
+        else:
+            nb_parts_occurencies[part_name] = 0
+        yield part_name, nb_parts_occurencies[part_name]
 
 
-def iter_chords(chart, part_name):
+def iter_rendered_chords(chart, part_name):
     part_chords = chart.parts[part_name]
     previous_chord = part_chords[0]
     yield previous_chord
@@ -48,21 +48,11 @@ def iter_chords(chart, part_name):
         previous_chord = chord
 
 
-def iter_parts(chart):
-    nb_parts_occurencies = {}
-    for part_name in chart.structure:
-        if part_name in nb_parts_occurencies:
-            nb_parts_occurencies[part_name] += 1
-        else:
-            nb_parts_occurencies[part_name] = 0
-        yield part_name, nb_parts_occurencies[part_name]
-
-
 def render_chord(chord):
     rendered_chord = chord
     if rendered_chord.endswith('b5'):
-        rendered_chord = rendered_chord[:-2] + Markup('<sup>{0}</sup>'.format(rendered_chord[-2:]))
-    # FIXME This is ugly, I have to rewrite the font!
+        rendered_chord = rendered_chord[:-2] + Markup(u'<sup>{0}</sup>'.format(rendered_chord[-2:]))
+    # FIXME This is not semantic, I have to rewrite the font!
     rendered_chord = rendered_chord.replace('#', '<')
     rendered_chord = rendered_chord.replace('b', '>')
     return rendered_chord

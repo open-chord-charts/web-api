@@ -26,7 +26,7 @@
 <%!
 from pyramid.security import has_permission
 
-from openchordcharts.helpers import iter_chords, iter_parts, render_chord
+from openchordcharts.helpers.chords import iter_rendered_chords, iter_parts_and_occurences, render_chord
 from openchordcharts.utils import common_chromatic_keys
 %>
 
@@ -73,10 +73,10 @@ ${u'{0} ({1})'.format(chart.title, chart.key)} - <%parent:title/>
 
 % if chart.structure:
 <div class="chords">
-  % for part_name, part_occurence in iter_parts(chart):
+  % for part_name, part_occurence in iter_parts_and_occurences(chart):
   <div class="part ${'repeated' if part_occurence > 0 else ''}">
     <span class="part-name">${part_name}</span>
-    % for chord in iter_chords(chart, part_name):
+    % for chord in iter_rendered_chords(chart, part_name):
     <span class="bar">${u'—' if chord is None or part_occurence > 0 else render_chord(chord)}</span>
     % endfor
   </div>
