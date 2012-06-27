@@ -37,7 +37,6 @@ from openchordcharts.utils import get_transposed_chord
 class Chart(Mapper, Wrapper):
     collection_name = 'charts'
 
-    chords = None
     composers = None
     created_at = None
     genre = None
