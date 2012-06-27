@@ -26,9 +26,11 @@
   font-family: 'lilyjazzchord';
   src: url('/static/fonts/lilyjazzchord.otf');
 }
+
 footer {
   margin-top: 10em;
 }
+
 @media (max-width: 979px) {
   footer {
     margin-top: 0;
