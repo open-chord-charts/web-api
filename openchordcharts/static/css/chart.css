@@ -22,36 +22,19 @@
 */
 
 
-.chords {
-  border-collapse: collapse;
-  display: table;
-  margin-bottom: 9px; /* Same as bootstrap p margin-bottom. */
-}
-.chords .part {
-  display: table-row;
-}
-.chords .part .bar, .chords .part .part-name {
-  display: table-cell;
-  vertical-align: middle;
-}
-.chords .part .bar {
-  border: 1px solid;
+table.chords td.bar {
   font-family: 'lilyjazzchord', sans-serif;
-  height: 2em;
-  padding: 0.7em 0.2em;
   text-align: center;
-  width: 6em;
 }
-.chords .part .part-name {
-  padding: 0 0.5em 0 0;
+
+table.chords td.part-name {
+  text-align: right;
 }
-.chords .part.repeated .bar {
-  height: 1em;
-  padding: 0.2em 0;
-}
+
 .genre {
   margin-left: 2em;
 }
+
 .title {
   font-family: 'lilyjazzchord', sans-serif;
 }

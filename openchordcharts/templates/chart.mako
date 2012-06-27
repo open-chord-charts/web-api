@@ -72,16 +72,27 @@ ${u'{0} ({1})'.format(chart.title, chart.key)} - <%parent:title/>
 % endif
 
 % if chart.structure:
-<div class="chords">
+<table class="chords table table-bordered table-striped">
+  <tbody>
   % for part_name, part_occurence in iter_parts_and_occurences(chart):
-  <div class="part${' repeated' if part_occurence > 0 else ''}">
-    <span class="part-name">${part_name}</span>
-    % for chord in iter_rendered_chords(chart, part_name):
-    <span class="bar">${u'—' if chord is None or part_occurence > 0 else render_chord(chord)}</span>
+<%
+part_rendered_chord = list(iter_rendered_chords(chart, part_name))
+part_nb_lines = len(part_rendered_chord) / 8
+%>
+    <tr>
+      <td class="part-name"${u' rowspan="{0}"'.format(part_nb_lines) if part_nb_lines > 1 else '' | n}>
+        ${part_name}
+      </td>
+    % for chord_index, chord in enumerate(part_rendered_chord):
+      % if chord_index % 8 == 0 and chord_index != 0:
+    <tr>
+      % endif
+      <td class="bar">${u'—' if chord is None or part_occurence > 0 else render_chord(chord)}</td>
     % endfor
-  </div>
+    </tr>
   % endfor
-</div>
+  </tbody>
+</table>
 % endif
 
 <div class="form-actions">
