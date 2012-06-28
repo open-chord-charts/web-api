@@ -39,7 +39,9 @@ ${u'Search results' if request.GET.get('q') else u'Charts'}
 <%parent:script/>
 <script>
 $(function() {
-  $("*[rel='popover']").popover();
+  $("*[rel~='popover']").popover({
+    placement: "bottom"
+  });
 });
 </script>
 </%block>
@@ -53,10 +55,8 @@ $(function() {
 % if has_permission('edit', request.root, request):
 <p><a class="btn" href="${request.route_path('chart.create')}">Add a new chart</a></p>
 % else:
-<p>
-  <a class="btn" data-content="Creating new charts is restricted to authenticated users." \
-href="${get_login_url(request)}" rel="popover" title="Please login first!">Add a new chart</a>
-</p>
+<p><a class="btn" data-content="Creation is restricted to authenticated users." href="${get_login_url(request)}" \
+rel="nofollow popover" title="Please login first!">Add a new chart</a></p>
 % endif
 
 <div class="page-header">

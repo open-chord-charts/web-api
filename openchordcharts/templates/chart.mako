@@ -26,6 +26,7 @@
 <%!
 from pyramid.security import has_permission
 
+from openchordcharts.helpers.auth import get_login_url
 from openchordcharts.helpers.chords import iter_rendered_chords, iter_parts_and_occurences, render_chord
 from openchordcharts.utils import common_chromatic_keys
 %>
@@ -34,6 +35,18 @@ from openchordcharts.utils import common_chromatic_keys
 <%block name="css">
 <%parent:css/>
 <link href="/static/css/chart.css" rel="stylesheet">
+</%block>
+
+
+<%block name="script">
+<%parent:script/>
+<script>
+$(function() {
+  $("*[rel~='popover']").popover({
+    placement: "bottom"
+  });
+});
+</script>
 </%block>
 
 
@@ -58,9 +71,11 @@ ${u'{0} ({1})'.format(chart.title, chart.key)} - <%parent:title/>
   <a class="btn" href="${request.route_path('chart.delete', slug=chart.slug)}">Delete</a>
   % endif
 % else:
-  <a class="btn disabled" href="#" title="Login to edit this chart">Edit</a>
+  <a class="btn" data-content="Edition is restricted to authenticated users." href="${get_login_url(request)}" \
+rel="nofollow popover" title="Please login first!">Edit</a>
   % if not chart.is_deleted:
-  <a class="btn disabled" href="#" title="Login to delete this chart">Delete</a>
+  <a class="btn" data-content="Deletion is restricted to authenticated users." href="${get_login_url(request)}" \
+rel="nofollow popover" title="Please login first!">Delete</a>
   % endif
 % endif
   <a class="btn" href="${request.route_path('chart.json', slug=chart.slug, _query=dict(key=chart.key))}" \
