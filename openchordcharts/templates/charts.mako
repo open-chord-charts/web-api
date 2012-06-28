@@ -43,7 +43,7 @@ ${u'Search results' if request.GET.get('q') else u'Charts'}
 </div>
 
 % if charts.count():
-<ul>
+<ul class="unstyled">
   % for chart in charts:
   <li><a href="${request.route_path('chart', slug=chart.slug)}">${chart.title}\
 ${u' (deleted)' if chart.is_deleted else ''}</a></li>
