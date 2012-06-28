@@ -26,6 +26,7 @@
 from biryani.strings import slugify
 from formencode.variabledecode import variable_decode
 from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPFound, HTTPNotFound
+from pyramid.security import has_permission
 
 from openchordcharts.conv import (chart_to_json_dict, params_to_chart_data, params_to_chart_edit_data,
     params_to_charts_data)
@@ -90,6 +91,8 @@ def charts(request):
 
 
 def create(request):
+    if request.user is None or not has_permission('edit', request.root, request):
+        raise HTTPForbidden()
     chart = Chart()
     if request.method == 'POST':
         params = variable_decode(request.POST)
@@ -111,6 +114,8 @@ def create(request):
 
 
 def delete(request):
+    if request.user is None or not has_permission('edit', request.root, request):
+        raise HTTPForbidden()
     slug = request.matchdict.get('slug')
     if not slug:
         raise HTTPForbidden()
@@ -125,6 +130,8 @@ def delete(request):
 
 
 def edit(request):
+    if request.user is None or not has_permission('edit', request.root, request):
+        raise HTTPForbidden()
     slug = request.matchdict.get('slug')
     if not slug:
         raise HTTPForbidden()
@@ -151,6 +158,8 @@ def edit(request):
 
 
 def undelete(request):
+    if request.user is None or not has_permission('edit', request.root, request):
+        raise HTTPForbidden()
     slug = request.matchdict.get('slug')
     if not slug:
         raise HTTPForbidden()

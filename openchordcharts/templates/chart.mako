@@ -42,7 +42,7 @@ ${u'{0} ({1})'.format(chart.title, chart.key)} - <%parent:title/>
 </%block>
 
 
-% if chart.is_deleted:
+% if chart.is_deleted and has_permission('edit', request.root, request):
 <div class="alert alert-block">
   <a class="close" data-dismiss="alert">×</a>
   <h4 class="alert-heading">Warning!</h4>
