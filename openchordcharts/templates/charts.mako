@@ -22,6 +22,8 @@
 
 <%!
 from pyramid.security import has_permission
+
+from openchordcharts.helpers.auth import get_login_url
 %>
 
 
@@ -33,14 +35,44 @@ ${u'Search results' if request.GET.get('q') else u'Charts'}
 </%def>
 
 
+<%block name="script">
+<%parent:script/>
+<script>
+$(function() {
+  $("*[rel='popover']").popover();
+});
+</script>
+</%block>
+
+
 <%block name="title">
 <%parent:title/>: <%self:page_title/>
 </%block>
 
 
+% if has_permission('edit', request.root, request):
+<p><a class="btn btn-primary" href="${request.route_path('chart.create')}">Add a new chart</a></p>
+% else:
+<p>
+  <a class="btn btn-primary" data-content="Creating new charts is restricted to authenticated users." \
+href="${get_login_url(request)}" rel="popover" title="Please login first!">Add a new chart</a>
+</p>
+% endif
+
 <div class="page-header">
   <h1><%self:page_title/>${u' (including deleted)' if data['include_deleted'] else ''}</h1>
 </div>
+
+% if has_permission('edit', request.root, request) and nb_deleted_charts and not data['include_deleted']:
+<div class="alert alert-block">
+  <a class="close" data-dismiss="alert">×</a>
+  <h4 class="alert-heading">Warning!</h4>
+  <p>
+    There are deleted charts.
+    <a href="${request.route_path('charts', _query=dict(include_deleted=1))}">Click here</a> to display them.
+  </p>
+</div>
+% endif
 
 % if charts.count():
 <ul class="unstyled">
@@ -51,21 +83,4 @@ ${u' (deleted)' if chart.is_deleted else ''}</a></li>
 </ul>
 % else:
 <p>No charts found.</p>
-% endif
-
-% if has_permission('edit', request.root, request):
-<p><a class="btn btn-primary" href="${request.route_path('chart.create')}">Add a new chart</a></p>
-% else:
-<p>
-  <a class="btn btn-primary disabled" href="#">Add a new chart</a>
-  <small>Please login to add a new chart.</small>
-</p>
-% endif
-
-% if nb_deleted_charts and not data['include_deleted']:
-<p>
-  There are deleted charts.
-  <a href="${request.route_path('charts', _query=dict(include_deleted=1))}">Click here</a>
-  to display them.
-</p>
 % endif
