@@ -108,6 +108,11 @@ rel="nofollow">Logout</a></li>
     <%block name="script">
     <script src="${request.registry.settings['javascript.jquery']}"></script>
     <script src="${request.registry.settings['javascript.bootstrap']}"></script>
+    <script>
+$(function() {
+  $("*[rel='external']").attr("target", "_blank");
+});
+    </script>
     </%block>
   </body>
 </html>

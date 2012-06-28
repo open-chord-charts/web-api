@@ -51,10 +51,10 @@ $(function() {
 
 
 % if has_permission('edit', request.root, request):
-<p><a class="btn btn-primary" href="${request.route_path('chart.create')}">Add a new chart</a></p>
+<p><a class="btn" href="${request.route_path('chart.create')}">Add a new chart</a></p>
 % else:
 <p>
-  <a class="btn btn-primary" data-content="Creating new charts is restricted to authenticated users." \
+  <a class="btn" data-content="Creating new charts is restricted to authenticated users." \
 href="${get_login_url(request)}" rel="popover" title="Please login first!">Add a new chart</a>
 </p>
 % endif
@@ -67,10 +67,8 @@ href="${get_login_url(request)}" rel="popover" title="Please login first!">Add a
 <div class="alert alert-block">
   <a class="close" data-dismiss="alert">×</a>
   <h4 class="alert-heading">Warning!</h4>
-  <p>
-    There are deleted charts.
-    <a href="${request.route_path('charts', _query=dict(include_deleted=1))}">Click here</a> to display them.
-  </p>
+  <p>There are deleted charts.</p>
+  <p><a class="btn" href="${request.route_path('charts', _query=dict(include_deleted=1))}">Display them too</a></p>
 </div>
 % endif
 
