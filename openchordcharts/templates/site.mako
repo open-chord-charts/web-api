@@ -85,12 +85,9 @@ rel="nofollow">Logout</a></li>
               </ul>
             </div>
 % else:
-<%
-login_url = get_login_url(request)
-%>
             <ul class="nav pull-right">
               <li>
-                <a href="${login_url}" rel="nofollow">Login</a>
+                <a href="${get_login_url(request)}" rel="nofollow">Login</a>
               </li>
             </ul>
 % endif
