@@ -82,10 +82,10 @@ def charts(request):
             spec['keywords'] = Chart.get_search_by_keywords_spec(q_slug.split('-'))
     if not data['include_deleted']:
         spec['is_deleted'] = {'$exists': False}
-    charts = Chart.find(spec).sort('title').limit(int(settings['charts.limit']))
+    charts_cursor = Chart.find(spec).sort('title').limit(int(settings['charts.limit']))
     nb_deleted_charts = Chart.find(dict(is_deleted=True)).count()
     return dict(
-        charts=charts,
+        charts_cursor=charts_cursor,
         data=data or dict(),
         nb_deleted_charts=nb_deleted_charts,
         )

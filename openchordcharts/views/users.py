@@ -36,9 +36,9 @@ def user(request):
     user = User.find_one(dict(slug=slug))
     if user is None:
         raise HTTPNotFound()
-    user_charts = Chart.find(dict(user=slug))
+    user_charts_cursor = Chart.find(dict(user=slug))
     return dict(
-        user_charts=user_charts,
+        user_charts_cursor=user_charts_cursor,
         )
 
 

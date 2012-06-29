@@ -44,9 +44,9 @@ ${u'My' if is_own_user_page() else request.matchdict.get('slug')} charts
   <h1><%self:page_title/></h1>
 </div>
 
-% if user_charts.count():
+% if user_charts_cursor.count():
 <ul>
-  % for chart in user_charts:
+  % for chart in user_charts_cursor:
   <li><a href="${request.route_path('chart', slug=chart.slug)}">${chart.title}</a></li>
   % endfor
 </ul>
