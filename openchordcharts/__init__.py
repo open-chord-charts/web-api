@@ -34,7 +34,6 @@ from openchordcharts.conv import validate_settings
 from openchordcharts.model import initialize_model
 from openchordcharts.resources import Root
 import openchordcharts.views
-import openchordcharts.views.api
 import openchordcharts.views.auth
 import openchordcharts.views.auth.fake
 import openchordcharts.views.auth.openidconnect
@@ -61,10 +60,6 @@ def main(global_config, **settings):
         )
 
     config.set_request_factory(RequestWithUserAttribute)
-
-    # API
-    config.add_route('charts.json', '/api/1/charts.json')
-    config.add_view(openchordcharts.views.api.charts, renderer='jsonp', route_name='charts.json')
 
     # Authentication
     if settings['authentication.fake_login']:
@@ -99,6 +94,8 @@ def main(global_config, **settings):
     config.add_view(openchordcharts.views.charts.chart, renderer='/chart.mako', route_name='chart')
     config.add_route('charts', '/charts/')
     config.add_view(openchordcharts.views.charts.charts, renderer='/charts.mako', route_name='charts')
+    config.add_route('charts.json', '/charts.json')
+    config.add_view(openchordcharts.views.charts.charts_json, renderer='jsonp', route_name='charts.json')
 
     config.add_route('user', '/users/{slug}')
     config.add_view(openchordcharts.views.users.user, renderer='/user.mako', route_name='user')
