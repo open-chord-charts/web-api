@@ -45,6 +45,9 @@ $(function() {
   $("*[rel~='popover']").popover({
     placement: "bottom"
   });
+  $("#key-selector").bind("change", function(event) {
+    $(".key form").submit();
+  });
 });
 </script>
 </%block>
@@ -91,16 +94,28 @@ rel="external" title="Get JSON version of this chart (for programmers)">Raw data
   </h1>
 </div>
 
-% if chart.genre or chart.structure:
-<p class="structure-genre">
-  % if chart.structure:
-  <span class="structure">${len(list(chart.iter_chords()))} × ${''.join(chart.structure)}</span>
-  % endif
-  % if chart.genre:
-  <small class="genre">${chart.genre}</small>
-  % endif
-</p>
+<div class="properties row">
+% if chart.structure:
+  <div class="span1 structure">${len(list(chart.iter_chords()))} × ${''.join(chart.structure)}</div>
 % endif
+% if chart.genre:
+  <div class="genre span1"><p><small>${chart.genre}</small></p></div>
+% endif
+
+  <div class="key offset9 span1">
+    <form method="get">
+      <select class="input-mini" id="key-selector" name="key" title="Transpose chart into another key">
+% for key in common_chromatic_keys:
+        <option${u' selected' if key == chart.key else ''} value="${key}">\
+${u'{0}{1}'.format(key, u' (original)' if key == original_key else '')}</option>
+% endfor
+% if chart.key not in common_chromatic_keys:
+        <option selected  value="${chart.key}">${chart.key}</option>
+% endif
+      </select>
+    </form>
+  </div>
+</div>
 
 % if chart.structure:
 <table class="chords table table-bordered table-striped">
@@ -125,27 +140,6 @@ part_nb_lines = len(part_rendered_chord) / 8
   </tbody>
 </table>
 % endif
-
-<div class="form-actions">
-  <div class="control-group">
-    <div class="btn-group transpose-buttons" data-toggle="buttons-radio" title="Click to transpose chart in this key.">
-% for key in common_chromatic_keys:
-      <a class="${'active ' if key == chart.key else ''}btn"\
-href="${request.route_path('chart', slug=chart.slug, _query=dict(key=key))}">\
-  % if original_key == key:
-<strong>${key}</strong>
-  % else:
-${key}\
-  % endif
-</a>
-% endfor
-% if chart.key not in common_chromatic_keys:
-      <a class="active btn"\
-href="${request.route_path('chart', slug=chart.slug, _query=dict(key=chart.key))}">${chart.key}</a>
-% endif
-    </div>
-  </div>
-</div>
 
 <%block name="footer">
 <%include file="chart_footer.mako"/>
