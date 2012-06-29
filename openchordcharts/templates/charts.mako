@@ -32,7 +32,7 @@ from openchordcharts.helpers.auth import get_login_url
 
 
 <%def name="page_title()">
-${u'Search results' if request.GET.get('q') else u'Charts'}
+${u'Results for "{0}"'.format(data['q']) if data['q'] else u'Charts'}
 </%def>
 
 
