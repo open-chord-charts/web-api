@@ -30,7 +30,7 @@ from pyramid.security import has_permission
 
 from openchordcharts.conv import (chart_to_json_dict, params_to_chart_data, params_to_chart_edit_data,
     params_to_charts_data)
-from openchordcharts.model.chart import Chart
+from openchordcharts.model.chart import Chart, HistoryChart
 
 
 def chart(request):
@@ -142,8 +142,13 @@ def edit(request):
         params = variable_decode(request.POST)
         chart_data, chart_errors = params_to_chart_edit_data(params)
         if chart_errors is None:
-            chart.update_from_dict(chart_data)
-            chart.save(safe=True)
+            if not chart.equals(chart_data):
+                history_chart = HistoryChart()
+                history_chart.update_from_dict(chart.__dict__)
+                history_chart.chart_id = chart._id
+                history_chart.save(safe=True)
+                chart.update_from_dict(chart_data)
+                chart.save(safe=True)
             return HTTPFound(location=request.route_path('chart', slug=chart.slug))
     else:
         chart_data = chart.to_bson()

@@ -50,6 +50,14 @@ class Chart(Mapper, Wrapper):
     title = None
     user = None
 
+    def equals(self, other_dict):
+        ignored_attributes = ['_id', 'created_at', 'is_deleted', 'keywords', 'modified_at', 'slug', 'user']
+        return dict((key, value) for key, value in other_dict.iteritems() if key not in ignored_attributes) == dict(
+            (key, value)
+            for key, value in check(object_to_clean_dict(self)).iteritems()
+            if key not in ignored_attributes
+            )
+
     def generate_unique_slug(self):
         title_slug = slugify(self.title)
         slug = title_slug
@@ -96,3 +104,17 @@ class Chart(Mapper, Wrapper):
     def update_from_dict(self, data):
         for k, v in data.iteritems():
             setattr(self, k, v)
+
+
+class HistoryChart(Chart):
+    collection_name = 'charts_history'
+
+    chart_id = None
+
+    def save(self, *args, **kwargs):
+        self.keywords = None
+        self.slug = None
+        return super(Chart, self).save(*args, **kwargs)
+
+    def to_bson(self):
+        return check(object_to_clean_dict(self))
