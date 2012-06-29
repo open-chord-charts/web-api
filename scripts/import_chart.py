@@ -30,7 +30,6 @@ import sys
 
 from pyramid.paster import bootstrap
 
-from openchordcharts.model import initialize_model
 from openchordcharts.model.chart import Chart
 from openchordcharts.model.user import User
 
@@ -46,7 +45,6 @@ def main(args=None):
     arguments = parser.parse_args(args)
 
     env = bootstrap(arguments.ini_file)
-    settings = env['registry'].settings
 
     with open(arguments.json_file) as f:
         chart_str = f.read()
