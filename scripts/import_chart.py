@@ -48,8 +48,6 @@ def main(args=None):
     env = bootstrap(arguments.ini_file)
     settings = env['registry'].settings
 
-    initialize_model(settings)
-
     with open(arguments.json_file) as f:
         chart_str = f.read()
     chart_bson = json.loads(chart_str)
