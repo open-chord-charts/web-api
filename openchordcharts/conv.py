@@ -25,7 +25,7 @@
 
 from biryani.baseconv import (check, cleanup_line, function, guess_bool, input_to_email, input_to_int,
     make_input_to_url, noop, not_none, pipe, set_value, struct, test, test_in, uniform_mapping, uniform_sequence)
-from biryani.bsonconv import input_to_object_id, object_id_to_str
+from biryani.bsonconv import input_to_object_id
 from biryani.datetimeconv import datetime_to_iso8601_str
 from biryani.objectconv import object_to_clean_dict
 import biryani.states
