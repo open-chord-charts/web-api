@@ -86,8 +86,10 @@ def main(global_config, **settings):
     config.add_route('chart.edit', '/charts/{slug}/edit')
     config.add_view(openchordcharts.views.charts.edit, permission='edit', renderer='/chart_edit.mako',
         route_name='chart.edit')
+    config.add_route('chart.history', '/charts/{slug}/history')
+    config.add_view(openchordcharts.views.charts.history, renderer='/chart_history.mako', route_name='chart.history')
     config.add_route('chart.json', '/charts/{slug}.json')
-    config.add_view(openchordcharts.views.charts.chart_json, renderer='jsonp', route_name='chart.json')
+    config.add_view(openchordcharts.views.charts.chart, renderer='jsonp', route_name='chart.json')
     config.add_route('chart.undelete', '/charts/{slug}/undelete')
     config.add_view(openchordcharts.views.charts.undelete, permission='edit', route_name='chart.undelete')
     config.add_route('chart', '/charts/{slug}')

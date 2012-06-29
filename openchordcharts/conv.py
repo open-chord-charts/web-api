@@ -24,8 +24,8 @@
 
 
 from biryani.baseconv import (check, cleanup_line, function, guess_bool, input_to_email, input_to_int,
-    make_input_to_url, noop, not_none, pipe, struct, test, test_in, uniform_mapping, uniform_sequence)
-from biryani.bsonconv import object_id_to_str
+    make_input_to_url, noop, not_none, pipe, set_value, struct, test, test_in, uniform_mapping, uniform_sequence)
+from biryani.bsonconv import input_to_object_id, object_id_to_str
 from biryani.datetimeconv import datetime_to_iso8601_str
 from biryani.objectconv import object_to_clean_dict
 import biryani.states
@@ -79,6 +79,7 @@ params_to_charts_data = struct(
 params_to_chart_data = struct(
     dict(
         key=pipe(cleanup_line, input_to_key),
+        revision=pipe(cleanup_line, input_to_object_id),
         ),
     default=noop,
     keep_none_values=True,

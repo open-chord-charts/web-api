@@ -24,6 +24,7 @@
 
 
 <%!
+from babel.dates import format_datetime
 from pyramid.security import has_permission
 
 from openchordcharts.helpers.auth import get_login_url
@@ -45,7 +46,10 @@ $(function() {
   $("*[rel~='popover']").popover({
     placement: "bottom"
   });
-  $("#key-selector").bind("change", function(event) {
+  $(".btn.delete").bind("click", function(event) {
+    return confirm("Delete \"${chart.title}\"?");
+  });
+  $(".key-selector").bind("change", function(event) {
     $(".key form").submit();
   });
 });
@@ -63,25 +67,32 @@ ${u'{0} ({1})'.format(chart.title, chart.key)} - <%parent:title/>
   <a class="close" data-dismiss="alert">×</a>
   <h4 class="alert-heading">Warning!</h4>
   <p>This chart is marked as deleted.</p>
-  <p><a class="btn" href="${request.route_path('chart.undelete', slug=chart.slug)}">Undelete</a></p>
+  <p><a class="btn" href="${request.route_path('chart.undelete', slug=slug)}">Undelete</a></p>
 </div>
 % endif
 
 <div class="control-group">
-% if has_permission('edit', request.root, request):
-  <a class="btn" href="${request.route_path('chart.edit', slug=chart.slug)}">Edit</a>
-  % if not chart.is_deleted:
-  <a class="btn" href="${request.route_path('chart.delete', slug=chart.slug)}">Delete</a>
-  % endif
-% else:
+## Previous versions of chart in history do not provide edit and delete buttons.
+% if not data['revision']:
+  % if has_permission('edit', request.root, request):
+  <a class="btn" href="${request.route_path('chart.edit', slug=slug)}">Edit</a>
+    % if not chart.is_deleted:
+  <a class="btn delete" href="${request.route_path('chart.delete', slug=slug)}">Delete</a>
+    % endif
+  % else:
   <a class="btn" data-content="Edition is restricted to authenticated users." href="${get_login_url(request)}" \
 rel="nofollow popover" title="Please login first!">Edit</a>
-  % if not chart.is_deleted:
+    % if not chart.is_deleted:
   <a class="btn" data-content="Deletion is restricted to authenticated users." href="${get_login_url(request)}" \
 rel="nofollow popover" title="Please login first!">Delete</a>
+    % endif
   % endif
 % endif
-  <a class="btn" href="${request.route_path('chart.json', slug=chart.slug, _query=dict(key=chart.key))}" \
+  <a class="btn" href="${request.route_path('chart.history', slug=slug)}">History</a>
+  <a class="btn" href="${request.route_path('chart.json', slug=slug, _query=dict(
+    key=chart.key,
+    revision=data['revision'] or '',
+    ))}" \
 rel="external" title="Get JSON version of this chart (for programmers)">Raw data</a>
 </div>
 
@@ -94,6 +105,15 @@ rel="external" title="Get JSON version of this chart (for programmers)">Raw data
   </h1>
 </div>
 
+% if data['revision']:
+<div class="alert alert-block">
+  <a class="close" data-dismiss="alert">×</a>
+  <h4 class="alert-heading">Previous version!</h4>
+  <p>This chart is a previous version modified at ${format_datetime(chart.modified_at)}).</p>
+  <p><a class="btn" href="${request.route_path('chart', slug=slug)}">Current version</a></p>
+</div>
+% endif
+
 <div class="properties row">
 % if chart.structure:
   <div class="span1 structure">${len(list(chart.iter_chords()))} × ${''.join(chart.structure)}</div>
@@ -104,7 +124,7 @@ rel="external" title="Get JSON version of this chart (for programmers)">Raw data
 
   <div class="key offset9 span1">
     <form method="get">
-      <select class="input-mini" id="key-selector" name="key" title="Transpose chart into another key">
+      <select class="input-mini key-selector" name="key" title="Transpose chart into another key">
 % for key in common_chromatic_keys:
         <option${u' selected' if key == chart.key else ''} value="${key}">\
 ${u'{0}{1}'.format(key, u' (original)' if key == original_key else '')}</option>

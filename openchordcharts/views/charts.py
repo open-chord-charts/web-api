@@ -41,7 +41,10 @@ def chart(request):
     data, errors = params_to_chart_data(request.params)
     if errors is not None:
         raise HTTPBadRequest(detail=errors)
-    chart = Chart.find_one(dict(slug=slug))
+    if data['revision']:
+        chart = HistoryChart.find_one(dict(_id=data['revision']))
+    else:
+        chart = Chart.find_one(dict(slug=slug))
     if chart is None:
         raise HTTPNotFound()
     if data['key'] is not None and data['key'] != chart.key:
@@ -49,25 +52,15 @@ def chart(request):
         chart.transpose(data['key'])
     else:
         original_key = None
-    return dict(
-        chart=chart,
-        original_key=original_key,
-        )
-
-
-def chart_json(request):
-    slug = request.matchdict.get('slug')
-    if not slug:
-        raise HTTPForbidden()
-    data, errors = params_to_chart_data(request.params)
-    if errors is not None:
-        raise HTTPBadRequest(detail=errors)
-    chart = Chart.find_one(dict(slug=slug))
-    if chart is None:
-        raise HTTPNotFound()
-    if data['key'] is not None and data['key'] != chart.key:
-        chart.transpose(data['key'])
-    return chart_to_json_dict(chart)
+    if request.matched_route.name == 'chart.json':
+        return chart_to_json_dict(chart)
+    else:
+        return dict(
+            chart=chart,
+            data=data,
+            original_key=original_key,
+            slug=slug,
+            )
 
 
 def charts(request):
@@ -173,6 +166,20 @@ def edit(request):
         chart_data=chart_data,
         chart_errors=chart_errors or {},
         form_action_url=request.route_path('chart.edit', slug=chart.slug),
+        )
+
+
+def history(request):
+    slug = request.matchdict.get('slug')
+    if not slug:
+        raise HTTPForbidden()
+    chart = Chart.find_one(dict(slug=slug))
+    if chart is None:
+        raise HTTPNotFound()
+    history_charts_cursor = HistoryChart.find(dict(chart_id=chart._id)).sort('modified_at')
+    return dict(
+        chart=chart,
+        history_charts_cursor=history_charts_cursor,
         )
 
 
