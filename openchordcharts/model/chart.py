@@ -108,7 +108,7 @@ class Chart(Mapper, Wrapper):
 
 class HistoryChart(Chart):
     chart_id = None
-    collection_name = 'charts_history'
+    collection_name = 'history_charts'
 
     def save(self, *args, **kwargs):
         self.keywords = None
