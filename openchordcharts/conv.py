@@ -45,7 +45,8 @@ chart_to_json_dict = check(
         object_to_clean_dict,
         struct(
             dict(
-                _id=object_id_to_str,
+                _id=set_value(None),
+                chart_id=set_value(None),
                 created_at=datetime_to_iso8601_str,
                 modified_at=datetime_to_iso8601_str,
                 ),
