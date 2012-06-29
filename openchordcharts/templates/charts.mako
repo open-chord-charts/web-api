@@ -22,6 +22,7 @@
 
 <%!
 from pyramid.security import has_permission
+from webhelpers.html.tools import highlight
 
 from openchordcharts.helpers.auth import get_login_url
 %>
@@ -52,18 +53,21 @@ $(function() {
 </%block>
 
 
-% if has_permission('edit', request.root, request):
+% if not data['q']:
+  % if has_permission('edit', request.root, request):
 <p><a class="btn" href="${request.route_path('chart.create')}">Add a new chart</a></p>
-% else:
+  % else:
 <p><a class="btn" data-content="Creation is restricted to authenticated users." href="${get_login_url(request)}" \
 rel="nofollow popover" title="Please login first!">Add a new chart</a></p>
+  % endif
 % endif
 
 <div class="page-header">
   <h1><%self:page_title/>${u' (including deleted)' if data['include_deleted'] else ''}</h1>
 </div>
 
-% if has_permission('edit', request.root, request) and nb_deleted_charts and not data['include_deleted']:
+% if not data['include_deleted'] and not data['q'] and has_permission('edit', request.root, request) and \
+  nb_deleted_charts:
 <div class="alert alert-block">
   <a class="close" data-dismiss="alert">×</a>
   <h4 class="alert-heading">Warning!</h4>
@@ -75,7 +79,7 @@ rel="nofollow popover" title="Please login first!">Add a new chart</a></p>
 % if charts_cursor.count():
 <ul class="unstyled">
   % for chart in charts_cursor:
-  <li><a href="${request.route_path('chart', slug=chart.slug)}">${chart.title}\
+  <li><a href="${request.route_path('chart', slug=chart.slug)}">${highlight(chart.title, data['q'].split())}\
 ${u' (deleted)' if chart.is_deleted else ''}</a></li>
   % endfor
 </ul>
