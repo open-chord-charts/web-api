@@ -79,7 +79,7 @@ def charts(request):
     nb_deleted_charts = Chart.find(dict(is_deleted=True)).count()
     return dict(
         charts_cursor=charts_cursor,
-        data=data or dict(),
+        data=data,
         nb_deleted_charts=nb_deleted_charts,
         )
 
