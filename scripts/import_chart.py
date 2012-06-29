@@ -44,7 +44,7 @@ def main(args=None):
     parser.add_argument('-u', '--user', help=u'Set user name chart')
     arguments = parser.parse_args(args)
 
-    env = bootstrap(arguments.ini_file)
+    bootstrap(arguments.ini_file)
 
     with open(arguments.json_file) as f:
         chart_str = f.read()
