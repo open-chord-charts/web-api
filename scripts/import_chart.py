@@ -49,7 +49,13 @@ def main(args=None):
     with open(arguments.json_file) as f:
         chart_str = f.read()
     chart_bson = json.loads(chart_str)
-    chart = Chart.from_bson(chart_bson)
+    chart = Chart()
+    chart.update_from_dict(dict(
+        (key, value)
+        for key, value in chart_bson.iteritems()
+        if key not in ['_id', 'created_at', 'is_deleted', 'keywords', 'modified_at', 'slug']
+        ))
+
     if arguments.user:
         chart.user = arguments.user
     user = User.find_one(dict(slug=chart.user))
