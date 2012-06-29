@@ -36,7 +36,6 @@ from openchordcharts.utils import get_transposed_chord
 
 class Chart(Mapper, Wrapper):
     collection_name = 'charts'
-
     composers = None
     created_at = None
     genre = None
@@ -52,11 +51,12 @@ class Chart(Mapper, Wrapper):
 
     def equals(self, other_dict):
         ignored_attributes = ['_id', 'created_at', 'is_deleted', 'keywords', 'modified_at', 'slug', 'user']
-        return dict((key, value) for key, value in other_dict.iteritems() if key not in ignored_attributes) == dict(
-            (key, value)
-            for key, value in check(object_to_clean_dict(self)).iteritems()
-            if key not in ignored_attributes
-            )
+        return dict((key, value) for key, value in other_dict.iteritems() if key not in ignored_attributes) == \
+            dict(
+                (key, value)
+                for key, value in check(object_to_clean_dict(self)).iteritems()
+                if key not in ignored_attributes
+                )
 
     def generate_unique_slug(self):
         title_slug = slugify(self.title)
@@ -107,9 +107,8 @@ class Chart(Mapper, Wrapper):
 
 
 class HistoryChart(Chart):
-    collection_name = 'charts_history'
-
     chart_id = None
+    collection_name = 'charts_history'
 
     def save(self, *args, **kwargs):
         self.keywords = None
