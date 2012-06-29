@@ -39,7 +39,7 @@ def main(args=None):
         args = sys.argv[1:]
     parser = argparse.ArgumentParser(description=u'Import chords chart.')
     parser.add_argument('ini_file', help=u'Paster INI configuration file')
-    parser.add_argument('json_file', help=u'JSON file name')
+    parser.add_argument('json_file', help=u'JSON file name. File can contain an object or a list of objects.')
     parser.add_argument('-c', '--create', action='store_true', help=u'Create user if it does not exist')
     parser.add_argument('-u', '--user', help=u'Set user name chart')
     arguments = parser.parse_args(args)
@@ -47,28 +47,31 @@ def main(args=None):
     bootstrap(arguments.ini_file)
 
     with open(arguments.json_file) as f:
-        chart_str = f.read()
-    chart_bson = json.loads(chart_str)
-    chart = Chart()
-    chart.update_from_dict(dict(
-        (key, value)
-        for key, value in chart_bson.iteritems()
-        if key not in ['_id', 'created_at', 'is_deleted', 'keywords', 'modified_at', 'slug']
-        ))
+        json_str = f.read()
+    json_charts = json.loads(json_str)
+    if isinstance(json_charts, dict):
+        json_charts = [json_charts]
 
-    if arguments.user:
-        chart.user = arguments.user
-    user = User.find_one(dict(slug=chart.user))
-    if user is None:
-        if arguments.create:
-            user = User()
-            user.slug = chart.user
-            user.save(safe=True)
+    for json_chart in json_charts:
+        chart = Chart()
+        chart.update_from_dict(dict(
+            (key, value)
+            for key, value in json_chart.iteritems()
+            if key not in ['_id', 'created_at', 'is_deleted', 'keywords', 'modified_at', 'slug']
+            ))
+        if arguments.user:
+            chart.user = arguments.user
+        user = User.find_one(dict(slug=chart.user))
+        if user:
+            chart_id = chart.save(safe=True)
+            print unicode(chart_id).encode('utf-8')
         else:
-            print u'Chart user does not exist.'.encode('utf-8')
-    if user:
-        chart_id = chart.save(safe=True)
-        print unicode(chart_id).encode('utf-8')
+            if arguments.create:
+                user = User()
+                user.slug = chart.user
+                user.save(safe=True)
+            else:
+                print u'Chart user does not exist (title={0}).'.format(chart.title).encode('utf-8')
 
     return 0
 
