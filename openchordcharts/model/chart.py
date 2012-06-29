@@ -49,6 +49,13 @@ class Chart(Mapper, Wrapper):
     title = None
     user = None
 
+    def compute_keywords(self):
+        keywords = []
+        keywords.extend(self.slug.split('-'))
+        if self.composers:
+            keywords.extend(slugify(' '.join(self.composers)).split('-'))
+        return keywords
+
     def equals(self, other_dict):
         ignored_attributes = ['_id', 'created_at', 'is_deleted', 'keywords', 'modified_at', 'slug', 'user']
         return dict((key, value) for key, value in other_dict.iteritems() if key not in ignored_attributes) == \
@@ -92,8 +99,7 @@ class Chart(Mapper, Wrapper):
     def to_bson(self):
         if self.slug is None or self.slug != slugify(self.title):
             self.slug = self.generate_unique_slug()
-        if self.keywords is None:
-            self.keywords = self.slug.split('-')
+        self.keywords = self.compute_keywords()
         return check(object_to_clean_dict(self))
 
     def transpose(self, to_key):
