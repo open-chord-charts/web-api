@@ -33,7 +33,8 @@ from openchordcharts.helpers.auth import get_login_url
     <meta charset="utf-8">
     <meta name="description" content="Open Chord Charts project">
     <meta name="author" content="Christophe Benz">
-    <meta name="viewport" content="width=device-width; initial-scale=1.0; minimum-scale=1; maximum-scale=1.0; user-scalable=0;">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1.0, \
+user-scalable=0">
     <title><%block name="title">OpenChordCharts</%block></title>
     <%block name="css">
     <link href="${request.registry.settings['css.bootstrap']}" rel="stylesheet">
@@ -43,7 +44,7 @@ from openchordcharts.helpers.auth import get_login_url
       }
     </style>
     <link href="${request.registry.settings['css.bootstrap_responsive']}" rel="stylesheet">
-    <link href="/static/css/style.css" rel="stylesheet">
+    <link href="${request.static_url('openchordcharts:static/css/style.css')}" rel="stylesheet">
     </%block>
    </head>
   <body>

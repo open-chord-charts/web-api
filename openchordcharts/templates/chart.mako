@@ -24,9 +24,12 @@
 
 
 <%!
+import json
+
 from babel.dates import format_datetime
 from pyramid.security import has_permission
 
+from openchordcharts.conv import chart_to_json_dict
 from openchordcharts.helpers.auth import get_login_url
 from openchordcharts.helpers.chords import iter_rendered_chords, iter_parts_and_occurences, render_chord
 from openchordcharts.utils import common_chromatic_keys
@@ -35,12 +38,13 @@ from openchordcharts.utils import common_chromatic_keys
 
 <%block name="css">
 <%parent:css/>
-<link href="/static/css/chart.css" rel="stylesheet">
+<link href="${request.static_url('openchordcharts:static/css/chart.css')}" rel="stylesheet">
 </%block>
 
 
 <%block name="script">
 <%parent:script/>
+<script src="${request.static_url('openchordcharts:static/js/chart.js')}"></script>
 <script>
 $(function() {
   $("*[rel~='popover']").popover({
@@ -49,9 +53,7 @@ $(function() {
   $(".btn.delete").bind("click", function(event) {
     return confirm("Delete \"${chart.title}\"?");
   });
-  $(".key-selector").bind("change", function(event) {
-    $(".key form").submit();
-  });
+  window.openchordcharts.initChart(${json.dumps(chart_to_json_dict(chart)) | n});
 });
 </script>
 </%block>
@@ -124,42 +126,45 @@ rel="external" title="Get JSON version of this chart (for programmers)">Raw data
 
   <div class="key offset9 span1">
     <form method="get">
-      <select class="input-mini key-selector" name="key" title="Transpose chart into another key">
+      <select class="input-mini" name="key" title="Transpose chart into another key">
 % for key in common_chromatic_keys:
         <option${u' selected' if key == chart.key else ''} value="${key}">\
 ${u'{0}{1}'.format(key, u' (original)' if key == original_key else '')}</option>
 % endfor
 % if chart.key not in common_chromatic_keys:
-        <option selected  value="${chart.key}">${chart.key}</option>
+        <option selected value="${chart.key}">${chart.key}</option>
 % endif
       </select>
+      <input class="btn" type="submit" value="Transpose">
     </form>
   </div>
 </div>
 
+<div class="chords">
 % if chart.structure:
-<table class="chords table table-bordered table-striped">
-  <tbody>
+  <table class="table table-bordered table-striped">
+    <tbody>
   % for part_name, part_occurence in iter_parts_and_occurences(chart):
 <%
 part_rendered_chord = list(iter_rendered_chords(chart, part_name))
 part_nb_lines = len(part_rendered_chord) / 8
 %>
-    <tr>
-      <td class="part-name"${u' rowspan="{0}"'.format(part_nb_lines) if part_nb_lines > 1 else '' | n}>
-        ${part_name}
-      </td>
+      <tr>
+        <td class="part-name"${u' rowspan="{0}"'.format(part_nb_lines) if part_nb_lines > 1 else '' | n}>
+          ${part_name}
+        </td>
     % for chord_index, chord in enumerate(part_rendered_chord):
       % if chord_index % 8 == 0 and chord_index != 0:
-    <tr>
+      <tr>
       % endif
-      <td class="bar">${u'—' if chord is None or part_occurence > 0 else render_chord(chord)}</td>
+        <td class="bar">${u'—' if chord is None or part_occurence > 0 else render_chord(chord)}</td>
     % endfor
-    </tr>
+      </tr>
   % endfor
-  </tbody>
-</table>
+    </tbody>
+  </table>
 % endif
+</div>
 
 <%block name="footer">
 <%include file="chart_footer.mako"/>

@@ -1,4 +1,4 @@
-all: compile uglify
+all: compile
 
 compile:
 	rm -rf js

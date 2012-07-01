@@ -1,4 +1,3 @@
-/*
 # Open Chord Charts -- Database of free chord charts
 # By: Christophe Benz <christophe.benz@gmail.com>
 #
@@ -19,14 +18,10 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
 
 
-.chords table td.bar {
-  font-family: 'lilyjazzchord', sans-serif;
-  text-align: center;
-}
-
-.chords table td.part-name {
-  text-align: right;
-}
+window.openchordcharts = window.openchordcharts or {}
+window.openchordcharts.initChart = (chart) ->
+  $('.key form').bind 'submit', (event) ->
+    
+    false
