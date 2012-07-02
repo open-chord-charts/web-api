@@ -1,0 +1,16 @@
+<table class="table table-bordered table-striped">
+  <tbody>
+<% for part in @partRows: %>
+  <% for row, rowIndex in part.rows: %>
+    <tr>
+    <% if rowIndex == 0: %>
+      <td class="part-name"<% if part.rows.length > 1: %>rowspan="<%= part.rows.length %>"<% end %>><%= part.name %></td>
+    <% end %>
+    <% for chord in row: %>
+      <td class="bar"><%= chord %></td>
+    <% end %>
+    </tr>
+  <% end %>
+<% end %>
+  </tbody>
+</table>

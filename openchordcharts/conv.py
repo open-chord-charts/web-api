@@ -102,6 +102,7 @@ validate_settings = check(
                     'google.analytics.key': cleanup_line,
                     'javascript.bootstrap': cleanup_line,
                     'javascript.jquery': cleanup_line,
+                    'javascript.spinejs_dir': cleanup_line,
                     },
                 default=noop,
                 keep_none_values=True,

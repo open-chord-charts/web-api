@@ -4,6 +4,7 @@ compile:
 	rm -rf js
 	mkdir js
 	coffee -c -o js coffee
+	eco templates
 
 uglify:
 	for f in `find js -name "*.js" -not -name "*.min.js"`; do \
@@ -12,6 +13,6 @@ uglify:
 
 watch:
 	make || notify-send "coffee compile error"
-	while inotifywait -e modify -r coffee; do \
+	while inotifywait -e modify -r coffee templates; do \
 		make || notify-send "coffee compile error"; \
 	done
