@@ -25,7 +25,7 @@
 
 
 <%!
-from openchordcharts.helpers.auth import get_login_url
+from openchordcharts.helpers import get_login_url
 %>
 
 

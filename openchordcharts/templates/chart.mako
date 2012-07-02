@@ -29,7 +29,7 @@ import json
 from babel.dates import format_datetime
 from pyramid.security import has_permission
 
-from openchordcharts.helpers.auth import get_login_url
+from openchordcharts.helpers import get_login_url
 from openchordcharts.utils import common_chromatic_keys
 %>
 

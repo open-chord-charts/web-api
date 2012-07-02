@@ -20,6 +20,22 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+chordRegex = /([A-G][b#]?)(.*)/
+chromaticKeys = [
+    ['G#', 'Ab'],
+    ['A'],
+    ['A#', 'Bb'],
+    ['B'],
+    ['C'],
+    ['C#', 'Db'],
+    ['D'],
+    ['D#', 'Eb'],
+    ['E'],
+    ['F'],
+    ['F#', 'Gb'],
+    ['G'],
+    ]
+diatonicKeys = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 global = @
 
 
@@ -30,10 +46,16 @@ decorateChart = (chart) ->
     for chord, chordIndex in chart.parts[partName]
       if chordIndex > 0 and previousChord == chord or chart.structure.indexOf(partName) != partIndex
         chord = "—"
-      newPart.chords.push chord
+      newPart.chords.push(renderChord(chord))
       previousChord = chord
     parts.push newPart
   parts
+
+
+getChromaticIndex = (key) ->
+    for keys, keyIndex in chromaticKeys
+      return keyIndex if key in keys
+    throw new Error("Chromatic index not found")
 
 
 partsToRows = (parts) ->
@@ -46,8 +68,50 @@ partsToRows = (parts) ->
   newParts
 
 
+renderChord = (chord) ->
+  renderedChord = chord
+  # FIXME This is not semantic, I have to rewrite the font!
+  renderedChord = renderedChord.replace "#", "<"
+  renderedChord = renderedChord.replace "b", ">"
+  renderedChord
+
+
+transposeChord = (chord, fromKey, toKey) ->
+  return chord if fromKey == toKey
+  m = chordRegex.exec chord
+  key = m[1]
+  quality = m[2]
+  return transposeKey(key, fromKey, toKey) + quality
+
+
+transposeKey = (key, fromKey, toKey) ->
+  return key if fromKey == toKey
+  diatonicOffsetDelta = diatonicKeys.indexOf(toKey[0]) - diatonicKeys.indexOf(fromKey[0])
+  chromaticOffsetDelta = getChromaticIndex(toKey) - getChromaticIndex(fromKey)
+  keyDiatonicOffset = diatonicKeys.indexOf(key[0])
+  keyChromaticOffset = getChromaticIndex(key)
+  transposedKeyDiatonic = diatonicKeys[(keyDiatonicOffset + diatonicOffsetDelta + diatonicKeys.length) %
+    diatonicKeys.length]
+  transposedKeysChromatic = chromaticKeys[(keyChromaticOffset + chromaticOffsetDelta + chromaticKeys.length) %
+    chromaticKeys.length]
+  if transposedKeysChromatic.length == 1
+      return transposedKeysChromatic[0]
+  else
+      for transposedKeyChromatic in transposedKeysChromatic
+          if transposedKeyChromatic[0] == transposedKeyDiatonic
+              return transposedKeyChromatic
+  throw new Error("Transposed key not found")
+
+
 class Chart extends Spine.Model
   @configure "Chart", "key", "parts", "structure"
+
+  transpose: (toKey) =>
+    if toKey != @key
+      for partName, chords of @parts
+        @parts[partName] = (transposeChord(chord, @key, toKey) for chord in chords)
+      @key = toKey
+    @
 
 
 class Charts extends Spine.Controller
@@ -56,10 +120,17 @@ class Charts extends Spine.Controller
     ".properties .key select": "keySelect"
     ".properties .key form": "transposeForm"
 
+  events:
+    "submit .properties .key form": "onTransposeFormSubmit"
+
   constructor: (options) ->
     super
     Chart.bind "change", @render
     Chart.create options.chart
+
+  onTransposeFormSubmit: (event) =>
+    event.preventDefault()
+    Chart.first().transpose(@keySelect.val()).save()
 
   render: (chart) =>
     @chordsDiv.html(global.ecoTemplates.chart(
