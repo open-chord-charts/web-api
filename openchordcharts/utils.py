@@ -26,8 +26,7 @@
 import re
 
 
-diatonic_keys = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
-
+chord_regex = re.compile('(?P<key>[A-G][b#]?)(?P<quality>.*)')
 chromatic_keys = [
     ['G#', 'Ab'],
     ['A'],
@@ -42,10 +41,8 @@ chromatic_keys = [
     ['F#', 'Gb'],
     ['G'],
     ]
-
 common_chromatic_keys = ['Ab', 'A', 'Bb', 'B', 'C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G']
-
-chord_regex = re.compile('(?P<key>[A-G][b#]?)(?P<quality>.*)')
+diatonic_keys = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 
 
 def get_chromatic_offset(key):
