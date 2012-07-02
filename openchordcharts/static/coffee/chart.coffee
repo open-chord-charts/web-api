@@ -45,8 +45,9 @@ decorateChart = (chart) ->
     newPart = name: partName, chords: []
     for chord, chordIndex in chart.parts[partName]
       if chordIndex > 0 and previousChord == chord or chart.structure.indexOf(partName) != partIndex
-        chord = "—"
-      newPart.chords.push(renderChord(chord))
+        newPart.chords.push "—"
+      else
+        newPart.chords.push(renderChord(chord))
       previousChord = chord
     parts.push newPart
   parts
