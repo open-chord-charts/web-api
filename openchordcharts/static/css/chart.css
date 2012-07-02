@@ -24,7 +24,13 @@
 
 @media (max-width: 767px) {
   .chords {
-    margin-left: -10px;
+    margin-left: -20px;
+    margin-right: -20px;
+  }
+
+  .chords table td.bar {
+    padding-left: 2px;
+    padding-right: 2px;
   }
 
   .properties .key select {
