@@ -41,7 +41,7 @@ chromatic_keys = [
     ['F#', 'Gb'],
     ['G'],
     ]
-common_chromatic_keys = ['Ab', 'A', 'Bb', 'B', 'C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G']
+common_chromatic_keys = ['Ab', 'A', 'Bb', 'B', 'C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G']
 diatonic_keys = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 
 
