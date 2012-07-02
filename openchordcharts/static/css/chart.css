@@ -22,6 +22,16 @@
 */
 
 
+@media (max-width: 767px) {
+  .chords {
+    margin-left: -10px;
+  }
+
+  .properties .key select {
+    margin-bottom: 0;
+  }
+}
+
 .chords table td.bar {
   font-family: 'lilyjazzchord', sans-serif;
   text-align: center;
