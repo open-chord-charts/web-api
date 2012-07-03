@@ -58,6 +58,7 @@ $(function() {
       key=chart.key,
       parts=chart.parts,
       structure=chart.structure,
+      title=chart.title,
     )) | n},
     el: $("body")
   });

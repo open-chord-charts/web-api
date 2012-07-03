@@ -105,7 +105,7 @@ transposeKey = (key, fromKey, toKey) ->
 
 
 class Chart extends Spine.Model
-  @configure "Chart", "key", "parts", "structure"
+  @configure "Chart", "key", "parts", "structure", "title"
 
   transpose: (toKey) =>
     if toKey != @key
@@ -126,8 +126,12 @@ class Charts extends Spine.Controller
 
   constructor: (options) ->
     super
-    Chart.bind "change", @render
+    Chart.bind "change", @onChartChange
     Chart.create options.chart
+
+  onChartChange: (chart, sourceEvent, options) =>
+    @render chart
+    window.document.title = "#{chart.title} (#{chart.key})"
 
   onTransposeFormSubmit: (event) =>
     event.preventDefault()
