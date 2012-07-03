@@ -5,5 +5,5 @@
 .*.swp
 *.mo
 *.pt.py
-openchordcharts/static/js/
+openchordcharts/static/js/*.js
 openchordcharts/static/templates/*.js
