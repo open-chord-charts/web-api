@@ -36,15 +36,16 @@ from openchordcharts.utils import common_chromatic_keys
 
 <%block name="css">
 <%parent:css/>
-<link href="${request.static_url('openchordcharts:static/css/chart.css')}" rel="stylesheet">
+<link href="${request.static_path('openchordcharts:static/css/chart.css')}" rel="stylesheet">
 </%block>
 
 
 <%block name="script">
 <%parent:script/>
+<script src="${request.registry.settings['javascript.jqueryui']}"></script>
 <script src="${request.registry.settings['javascript.spinejs_dir']}/spine.js"></script>
-<script src="${request.static_url('openchordcharts:static/js/chart.js')}"></script>
-<script src="${request.static_url('openchordcharts:static/templates/chart.js')}"></script>
+<script src="${request.static_path('openchordcharts:static/js/chart.js')}"></script>
+<script src="${request.static_path('openchordcharts:static/templates/chart.js')}"></script>
 <script>
 $(function() {
   $("*[rel~='popover']").popover({

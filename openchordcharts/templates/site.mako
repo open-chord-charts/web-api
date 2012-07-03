@@ -44,7 +44,7 @@ user-scalable=0">
       }
     </style>
     <link href="${request.registry.settings['css.bootstrap_responsive']}" rel="stylesheet">
-    <link href="${request.static_url('openchordcharts:static/css/style.css')}" rel="stylesheet">
+    <link href="${request.static_path('openchordcharts:static/css/style.css')}" rel="stylesheet">
     </%block>
    </head>
   <body>
