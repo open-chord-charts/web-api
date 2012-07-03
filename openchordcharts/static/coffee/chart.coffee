@@ -119,19 +119,25 @@ class Charts extends Spine.Controller
   elements:
     ".chords": "chordsDiv"
     ".properties .key select": "keySelect"
+    ".properties .key input[type='submit']": "submitButton"
     ".properties .key form": "transposeForm"
 
   events:
+    "change .properties .key select": "onKeySelectChange"
     "submit .properties .key form": "onTransposeFormSubmit"
 
   constructor: (options) ->
     super
+    @submitButton.detach()
     Chart.bind "change", @onChartChange
     Chart.create options.chart
 
   onChartChange: (chart, sourceEvent, options) =>
     @render chart
     window.document.title = "#{chart.title} (#{chart.key})"
+
+  onKeySelectChange: (event) =>
+    @transposeForm.trigger "submit"
 
   onTransposeFormSubmit: (event) =>
     event.preventDefault()
