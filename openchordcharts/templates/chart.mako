@@ -124,15 +124,17 @@ rel="external" title="Get JSON version of this chart (for programmers)">Raw data
 </div>
 % endif
 
-<div class="properties row">
+<div class="properties">
+  <div class="left">
 % if chart.structure:
-  <div class="span1 structure">${len(list(chart.iter_chords()))} × ${''.join(chart.structure)}</div>
+    <span class="structure">${len(list(chart.iter_chords()))} × ${''.join(chart.structure)}</span>
 % endif
 % if chart.genre:
-  <div class="genre span1"><p><small>${chart.genre}</small></p></div>
+    <span class="genre">${chart.genre}</span>
 % endif
+  </div>
 
-  <div class="key offset9 span1">
+  <div class="key right">
     <form method="get">
       <select class="input-mini" name="key" title="Transpose chart into another key">
 % for key in common_chromatic_keys:

@@ -24,16 +24,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @media (max-width: 767px)
   .chords
-    margin-left: -20px
-    margin-right: -20px
+    margin-left: -10px
+    margin-right: -10px
   table
     td.bar
       padding-left: 2px
       padding-right: 2px
     td.part-name
-      padding: 1px
-  .properties .key select
-    margin-bottom: 0
+      padding: 0.1em
 
 .chords table
   table-layout: fixed
@@ -41,5 +39,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     font-family: 'lilyjazzchord', sans-serif
     text-align: center
   td.part-name
-    text-align: right
     width: 1em
+
+.properties
+  .left
+    float: left
+    .genre
+      margin-left: 2em
+  .right
+    float: right
