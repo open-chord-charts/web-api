@@ -74,9 +74,12 @@ def main(global_config, **settings):
     config.add_view(openchordcharts.views.auth.logout, route_name='logout')
 
     config.add_route('index', '/')
-    config.add_view(openchordcharts.views.index, renderer='/index.mako', route_name='index')
+    config.add_view(renderer='/index.mako', route_name='index')
     config.add_route('about', '/about')
-    config.add_view(openchordcharts.views.about, renderer='/about.mako', route_name='about')
+    config.add_view(renderer='/about.mako', route_name='about')
+    config.add_route('cache.manifest', '/cache.manifest')
+    config.add_view(renderer='/cache_manifest.mako', route_name='cache.manifest')
+
 
     config.add_route('chart.create', '/charts/create')
     config.add_view(openchordcharts.views.charts.create, permission='edit', renderer='/chart_edit.mako',

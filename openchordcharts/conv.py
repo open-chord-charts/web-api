@@ -99,6 +99,7 @@ validate_settings = check(
                     'css.bootstrap': cleanup_line,
                     'css.bootstrap_responsive': cleanup_line,
                     'database.uri': pipe(cleanup_line, not_none),
+                    'development_mode': guess_bool,
                     'google.analytics.key': cleanup_line,
                     'javascript.bootstrap': cleanup_line,
                     'javascript.jquery': cleanup_line,

@@ -23,6 +23,29 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+import hashlib
+import os
+import subprocess
+
+import pyramid.threadlocal
+
+
+def get_git_revision():
+    settings = pyramid.threadlocal.get_current_registry().settings
+    git_revparse_process = subprocess.Popen(['/usr/bin/git', 'rev-parse', '--verify', 'HEAD'], cwd=os.path.dirname(__file__),
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    git_revision = git_revparse_process.stdout.read().strip()
+    if len(git_revision.split()) != 1:
+        return None
+    if settings['development_mode']:
+        git_diff_process = subprocess.Popen(['/usr/bin/git', 'diff', 'HEAD'], cwd=os.path.dirname(__file__),
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        git_diff_hash = hashlib.sha256(git_diff_process.stdout.read().strip()).hexdigest()
+        return u'{0}-{1}'.format(git_revision, git_diff_hash)
+    else:
+        return git_revision
+
+
 def get_login_url(request):
     settings = request.registry.settings
     if settings['authentication.fake_login']:

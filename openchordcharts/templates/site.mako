@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html manifest="${request.route_path('cache.manifest')}">
 
 
 ## Open Chord Charts -- Database of free chord charts
