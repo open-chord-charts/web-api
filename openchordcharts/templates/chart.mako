@@ -42,8 +42,6 @@ from openchordcharts.utils import common_chromatic_keys
 
 <%block name="script">
 <%parent:script/>
-<script src="${request.registry.settings['javascript.spinejs_dir']}/spine.js"></script>
-<script src="${request.static_path('openchordcharts:static/js/application_cache.js')}"></script>
 <script src="${request.static_path('openchordcharts:static/js/chart.js')}"></script>
 <script src="${request.static_path('openchordcharts:static/templates/chart.js')}"></script>
 <script>
@@ -63,14 +61,11 @@ $(function() {
     )) | n},
     el: $("body")
   });
-  var applicationCache = new window.openchordcharts.ApplicationCache({
-    el: $("body")
-  });
-  $(".chords").draggable({
-    axis: "y",
-    handle: ".part-name",
-    revert: true
-  });
+##  $(".chords").draggable({
+##    axis: "y",
+##    handle: ".part-name",
+##    revert: true
+##  });
 });
 </script>
 </%block>
@@ -90,7 +85,7 @@ ${u'{0} ({1})'.format(chart.title, chart.key)} - <%parent:title/>
 </div>
 % endif
 
-<div class="control-group">
+<div class="actions">
 ## Previous versions of chart in history do not provide edit and delete buttons.
 % if not data['revision']:
   % if has_permission('edit', request.root, request):

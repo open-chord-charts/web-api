@@ -107,6 +107,8 @@ transposeKey = (key, fromKey, toKey) ->
 class Chart extends Spine.Model
   @configure "Chart", "key", "parts", "structure", "title"
 
+  logPrefix: "(Chart)"
+
   transpose: (toKey) =>
     if toKey != @key
       for partName, chords of @parts
@@ -117,6 +119,7 @@ class Chart extends Spine.Model
 
 class Charts extends Spine.Controller
   elements:
+    ".actions": "actionsDiv"
     ".chords": "chordsDiv"
     ".properties .key select": "keySelect"
     ".properties .key input[type='submit']": "submitButton"
@@ -126,8 +129,13 @@ class Charts extends Spine.Controller
     "change .properties .key select": "onKeySelectChange"
     "submit .properties .key form": "onTransposeFormSubmit"
 
+  logPrefix: "(Charts)"
+
   constructor: (options) ->
     super
+    @actionsDiv.prepend $("<button>", class: "btn", href: "#", text: "Offline").bind("click", @onOfflineButtonClick)
+#  <a class="btn" data-content="Edition is restricted to authenticated users." href="${get_login_url(request)}" rel="nofollow popover" title="Please login first!">Edit</a>
+
     @submitButton.detach()
     Chart.bind "change", @onChartChange
     Chart.create options.chart
@@ -138,6 +146,9 @@ class Charts extends Spine.Controller
 
   onKeySelectChange: (event) =>
     @transposeForm.trigger "submit"
+
+  onOfflineButtonClick: (event) =>
+    @log "onOfflineButtonClick"
 
   onTransposeFormSubmit: (event) =>
     event.preventDefault()

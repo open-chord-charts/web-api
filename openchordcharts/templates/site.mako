@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html manifest="${request.route_path('cache.manifest')}">
-
+##<html manifest="${request.route_path('cache.manifest')}">
+<html>
 
 ## Open Chord Charts -- Database of free chord charts
 ## By: Christophe Benz <christophe.benz@gmail.com>
@@ -103,15 +103,25 @@ rel="nofollow">Logout</a></li>
         <hr>
         <%block name="footer"/>
         <p><a href="${request.route_path('about')}">Copyright ©</a> The Open Chord Charts contributors, 2012</p>
+        <p class="application-cache-info"></p>
+        <p class="navigator-info"></p>
       </footer>
     </div>
 
     <%block name="script">
     <script src="${request.registry.settings['javascript.jquery']}"></script>
     <script src="${request.registry.settings['javascript.bootstrap']}"></script>
+    <script src="${request.registry.settings['javascript.spinejs_dir']}/spine.js"></script>
+    <script src="${request.static_path('openchordcharts:static/js/offline.js')}"></script>
     <script>
 $(function() {
   $("*[rel~='external']").attr("target", "_blank");
+  var applicationCacheInfo = new window.openchordcharts.ApplicationCacheInfo({
+    el: $("footer p.application-cache-info")
+  });
+  var navigatorInfo = new window.openchordcharts.NavigatorInfo({
+    el: $("footer p.navigator-info")
+  });
 });
     </script>
 % if request.registry.settings['google.analytics.key']:

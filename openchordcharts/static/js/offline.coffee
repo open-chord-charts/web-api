@@ -23,51 +23,64 @@
 global = @
 
 
-class ApplicationCache extends Spine.Controller
-  elements:
-    ".container .brand": "brandDiv"
+class ApplicationCacheInfo extends Spine.Controller
+  logPrefix: "(ApplicationCache)"
 
   constructor: (options) ->
     super
-
     window.applicationCache.oncached = (event) =>
       @log "cached", event
-      @brandDiv.text "cached"
-
+      @html "cached"
     window.applicationCache.onchecking = (event) =>
       @log "checking", event
-      @brandDiv.text "checking"
-
+      @html "checking"
     window.applicationCache.ondownloading = (event) =>
       @log "downloading", event
-      @brandDiv.text "downloading"
-
+      @html "downloading"
     window.applicationCache.onerror = (event) =>
       @log "error", event
-      @brandDiv.text "error"
-
+      @html "error"
     window.applicationCache.onnoupdate = (event) =>
       @log "noupdate", event
-      @brandDiv.text "noupdate"
-
+      @html "noupdate"
     window.applicationCache.onobsolete = (event) =>
       @log "obsolete", event
-      @brandDiv.text "obsolete"
-
+      @html "obsolete"
     window.applicationCache.onprogress = (event) =>
       if event.lengthComputable
         percentage = Math.round(event.loaded / event.total * 100) + '%'
         @log "progress #{percentage}", event
-        @brandDiv.text "progress #{percentage}"
+        @html "progress #{percentage}"
       else
         @log "progress", event
-        @brandDiv.text "progress"
-
+        @html "progress"
     window.applicationCache.onupdateready = (event) =>
       window.applicationCache.swapCache()
       @log "updateready", event
-      @brandDiv.text "updateready"
+      @html "updateready"
+
+
+class NavigatorInfo extends Spine.Controller
+  logPrefix: "(Navigator)"
+
+  constructor: (options) ->
+    super
+    window.ononline = @onNavigatorOnline
+    window.onoffline = @onNavigatorOffline
+    if window.navigator.onLine
+      @onNavigatorOnline()
+    else
+      @onNavigatorOffline()
+
+  onNavigatorOffline: (event) =>
+    @log "offline"
+    @html "offline"
+
+  onNavigatorOnline: (event) =>
+    @log "online"
+    @html "online"
 
 
 global.openchordcharts = global.openchordcharts or {}
-global.openchordcharts.ApplicationCache = ApplicationCache
+global.openchordcharts.ApplicationCacheInfo = ApplicationCacheInfo
+global.openchordcharts.NavigatorInfo = NavigatorInfo
