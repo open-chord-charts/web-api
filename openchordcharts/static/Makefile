@@ -1,9 +1,9 @@
 all: compile
 
 compile:
+	stylus css
 	coffee -c js
 	eco templates
-	stylus css
 
 uglify:
 	for f in `find js -name "*.js" -not -name "*.min.js"`; do \
@@ -12,6 +12,6 @@ uglify:
 
 watch:
 	make || notify-send "coffee compile error"
-	while inotifywait -e modify -r coffee css templates; do \
+	while inotifywait -e modify -r css js templates; do \
 		make || notify-send "coffee compile error"; \
 	done
