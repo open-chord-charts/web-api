@@ -104,8 +104,6 @@ def main(global_config, **settings):
 
     config.add_route('user', '/users/{slug}')
     config.add_view(openchordcharts.views.users.user, renderer='/user.mako', route_name='user')
-    config.add_route('users', '/users/')
-    config.add_view(openchordcharts.views.users.users, route_name='users')
 
     config.scan('openchordcharts.views')
 

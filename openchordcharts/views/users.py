@@ -40,7 +40,3 @@ def user(request):
     return dict(
         user_charts_cursor=user_charts_cursor,
         )
-
-
-def users(request):
-    return dict()
