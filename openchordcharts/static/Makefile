@@ -1,9 +1,7 @@
 all: compile
 
 compile:
-	rm -rf js
-	mkdir js
-	coffee -c -o js coffee
+	coffee -c js
 	eco templates
 	stylus css
 
