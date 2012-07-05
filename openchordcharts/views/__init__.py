@@ -23,7 +23,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from pyramid.httpexceptions import HTTPNotFound
+#from pyramid.httpexceptions import HTTPNotFound
 
 
 def cache_manifest(request):
