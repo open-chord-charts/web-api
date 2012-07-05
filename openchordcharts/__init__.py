@@ -63,14 +63,14 @@ def main(global_config, **settings):
 
     # Authentication
     if settings['authentication.fake_login']:
-        config.add_route('fake_login', '/login-fake/')
+        config.add_route('fake_login', '/login-fake')
         config.add_view(openchordcharts.views.auth.fake.login, route_name='fake_login')
     if settings['authentication.openid.client_id']:
-        config.add_route('login_callback', '/login-callback/')
+        config.add_route('login_callback', '/login-callback')
         config.add_view(openchordcharts.views.auth.openidconnect.login_callback, route_name='login_callback')
-        config.add_route('openidconnect_login', '/login-openidconnect/')
+        config.add_route('openidconnect_login', '/login-openidconnect')
         config.add_view(openchordcharts.views.auth.openidconnect.login, route_name='openidconnect_login')
-    config.add_route('logout', '/logout/')
+    config.add_route('logout', '/logout')
     config.add_view(openchordcharts.views.auth.logout, route_name='logout')
 
     config.add_route('index', '/')
@@ -96,7 +96,7 @@ def main(global_config, **settings):
     config.add_view(openchordcharts.views.charts.undelete, permission='edit', route_name='chart.undelete')
     config.add_route('chart', '/charts/{slug}')
     config.add_view(openchordcharts.views.charts.chart, renderer='/chart.mako', route_name='chart')
-    config.add_route('charts', '/charts/')
+    config.add_route('charts', '/charts')
     config.add_view(openchordcharts.views.charts.charts, renderer='/charts.mako', route_name='charts')
     config.add_route('charts.json', '/charts.json')
     config.add_view(openchordcharts.views.charts.charts_json, renderer='jsonp', route_name='charts.json')
