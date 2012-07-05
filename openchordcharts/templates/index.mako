@@ -23,6 +23,11 @@
 <%inherit file="site.mako"/>
 
 
+<%block name="html_tag_opening">
+<html manifest="${request.route_path('cache.manifest')}">
+</%block>
+
+
 <div class="hero-unit">
   <p>This is the Open Chord Charts project. The aim is to collect chord charts under a free data licence.</p>
   <p>
