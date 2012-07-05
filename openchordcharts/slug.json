@@ -1,0 +1,12 @@
+{
+  "dependencies": [
+    "bootstrapify",
+    "es5-shimify",
+    "jqueryify",
+    "json2ify",
+    "spine",
+    "spine/lib/local"
+  ],
+  "libs": [ ],
+  "public": "./static"
+}

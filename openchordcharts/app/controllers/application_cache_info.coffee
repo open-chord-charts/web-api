@@ -20,7 +20,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-global = @
+Spine = require "spine"
 
 
 class ApplicationCacheInfo extends Spine.Controller
@@ -60,27 +60,4 @@ class ApplicationCacheInfo extends Spine.Controller
       @html "updateready"
 
 
-class NavigatorInfo extends Spine.Controller
-  logPrefix: "(Navigator)"
-
-  constructor: (options) ->
-    super
-    window.ononline = @onNavigatorOnline
-    window.onoffline = @onNavigatorOffline
-    if window.navigator.onLine
-      @onNavigatorOnline()
-    else
-      @onNavigatorOffline()
-
-  onNavigatorOffline: (event) =>
-    @log "offline"
-    @html "offline"
-
-  onNavigatorOnline: (event) =>
-    @log "online"
-    @html "online"
-
-
-global.openchordcharts = global.openchordcharts or {}
-global.openchordcharts.ApplicationCacheInfo = ApplicationCacheInfo
-global.openchordcharts.NavigatorInfo = NavigatorInfo
+module?.exports.ApplicationCacheInfo = ApplicationCacheInfo

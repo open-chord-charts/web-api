@@ -34,20 +34,9 @@ from openchordcharts.utils import common_chromatic_keys
 %>
 
 
-<%block name="css">
-<%parent:css/>
-<link href="${request.static_path('openchordcharts:static/css/chart.css')}" rel="stylesheet">
-</%block>
-
-
-<%block name="script">
-<%parent:script/>
-<script src="${request.static_path('openchordcharts:static/js/chart.js')}"></script>
-<script src="${request.static_path('openchordcharts:static/templates/chart.js')}"></script>
-</%block>
-
-
 <%block name="script_domready">
+<%parent:script_domready/>
+require("bootstrapify");
 $("*[rel~='popover']").popover({
   placement: "bottom"
 });

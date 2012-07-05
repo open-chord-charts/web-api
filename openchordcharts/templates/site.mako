@@ -38,14 +38,12 @@ from openchordcharts.helpers import get_login_url
 user-scalable=0">
     <title><%block name="title">OpenChordCharts</%block></title>
     <%block name="css">
-    <link href="${request.registry.settings['css.bootstrap']}" rel="stylesheet">
     <style>
       body {
         padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
       }
     </style>
-    <link href="${request.registry.settings['css.bootstrap_responsive']}" rel="stylesheet">
-    <link href="${request.static_path('openchordcharts:static/css/style.css')}" rel="stylesheet">
+    <link href="${request.static_path('openchordcharts:static/application.css')}" rel="stylesheet">
     </%block>
    </head>
   <body>
@@ -110,19 +108,16 @@ rel="nofollow">Logout</a></li>
     </div>
 
     <%block name="script">
-    <script src="${request.registry.settings['javascript.jquery']}"></script>
-    <script src="${request.registry.settings['javascript.bootstrap']}"></script>
-    <script src="${request.registry.settings['javascript.spinejs_dir']}/spine.js"></script>
-    <script src="${request.registry.settings['javascript.spinejs_dir']}/local.js"></script>
-    <script src="${request.static_path('openchordcharts:static/js/offline.js')}"></script>
+    <script src="${request.static_path('openchordcharts:static/application.js')}"></script>
     <script>
-$(function() {
+var jQuery  = require("jqueryify");
+jQuery(function($) {
       <%block name="script_domready">
   $("*[rel~='external']").attr("target", "_blank");
-  var applicationCacheInfo = new window.openchordcharts.ApplicationCacheInfo({
+  new require("controllers/application_cache_info").ApplicationCacheInfo({
     el: $("footer p.application-cache-info")
   });
-  var navigatorInfo = new window.openchordcharts.NavigatorInfo({
+  new require("controllers/navigator_info").NavigatorInfo({
     el: $("footer p.navigator-info")
   });
       </%block>
