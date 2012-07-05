@@ -79,6 +79,8 @@ def main(global_config, **settings):
     config.add_view(renderer='/about.mako', route_name='about')
     config.add_route('cache.manifest', '/cache.manifest')
     config.add_view(openchordcharts.views.cache_manifest, renderer='/cache_manifest.mako', route_name='cache.manifest')
+    config.add_route('offline', '/offline')
+    config.add_view(renderer='/offline.mako', route_name='offline')
 
     config.add_route('chart.create', '/charts/create')
     config.add_view(openchordcharts.views.charts.create, permission='edit', renderer='/chart_edit.mako',
