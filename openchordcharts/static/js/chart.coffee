@@ -104,26 +104,21 @@ transposeKey = (key, fromKey, toKey) ->
   throw new Error("Transposed key not found")
 
 
-OfflineChart =
-  included: ->
-    @change @::saveLocal
-    @fetch @::loadLocal
+OfflineLocal =
+  extended: ->
+    @change @saveLocal
+    @fetch @loadLocal
 
-  loadLocal: (options) ->
-    @refresh window.localStorage[options.chart.slug] or [], clear: true
+  saveLocal: ->
+    window.localStorage[@className] = JSON.stringify (record for cid, record of @records when record.offline)
 
-  saveLocal: (chart, sourceEvent, options) ->
-    return if not chart.offline
-    window.localStorage[chart.slug] = JSON.stringify
-      key: chart.key
-      parts: chart.parts
-      structure: chart.structure
-      title: chart.title
+  loadLocal: ->
+    @refresh(window.localStorage[@className] or [], clear: true)
 
 
 class Chart extends Spine.Model
   @configure "Chart", "key", "offline", "parts", "slug", "structure", "title"
-  @include OfflineChart
+  @extend OfflineLocal
 
   transpose: (toKey) =>
     if toKey != @key
@@ -133,47 +128,100 @@ class Chart extends Spine.Model
     @
 
 
+class OfflineButton extends Spine.Controller
+  attributes:
+    "data-toggle": "button"
+    rel: "popover"
+  className: "btn"
+  events:
+    "click": "onClick"
+  logPrefix: "(OfflineButton)"
+  tag: "button"
+
+  constructor: (options) ->
+    super
+    @el.text "Offline"
+    if @chart.offline
+      @el.button "toggle"
+    @el.popover placement: "bottom"
+    @render()
+    Chart.bind "change", @render
+
+  onClick: (event) =>
+    newOfflineValue = not @chart.offline
+    if newOfflineValue
+      @log "Chart is now offline"
+    else
+      @log "Chart is now online"
+    @chart.updateAttribute "offline", newOfflineValue
+
+  render: =>
+    popover = @el.data "popover"
+    if @chart.offline
+      @log "Set delete offline popover"
+      popover.options.content = "You won't be able to access this page while being offline."
+      popover.options.title = "Delete offline data"
+    else
+      @log "Set keep offline popover"
+      popover.options.content = "You will be able to access this page while being offline."
+      popover.options.title = "Keep data offline"
+    @
+
+
 class Charts extends Spine.Controller
   elements:
     ".actions": "actionsDiv"
+    ".actions .btn.delete": "deleteButton"
     ".chords": "chordsDiv"
     ".properties .key select": "keySelect"
     ".properties .key input[type='submit']": "submitButton"
     ".properties .key form": "transposeForm"
-
   events:
+    "click .actions .btn.delete": "onDeleteButtonClicked"
     "change .properties .key select": "onKeySelectChange"
     "submit .properties .key form": "onTransposeFormSubmit"
-
   logPrefix: "(Charts)"
 
   constructor: (options) ->
     super
-    @actionsDiv.prepend $("<button>", class: "btn", href: "#", text: "Offline").bind("click", @onOfflineButtonClick)
     @submitButton.detach()
-    Chart.bind "change refresh", @onChartChange
-#    Chart.fetch options
-    Chart.create options.chart
+    Chart.bind "change", @onChartChange
+    Chart.bind "refresh", @onChartRefresh
+    Chart.fetch()
+    if @chart
+      @log "Chart fetched from localStorage"
+    else
+      @log "Create new chart"
+      Chart.create options.chart
+    @actionsDiv.prepend(new OfflineButton(chart: @chart).$el)
 
   onChartChange: (chart, sourceEvent, options) =>
-    if Spine.isArray chart
-      chart = chart[0]
-    @log "onChartChange"
-    @keySelect.val chart.key
-    @chordsDiv.html(global.ecoTemplates.chart(
-      partRows: partsToRows(decorateChart(chart.attributes()))
-    ))
-    window.document.title = "#{chart.title} (#{chart.key})"
+    if sourceEvent == "create"
+      @chart = chart
+    @render()
+
+  onChartRefresh: (charts, options) =>
+    @chart = Chart.findByAttribute "slug", @options.chart.slug
+    if @chart
+      @render()
+
+  onDeleteButtonClicked: (event) =>
+    if not confirm "Delete \"#{@chart.title}\"?"
+      event.preventDefault()
 
   onKeySelectChange: (event) =>
     @transposeForm.trigger "submit"
 
-  onOfflineButtonClick: (event) =>
-    Chart.first().updateAttribute "offline", true
-
   onTransposeFormSubmit: (event) =>
     event.preventDefault()
-    Chart.first().transpose(@keySelect.val()).save()
+    @chart.transpose(@keySelect.val()).save()
+
+  render: =>
+    @keySelect.val @chart.key
+    @chordsDiv.html(global.ecoTemplates.chart(
+      partRows: partsToRows(decorateChart(@chart.attributes()))
+    ))
+    window.document.title = "#{@chart.title} (#{@chart.key})"
 
 
 global.openchordcharts = global.openchordcharts or {}

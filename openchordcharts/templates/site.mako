@@ -113,9 +113,11 @@ rel="nofollow">Logout</a></li>
     <script src="${request.registry.settings['javascript.jquery']}"></script>
     <script src="${request.registry.settings['javascript.bootstrap']}"></script>
     <script src="${request.registry.settings['javascript.spinejs_dir']}/spine.js"></script>
+    <script src="${request.registry.settings['javascript.spinejs_dir']}/local.js"></script>
     <script src="${request.static_path('openchordcharts:static/js/offline.js')}"></script>
     <script>
 $(function() {
+      <%block name="script_domready">
   $("*[rel~='external']").attr("target", "_blank");
   var applicationCacheInfo = new window.openchordcharts.ApplicationCacheInfo({
     el: $("footer p.application-cache-info")
@@ -123,10 +125,9 @@ $(function() {
   var navigatorInfo = new window.openchordcharts.NavigatorInfo({
     el: $("footer p.navigator-info")
   });
+      </%block>
 });
-    </script>
 % if request.registry.settings['google.analytics.key']:
-    <script>
 var _gaq = _gaq || [];
 _gaq.push(['_setAccount', '${request.registry.settings['google.analytics.key']}']);
 _gaq.push(['_trackPageview']);
@@ -135,8 +136,8 @@ _gaq.push(['_trackPageview']);
   ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
-    </script>
 % endif
+    </script>
     </%block>
   </body>
 </html>

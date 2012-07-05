@@ -44,31 +44,28 @@ from openchordcharts.utils import common_chromatic_keys
 <%parent:script/>
 <script src="${request.static_path('openchordcharts:static/js/chart.js')}"></script>
 <script src="${request.static_path('openchordcharts:static/templates/chart.js')}"></script>
-<script>
-$(function() {
-  $("*[rel~='popover']").popover({
-    placement: "bottom"
-  });
-  $(".btn.delete").bind("click", function(event) {
-    return confirm("Delete \"${chart.title}\"?");
-  });
-  var chart = new window.openchordcharts.Charts({
-    chart: ${json.dumps(dict(
-      key=chart.key,
-      parts=chart.parts,
-      slug=chart.slug,
-      structure=chart.structure,
-      title=chart.title,
-    )) | n},
-    el: $("body")
-  });
+</%block>
+
+
+<%block name="script_domready">
+$("*[rel~='popover']").popover({
+  placement: "bottom"
+});
+var chart = new window.openchordcharts.Charts({
+  chart: ${json.dumps(dict(
+    key=chart.key,
+    parts=chart.parts,
+    slug=chart.slug,
+    structure=chart.structure,
+    title=chart.title,
+  )) | n},
+  el: $("body")
+});
 ##  $(".chords").draggable({
 ##    axis: "y",
 ##    handle: ".part-name",
 ##    revert: true
 ##  });
-});
-</script>
 </%block>
 
 
