@@ -56,6 +56,7 @@ $(function() {
     chart: ${json.dumps(dict(
       key=chart.key,
       parts=chart.parts,
+      slug=chart.slug,
       structure=chart.structure,
       title=chart.title,
     )) | n},

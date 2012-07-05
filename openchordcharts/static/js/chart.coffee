@@ -104,10 +104,26 @@ transposeKey = (key, fromKey, toKey) ->
   throw new Error("Transposed key not found")
 
 
-class Chart extends Spine.Model
-  @configure "Chart", "key", "parts", "structure", "title"
+OfflineChart =
+  included: ->
+    @change @::saveLocal
+    @fetch @::loadLocal
 
-  logPrefix: "(Chart)"
+  loadLocal: (options) ->
+    @refresh window.localStorage[options.chart.slug] or [], clear: true
+
+  saveLocal: (chart, sourceEvent, options) ->
+    return if not chart.offline
+    window.localStorage[chart.slug] = JSON.stringify
+      key: chart.key
+      parts: chart.parts
+      structure: chart.structure
+      title: chart.title
+
+
+class Chart extends Spine.Model
+  @configure "Chart", "key", "offline", "parts", "slug", "structure", "title"
+  @include OfflineChart
 
   transpose: (toKey) =>
     if toKey != @key
@@ -134,13 +150,15 @@ class Charts extends Spine.Controller
   constructor: (options) ->
     super
     @actionsDiv.prepend $("<button>", class: "btn", href: "#", text: "Offline").bind("click", @onOfflineButtonClick)
-#  <a class="btn" data-content="Edition is restricted to authenticated users." href="${get_login_url(request)}" rel="nofollow popover" title="Please login first!">Edit</a>
-
     @submitButton.detach()
-    Chart.bind "change", @onChartChange
+    Chart.bind "change refresh", @onChartChange
+#    Chart.fetch options
     Chart.create options.chart
 
   onChartChange: (chart, sourceEvent, options) =>
+    if Spine.isArray chart
+      chart = chart[0]
+    @log "onChartChange"
     @keySelect.val chart.key
     @chordsDiv.html(global.ecoTemplates.chart(
       partRows: partsToRows(decorateChart(chart.attributes()))
@@ -151,7 +169,7 @@ class Charts extends Spine.Controller
     @transposeForm.trigger "submit"
 
   onOfflineButtonClick: (event) =>
-    @log "onOfflineButtonClick"
+    Chart.first().updateAttribute "offline", true
 
   onTransposeFormSubmit: (event) =>
     event.preventDefault()
