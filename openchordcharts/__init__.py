@@ -106,8 +106,6 @@ def main(global_config, **settings):
     config.add_route('user', '/users/{slug}')
     config.add_view(openchordcharts.views.users.user, renderer='/user.mako', route_name='user')
 
-    config.scan('openchordcharts.views')
-
     config.add_renderer('jsonp', JSONP(param_name='callback'))
 
     config.add_static_view('static', 'openchordcharts:static')
