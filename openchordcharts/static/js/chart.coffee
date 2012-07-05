@@ -141,7 +141,10 @@ class Charts extends Spine.Controller
     Chart.create options.chart
 
   onChartChange: (chart, sourceEvent, options) =>
-    @render chart
+    @keySelect.val chart.key
+    @chordsDiv.html(global.ecoTemplates.chart(
+      partRows: partsToRows(decorateChart(chart.attributes()))
+    ))
     window.document.title = "#{chart.title} (#{chart.key})"
 
   onKeySelectChange: (event) =>
@@ -153,11 +156,6 @@ class Charts extends Spine.Controller
   onTransposeFormSubmit: (event) =>
     event.preventDefault()
     Chart.first().transpose(@keySelect.val()).save()
-
-  render: (chart) =>
-    @chordsDiv.html(global.ecoTemplates.chart(
-      partRows: partsToRows(decorateChart(chart.attributes()))
-    ))
 
 
 global.openchordcharts = global.openchordcharts or {}
