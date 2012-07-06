@@ -38,8 +38,8 @@ from openchordcharts.helpers import get_login_url
 user-scalable=0">
     <title><%block name="title">OpenChordCharts</%block></title>
     <%block name="css">
-    <link href="${request.static_path('openchordcharts:static/bootstrap-2.0.4/css/bootstrap.min.css')}" \
-rel="stylesheet">
+    <link href="${request.static_path('openchordcharts:static/bootstrap-2.0.4/css/bootstrap{0}.css'.format(
+'' if request.registry.settings['development_mode'] else '.min'))}" rel="stylesheet">
     <style>
       body {
         padding-top: 60px;
@@ -47,8 +47,8 @@ rel="stylesheet">
       }
     </style>
 
-    <link href="${request.static_path('openchordcharts:static/bootstrap-2.0.4/css/bootstrap-responsive.min.css')}" \
-rel="stylesheet">
+    <link href="${request.static_path('openchordcharts:static/bootstrap-2.0.4/css/bootstrap-responsive{0}.css'.format(
+'' if request.registry.settings['development_mode'] else '.min'))}" rel="stylesheet">
     <link href="${request.static_path('openchordcharts:static/application.css')}" rel="stylesheet">
     </%block>
    </head>
@@ -114,9 +114,12 @@ rel="nofollow">Logout</a></li>
     </div>
 
     <%block name="script">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="${request.static_path('openchordcharts:static/bootstrap-2.0.4/js/bootstrap{0}.js'.format(
+'' if request.registry.settings['development_mode'] else '.min'))}"></script>
     <script src="${request.static_path('openchordcharts:static/application.js')}"></script>
     <script>
-require("jqueryify")(function($) {
+$(function() {
   require("index").start();
 });
 

@@ -25,11 +25,16 @@ CACHE MANIFEST
 # rev ${get_git_revision() or u'UNKNOWN!'}
 
 CACHE:
+//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js
 ${request.static_path('openchordcharts:static/fonts/lilyjazzchord.otf')}
-${request.static_path('openchordcharts:static/bootstrap-2.0.4/css/bootstrap.min.css')}
-${request.static_path('openchordcharts:static/bootstrap-2.0.4/css/bootstrap-responsive.min.css')}
+${request.static_path('openchordcharts:static/bootstrap-2.0.4/css/bootstrap{0}.css'.format(
+'' if request.registry.settings['development_mode'] else '.min'))}
+${request.static_path('openchordcharts:static/bootstrap-2.0.4/css/bootstrap-responsive{0}.css'.format(
+'' if request.registry.settings['development_mode'] else '.min'))}
 ${request.static_path('openchordcharts:static/bootstrap-2.0.4/img/glyphicons-halflings.png')}
 ${request.static_path('openchordcharts:static/bootstrap-2.0.4/img/glyphicons-halflings-white.png')}
+${request.static_path('openchordcharts:static/bootstrap-2.0.4/js/bootstrap{0}.js'.format(
+'' if request.registry.settings['development_mode'] else '.min'))}
 ${request.static_path('openchordcharts:static/application.css')}
 ${request.static_path('openchordcharts:static/application.js')}
 

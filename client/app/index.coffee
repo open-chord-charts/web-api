@@ -20,9 +20,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-require "bootstrapify"
 require "es5-shimify"
-$ = require "jqueryify"
 require "json2ify"
 Spine = require "spine"
 require "spine/lib/route"
