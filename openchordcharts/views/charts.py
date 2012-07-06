@@ -23,7 +23,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from biryani.baseconv import cleanup_line
+from biryani.baseconv import check, cleanup_line
 from biryani.strings import slugify
 from formencode.variabledecode import variable_decode
 from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPFound, HTTPNotFound
@@ -86,12 +86,17 @@ def charts(request):
 
 def charts_json(request):
     spec = {}
+    title_slug = None
+    if request.GET.get('slug'):
+        slug = check(cleanup_line(request.GET['slug']))
+        if slug:
+            spec['slug'] = slug
     if request.GET.get('title'):
         title_slug = slugify(request.GET['title'])
         if title_slug:
             spec['keywords'] = Chart.get_search_by_keywords_spec(title_slug.split('-'))
     if request.GET.get('user'):
-        user = cleanup_line(request.GET['user'])
+        user = check(cleanup_line(request.GET['user']))
         if user:
             spec['user'] = user
     return [chart_to_json_dict(chart) for chart in Chart.find(spec)]

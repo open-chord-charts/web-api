@@ -22,8 +22,13 @@
 
 Spine = require "spine"
 
+{Chart} = require "models/chart"
+chartView = require "views/chart"
+{OfflineButton} = require "controllers/offline_button"
+transpose = require "lib/transpose"
 
-class Charts extends Spine.Controller
+
+class ChartsShow extends Spine.Controller
   elements:
     ".actions": "actionsDiv"
     ".actions .btn.delete": "deleteButton"
@@ -37,28 +42,26 @@ class Charts extends Spine.Controller
     "submit .properties .key form": "onTransposeFormSubmit"
   logPrefix: "(Charts)"
 
-  constructor: (options) ->
+  constructor: ->
     super
-    @submitButton.detach()
-    Chart.bind "change", @onChartChange
-    Chart.bind "refresh", @onChartRefresh
-    Chart.fetch()
-    if @chart
-      @log "Chart fetched from localStorage"
-    else
-      @log "Create new chart"
-      Chart.create options.chart
-    @actionsDiv.prepend(new OfflineButton(chart: @chart).$el)
-
-  onChartChange: (chart, sourceEvent, options) =>
-    if sourceEvent == "create"
-      @chart = chart
-    @render()
+    @routes
+      "/charts/:slug": (params) ->
+        @slug = params.slug
+        @submitButton.detach()
+        Chart.bind "change", @render
+        Chart.bind "refresh", @onChartRefresh
+        Chart.fetchLocalOrAjax query: {name: "slug", value: @slug}
 
   onChartRefresh: (charts, options) =>
-    @chart = Chart.findByAttribute "slug", @options.chart.slug
+    @log "onChartRefresh", charts, options
+    @chart = Chart.findByAttribute "slug", @slug
     if @chart
+      @offlineButton.release() if @offlineButton
+      @offlineButton = new OfflineButton(chart: @chart)
+      @actionsDiv.prepend(@offlineButton.$el)
       @render()
+    else
+      @log "Chart \"#{@slug}\" not found"
 
   onDeleteButtonClicked: (event) =>
     if not confirm "Delete \"#{@chart.title}\"?"
@@ -72,11 +75,10 @@ class Charts extends Spine.Controller
     @chart.transpose(@keySelect.val()).save()
 
   render: =>
+    @log "render"
     @keySelect.val @chart.key
-    @chordsDiv.html(window.ecoTemplates.chart(
-      partRows: partsToRows(decorateChart(@chart.attributes()))
-    ))
+    @chordsDiv.html(chartView(partRows: transpose.partsToRows(transpose.decorateChart(@chart.attributes()))))
     window.document.title = "#{@chart.title} (#{@chart.key})"
 
 
-module?.exports.Charts = Charts
+module?.exports.ChartsShow = ChartsShow

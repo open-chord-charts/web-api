@@ -26,6 +26,8 @@ CACHE MANIFEST
 
 CACHE:
 ${request.static_path('openchordcharts:static/fonts/lilyjazzchord.otf')}
+${request.static_path('openchordcharts:static/bootstrap-2.0.4/css/bootstrap.min.css')}
+${request.static_path('openchordcharts:static/bootstrap-2.0.4/css/bootstrap-responsive.min.css')}
 ${request.static_path('openchordcharts:static/bootstrap-2.0.4/img/glyphicons-halflings.png')}
 ${request.static_path('openchordcharts:static/bootstrap-2.0.4/img/glyphicons-halflings-white.png')}
 ${request.static_path('openchordcharts:static/application.css')}

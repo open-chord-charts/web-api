@@ -38,11 +38,17 @@ from openchordcharts.helpers import get_login_url
 user-scalable=0">
     <title><%block name="title">OpenChordCharts</%block></title>
     <%block name="css">
+    <link href="${request.static_path('openchordcharts:static/bootstrap-2.0.4/css/bootstrap.min.css')}" \
+rel="stylesheet">
     <style>
       body {
-        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+        padding-top: 60px;
+        padding-bottom: 40px;
       }
     </style>
+
+    <link href="${request.static_path('openchordcharts:static/bootstrap-2.0.4/css/bootstrap-responsive.min.css')}" \
+rel="stylesheet">
     <link href="${request.static_path('openchordcharts:static/application.css')}" rel="stylesheet">
     </%block>
    </head>
@@ -110,18 +116,10 @@ rel="nofollow">Logout</a></li>
     <%block name="script">
     <script src="${request.static_path('openchordcharts:static/application.js')}"></script>
     <script>
-var jQuery  = require("jqueryify");
-jQuery(function($) {
-      <%block name="script_domready">
-  $("*[rel~='external']").attr("target", "_blank");
-  new require("controllers/application_cache_info").ApplicationCacheInfo({
-    el: $("footer p.application-cache-info")
-  });
-  new require("controllers/navigator_info").NavigatorInfo({
-    el: $("footer p.navigator-info")
-  });
-      </%block>
+require("jqueryify")(function($) {
+  require("index").start();
 });
+
 % if request.registry.settings['google.analytics.key']:
 var _gaq = _gaq || [];
 _gaq.push(['_setAccount', '${request.registry.settings['google.analytics.key']}']);

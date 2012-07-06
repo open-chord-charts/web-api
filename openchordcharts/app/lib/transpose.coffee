@@ -20,6 +20,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+exports = module?.exports or @
+
+
 chordRegex = /([A-G][b#]?)(.*)/
 chromaticKeys = [
     ['G#', 'Ab'],
@@ -38,7 +41,7 @@ chromaticKeys = [
 diatonicKeys = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 
 
-decorateChart = (chart) ->
+exports.decorateChart = (chart) ->
   parts = []
   for partName, partIndex in chart.structure
     newPart = name: partName, chords: []
@@ -58,7 +61,7 @@ getChromaticIndex = (key) ->
     throw new Error("Chromatic index not found")
 
 
-partsToRows = (parts) ->
+exports.partsToRows = (parts) ->
   newParts = []
   for part in parts
     rows = []
@@ -76,7 +79,7 @@ renderChord = (chord) ->
   renderedChord
 
 
-transposeChord = (chord, fromKey, toKey) ->
+exports.transposeChord = (chord, fromKey, toKey) ->
   return chord if fromKey == toKey
   m = chordRegex.exec chord
   key = m[1]

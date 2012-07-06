@@ -20,20 +20,34 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-# Inspired from Spine.Model.Local, the difference is that model objects are stored to localStorage if their "offline"
-# attribute is true.
+require "bootstrapify"
+require "es5-shimify"
+$ = require "jqueryify"
+require "json2ify"
+Spine = require "spine"
+require "spine/lib/route"
+
+{ApplicationCacheInfo} = require "controllers/application_cache_info"
+{ChartsShow} = require "controllers/charts/show"
+{NavigatorInfo} = require "controllers/navigator_info"
 
 
-OfflineLocal =
-  extended: ->
-    @change @saveLocal
-    @fetch @loadLocal
+class App extends Spine.Controller
+  elements:
+    "footer p.application-cache-info": "applicationCacheInfoParagraph"
+    "footer p.navigator-info": "navigatorInfoParagraph"
 
-  saveLocal: ->
-    window.localStorage[@className] = JSON.stringify (record for cid, record of @records when record.offline)
+  constructor: ->
+    super
+    new ApplicationCacheInfo el: @el.find @applicationCacheInfoParagraph
+    new NavigatorInfo el: @el.find @navigatorInfoParagraph
+    new ChartsShow el: @el
+    Spine.Route.setup history: true
 
-  loadLocal: ->
-    @refresh(window.localStorage[@className] or [], clear: true)
+
+start = ->
+    $("*[rel~='external']").attr "target", "_blank"
+    new App el: $("body")
 
 
-module?.exports.OfflineLocal = OfflineLocal
+module?.exports.start = start

@@ -36,18 +36,6 @@ ${u'Results for "{0}"'.format(data['q']) if data['q'] else u'Charts'}
 </%def>
 
 
-<%block name="script">
-<%parent:script/>
-<script>
-$(function() {
-  $("*[rel~='popover']").popover({
-    placement: "bottom"
-  });
-});
-</script>
-</%block>
-
-
 <%block name="title">
 <%parent:title/>: <%self:page_title/>
 </%block>

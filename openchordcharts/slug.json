@@ -5,8 +5,10 @@
     "jqueryify",
     "json2ify",
     "spine",
-    "spine/lib/local"
+    "spine/lib/ajax",
+    "spine/lib/manager",
+    "spine/lib/route"
   ],
-  "libs": [ ],
+  "main": "./app/index",
   "public": "./static"
 }

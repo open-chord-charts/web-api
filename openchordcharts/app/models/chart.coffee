@@ -20,13 +20,43 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+Spine = require "spine"
+require "spine/lib/ajax"
+
+{OfflineLocal} = require "models/offline_local"
+transpose = require "lib/transpose"
+
+
 class Chart extends Spine.Model
-  @configure "Chart", "key", "offline", "parts", "slug", "structure", "title"
+  @configure "Chart", "composers", "genre", "key", "offline", "parts", "slug", "structure", "title"
   @extend OfflineLocal
+  @extend Spine.Model.Ajax.Methods
+  @url: "/charts.json"
+
+  @fetchLocalOrAjax: (params) =>
+    refreshCallbacks = @_callbacks.refresh
+    @unbind "refresh"
+    @one "refresh", (charts, options) =>
+      @_callbacks.refresh = refreshCallbacks
+      found = false
+      if @count() and params.query
+        chart = @findByAttribute params.query.name, params.query.value
+        found = true if chart
+      if found
+        @trigger "refresh", @all(), localStorage: true
+      else
+        @fetchAjax params
+    @fetch params
+
+  @fetchAjax: (params) ->
+    @ajax().fetch(params)
 
   transpose: (toKey) =>
     if toKey != @key
       for partName, chords of @parts
-        @parts[partName] = (transposeChord(chord, @key, toKey) for chord in chords)
+        @parts[partName] = (transpose.transposeChord(chord, @key, toKey) for chord in chords)
       @key = toKey
     @
+
+
+module?.exports.Chart = Chart

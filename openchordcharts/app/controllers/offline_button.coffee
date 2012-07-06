@@ -20,11 +20,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+Spine = require "spine"
+
+{Chart} = require "models/chart"
+
+
 class OfflineButton extends Spine.Controller
   attributes:
     "data-toggle": "button"
     rel: "popover"
-  className: "btn"
+  className: "btn offline-button"
   events:
     "click": "onClick"
   logPrefix: "(OfflineButton)"
@@ -50,11 +55,12 @@ class OfflineButton extends Spine.Controller
   render: =>
     popover = @el.data "popover"
     if @chart.offline
-      @log "Set delete offline popover"
       popover.options.content = "You won't be able to access this page while being offline."
       popover.options.title = "Delete offline data"
     else
-      @log "Set keep offline popover"
       popover.options.content = "You will be able to access this page while being offline."
       popover.options.title = "Keep data offline"
     @
+
+
+module?.exports.OfflineButton = OfflineButton

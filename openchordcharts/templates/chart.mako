@@ -24,38 +24,12 @@
 
 
 <%!
-import json
-
 from babel.dates import format_datetime
 from pyramid.security import has_permission
 
 from openchordcharts.helpers import get_login_url
 from openchordcharts.utils import common_chromatic_keys
 %>
-
-
-<%block name="script_domready">
-<%parent:script_domready/>
-require("bootstrapify");
-$("*[rel~='popover']").popover({
-  placement: "bottom"
-});
-var chart = new window.openchordcharts.Charts({
-  chart: ${json.dumps(dict(
-    key=chart.key,
-    parts=chart.parts,
-    slug=chart.slug,
-    structure=chart.structure,
-    title=chart.title,
-  )) | n},
-  el: $("body")
-});
-##  $(".chords").draggable({
-##    axis: "y",
-##    handle: ".part-name",
-##    revert: true
-##  });
-</%block>
 
 
 <%block name="title">
@@ -165,6 +139,7 @@ part_nb_lines = len(chart.parts[part_name]) / 8
   </table>
 % endif
 </div>
+
 
 <%block name="footer">
 <%include file="chart_footer.mako"/>

@@ -21,14 +21,44 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 @font-face {
-  font-family: 'lilyjazzchord';
+  font-family: lilyjazzchord;
   src: url("/static/fonts/lilyjazzchord.otf");
 }
-footer {
-  margin-top: 10em;
-}
-@media (max-width: 979px) {
-  footer {
-    margin-top: 0;
+@media (max-width: 767px) {
+  .chords {
+    margin-left: -10px;
+    margin-right: -10px;
   }
+  table td.bar {
+    padding-left: 2px;
+    padding-right: 2px;
+  }
+  table td.part-name {
+    padding: 0.1em;
+  }
+}
+.chords {
+  clear: both;
+}
+.chords table {
+  table-layout: fixed;
+}
+.chords table td {
+  text-align: center;
+}
+.chords table td.bar {
+  font-family: 'lilyjazzchord', sans-serif;
+}
+.chords table td.part-name {
+  cursor: move;
+  width: 1em;
+}
+.properties .left {
+  float: left;
+}
+.properties .left .genre {
+  margin-left: 2em;
+}
+.properties .right {
+  float: right;
 }
