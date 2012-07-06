@@ -62,7 +62,7 @@ user-scalable=0">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="${request.route_path('index')}">Open Chord Charts</a>
+          <a class="brand" href="${request.route_path('index')}">Open Chord Charts (dev)</a>
           <div class="nav-collapse">
             <ul class="nav">
               <li${u' class="active"' if request.matched_route.name == 'charts' else '' | n}>
@@ -70,13 +70,8 @@ user-scalable=0">
               </li>
             </ul>
             <form action="${request.route_path('charts')}" class="navbar-search pull-left">
-              <input class="search-query" name="q" placeholder="Search" type="text" value="${request.GET.get('q', '')}">
+              <input class="search-query" name="q" placeholder="Search (ex: All of me)" type="text" value="${request.GET.get('q', '')}">
             </form>
-            <ul class="nav">
-              <li${u' class="active"' if request.matched_route.name == 'about' else '' | n}>
-                <a href="${request.route_path('about')}">About</a>
-              </li>
-            </ul>
 % if request.user:
             <div class="btn-group pull-right">
               <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
@@ -107,7 +102,7 @@ rel="nofollow">Logout</a></li>
       <footer>
         <hr>
         <%block name="footer"/>
-        <p><a href="${request.route_path('about')}">Copyright ©</a> The Open Chord Charts contributors, 2012</p>
+        <p>Copyright © The Open Chord Charts contributors, 2012</p>
         <p class="application-cache-info"></p>
         <p class="navigator-info"></p>
       </footer>
