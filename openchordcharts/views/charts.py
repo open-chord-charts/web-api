@@ -57,7 +57,7 @@ def chart(request):
     else:
         return dict(
             chart=chart,
-            data=data,
+            data=data or {},
             original_key=original_key,
             slug=slug,
             )
@@ -79,7 +79,7 @@ def charts(request):
     nb_deleted_charts = Chart.find(dict(is_deleted=True)).count()
     return dict(
         charts_cursor=charts_cursor,
-        data=data,
+        data=data or {},
         nb_deleted_charts=nb_deleted_charts,
         )
 
@@ -119,7 +119,7 @@ def create(request):
     return dict(
         cancel_url=request.route_path('charts'),
         chart=chart,
-        chart_data=chart_data,
+        chart_data=chart_data or {},
         chart_errors=chart_errors or {},
         form_action_url=request.route_path('chart.create'),
         )

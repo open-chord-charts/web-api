@@ -23,10 +23,26 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#from pyramid.httpexceptions import HTTPNotFound
+from pyramid.httpexceptions import HTTPBadRequest, HTTPNotFound
+
+from openchordcharts.conv import params_to_index_data
 
 
 def cache_manifest(request):
-    request.response.content_type = 'text/cache-manifest'
-#    raise HTTPNotFound()
-    return dict()
+    data, errors = params_to_index_data(request.params)
+    if errors is not None:
+        raise HTTPBadRequest(detail=errors)
+    if data['appcache']:
+        request.response.content_type = 'text/cache-manifest'
+        return {}
+    else:
+        raise HTTPNotFound()
+
+
+def index(request):
+    data, errors = params_to_index_data(request.params)
+    if errors is not None:
+        raise HTTPBadRequest(detail=errors)
+    return dict(
+        data=data or {},
+        )

@@ -24,19 +24,23 @@
 
 
 <%block name="html_tag_opening">
+% if data['appcache']:
 <html manifest="${request.route_path('cache.manifest')}">
+% else:
+<html manifest="${request.route_path('cache.manifest', _query=dict(appcache=int(data['appcache'])))}">
+% endif
 </%block>
 
 
 <div class="hero-unit">
   <p>
-    The Open Chord Charts project aims to provide a database of music chord charts.</p>
-    <ul>
-      <li><p>For musicians, jazzmen in particular.</p></li>
-      <li><p>Contribution is possible for everyone.</p></li>
-      <li><p>Charts are published under Creative Commons licence (see below).</p></li>
-    </ul>
-
+    The Open Chord Charts project aims to provide a database of music chord charts.
+  </p>
+  <ul>
+    <li><p>For musicians, jazzmen in particular.</p></li>
+    <li><p>Contribution is possible for everyone.</p></li>
+    <li><p>Charts are published under Creative Commons licence (see below).</p></li>
+  </ul>
   <p>
     <a class="btn btn-primary btn-large" href="${request.route_path('charts')}">View charts »</a>
   </p>
