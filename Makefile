@@ -6,9 +6,10 @@ check: flake8
 
 clean:
 	find -name *.pyc | xargs rm -f
+	cd openchordcharts; rm -f static/application.css static/application.js
 
 compile:
-	cd openchordcharts; hem build
+	cd client; npm install .; hem build
 
 flake8:
 	flake8 --ignore=E501 .
@@ -17,4 +18,4 @@ pep8:
 	pep8 --max-line-length=120 .
 
 watch:
-	cd openchordcharts; hem watch --debug
+	cd client; hem watch --debug

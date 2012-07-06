@@ -5,6 +5,6 @@
 .*.swp
 *.mo
 *.pt.py
-openchordcharts/static/css/*.css
-openchordcharts/static/js/*.js
-openchordcharts/static/templates/*.js
+client/node_modules
+openchordcharts/static/application.css
+openchordcharts/static/application.js

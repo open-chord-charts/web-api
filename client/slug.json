@@ -1,14 +1,10 @@
 {
   "dependencies": [
-    "bootstrapify",
-    "es5-shimify",
-    "jqueryify",
-    "json2ify",
     "spine",
     "spine/lib/ajax",
     "spine/lib/manager",
     "spine/lib/route"
   ],
   "main": "./app/index",
-  "public": "./static"
+  "public": "../openchordcharts/static"
 }

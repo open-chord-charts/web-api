@@ -1,0 +1,24 @@
+{
+  "author": "Christophe Benz <christophe.benz@gmail.com>",
+  "name": "openchordcharts-client",
+  "description": "CoffeeScript web client for OpenChordCharts.",
+  "version": "0.0.0",
+  "homepage": "http://www.gitorious.org/open-chord-charts",
+  "licenses":
+    [{
+      "type": "AGPLv3",
+      "url": "http://www.gnu.org/licenses/agpl.html"
+    }],
+  "repository": {
+    "type": "git",
+    "url": "git@gitorious.org:open-chord-charts/open-chord-charts.git"
+  },
+  "dependencies": {
+    "spine": "~1.0.8"
+  },
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}
