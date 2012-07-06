@@ -56,6 +56,8 @@ class ApplicationCacheInfo extends Spine.Controller
         @html "progress"
     window.applicationCache.onupdateready = (event) =>
       window.applicationCache.swapCache()
+      if confirm "New version available. Reload page?"
+        window.location.reload()
       @log "updateready", event
       @html "updateready"
 
