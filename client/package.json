@@ -14,6 +14,10 @@
     "url": "git@gitorious.org:open-chord-charts/open-chord-charts.git"
   },
   "dependencies": {
+    "es5-shimify": "~0.0.1",
+    "hem": "~0.1.8",
+    "jqueryify": "~0.0.1",
+    "json2ify": "~0.0.1",
     "spine": "~1.0.8"
   },
   "devDependencies": {},
