@@ -1,7 +1,20 @@
-<% if @.length: %>
+<% if not @q: %>
+  <% if true: %>
+<p><a class="btn" href="<%= @routes['chart.create'] %>">Add a new chart</a></p>
+  <% else: %>
+<p><a class="btn" data-content="Creation is restricted to authenticated users." href="${get_login_url(request)}"
+rel="nofollow popover" title="Please login first!">Add a new chart</a></p>
+  <% end %>
+<% end %>
+
+<div class="page-header">
+  <h1><% if @q: %>Results for "<%= @q %>"<% else: %>Charts<% end %></h1>
+</div>
+
+<% if @charts.length: %>
 <ul>
-  <% for chart in @: %>
-  <li><a href="/charts/<%= chart.slug %>">chart.title</a></li>
+  <% for chart in @charts: %>
+  <li><a href="/charts/<%= chart.slug %>"><%= chart.title %></a></li>
   <% end %>
 </ul>
 <% else: %>

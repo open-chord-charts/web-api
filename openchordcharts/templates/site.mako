@@ -52,7 +52,9 @@ user-scalable=0">
     <%include file="navbar.mako"/>
 
     <div class="container">
-      <article></article>
+      <article>
+        ${eco_template | n}
+      </article>
       <footer>
         <hr>
         <%block name="footer"/>

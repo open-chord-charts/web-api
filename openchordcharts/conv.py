@@ -77,6 +77,18 @@ params_to_charts_data = struct(
     keep_none_values=True,
     )
 
+params_to_charts_json_data = struct(
+    dict(
+        include_deleted=guess_bool,
+        q=cleanup_line,
+        slug=cleanup_line,
+        title=cleanup_line,
+        user=cleanup_line,
+        ),
+    default=noop,
+    keep_none_values=True,
+    )
+
 params_to_chart_data = struct(
     dict(
         key=pipe(cleanup_line, input_to_key),

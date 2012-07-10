@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 # Open Chord Charts -- Database of free chord charts
 # By: Christophe Benz <christophe.benz@gmail.com>
 #
@@ -23,28 +20,26 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import pkg_resources
-
-import eco
-from pyramid.httpexceptions import HTTPBadRequest, HTTPNotFound
-
-from openchordcharts.conv import params_to_index_data
+{Chart} = require "models/chart"
 
 
-def cache_manifest(request):
-    data, errors = params_to_index_data(request.params)
-    if errors is not None:
-        raise HTTPBadRequest(detail=errors)
-    if data['appcache']:
-        request.response.content_type = 'text/cache-manifest'
-        return {}
-    else:
-        raise HTTPNotFound()
+class ChartsList extends Spine.Controller
+  logPrefix = "(controllers.charts.list.ChartsList)"
+
+  constructor: ->
+    super
+    Chart.bind "refresh change", @render
+    Chart.fetchAjax()
+
+  render: =>
+    @html(@template(
+      charts: Chart.all()
+    ))
+
+  template: (args = {}) =>
+    defaults = routes:
+      "chart.create": "/charts/create"
+    require("views/charts")($.extend({}, args, defaults))
 
 
-def index(request):
-    template_string = pkg_resources.resource_string('openchordcharts', '/templates/eco/index.eco').decode('utf-8')
-    eco_template = eco.render(template_string, routes=dict(charts=request.route_path('charts')))
-    return dict(
-        eco_template=eco_template,
-        )
+module?.exports.ChartsList = ChartsList

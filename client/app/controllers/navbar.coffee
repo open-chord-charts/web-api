@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 # Open Chord Charts -- Database of free chord charts
 # By: Christophe Benz <christophe.benz@gmail.com>
 #
@@ -23,28 +20,29 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import pkg_resources
+class NavBar extends Spine.Controller
+  elements:
+    "a.brand": "brandLink"
+    "a.charts": "chartsLink"
+  events:
+    "click a.brand": "onNavigateLinkClick"
+    "click a.charts": "onNavigateLinkClick"
+  logPrefix: "(NavBar)"
 
-import eco
-from pyramid.httpexceptions import HTTPBadRequest, HTTPNotFound
+  constructor: ->
+    super
+    Spine.Route.bind "change", @onRouteChange
 
-from openchordcharts.conv import params_to_index_data
+  onNavigateLinkClick: (event) =>
+    event.preventDefault()
+    @navigate event.target.pathname
+
+  onRouteChange: (route, path) =>
+    $li = @chartsLink.parent "li"
+    if path == "/charts"
+      $li.addClass "active"
+    else
+      $li.removeClass "active"
 
 
-def cache_manifest(request):
-    data, errors = params_to_index_data(request.params)
-    if errors is not None:
-        raise HTTPBadRequest(detail=errors)
-    if data['appcache']:
-        request.response.content_type = 'text/cache-manifest'
-        return {}
-    else:
-        raise HTTPNotFound()
-
-
-def index(request):
-    template_string = pkg_resources.resource_string('openchordcharts', '/templates/eco/index.eco').decode('utf-8')
-    eco_template = eco.render(template_string, routes=dict(charts=request.route_path('charts')))
-    return dict(
-        eco_template=eco_template,
-        )
+module?.exports.NavBar = NavBar

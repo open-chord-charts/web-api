@@ -20,9 +20,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-Spine = require "spine"
-require "spine/lib/ajax"
-
 {OfflineLocal} = require "models/offline_local"
 transpose = require "lib/transpose"
 

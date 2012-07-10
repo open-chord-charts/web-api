@@ -20,8 +20,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-Spine = require "spine"
-
 {Chart} = require "models/chart"
 chartView = require "views/chart"
 {OfflineButton} = require "controllers/offline_button"
@@ -40,7 +38,7 @@ class ChartsShow extends Spine.Controller
     "click .actions .btn.delete": "onDeleteButtonClicked"
     "change .properties .key select": "onKeySelectChange"
     "submit .properties .key form": "onTransposeFormSubmit"
-  logPrefix: "(Charts)"
+  logPrefix: "(controllers.charts.show.ChartsShow)"
 
   constructor: ->
     super

@@ -20,13 +20,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-Spine = require "spine"
-
-
 class ApplicationCacheInfo extends Spine.Controller
-  logPrefix: "(ApplicationCache)"
+  logPrefix: "(ApplicationCacheInfo)"
 
-  constructor: (options) ->
+  constructor: ->
     super
     window.applicationCache.oncached = (event) =>
       @log "cached", event

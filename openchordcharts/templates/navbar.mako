@@ -37,7 +37,7 @@ from openchordcharts.helpers import get_login_url
       <div class="nav-collapse">
         <ul class="nav">
           <li${u' class="active"' if request.matched_route.name == 'charts' else '' | n}>
-            <a href="${request.route_path('charts')}">Charts</a>
+            <a class="charts" href="${request.route_path('charts')}">Charts</a>
           </li>
         </ul>
         <form action="${request.route_path('charts')}" class="navbar-search pull-left">

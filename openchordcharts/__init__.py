@@ -61,6 +61,8 @@ def main(global_config, **settings):
 
     config.set_request_factory(RequestWithUserAttribute)
 
+    config.add_renderer('jsonp', JSONP(param_name='callback'))
+
     config.add_static_view('static', 'openchordcharts:static')
 
     # Authentication
@@ -80,11 +82,14 @@ def main(global_config, **settings):
     config.add_route('offline', '/offline')
     config.add_view(renderer='/offline.mako', route_name='offline')
 
-    config.add_route('catchall', '/*catchall')
-    config.add_view(renderer='/site.mako', route_name='catchall')
+    config.add_route('chart.json', '/charts/{slug}.json')
+    config.add_view(openchordcharts.views.charts.chart, renderer='jsonp', route_name='chart.json')
+    config.add_route('charts.json', '/charts.json')
+    config.add_view(openchordcharts.views.charts.charts_json, renderer='jsonp', route_name='charts.json')
 
     config.add_route('index', '/')
-    config.add_view(renderer='/index.mako', route_name='index')
+    config.add_view(openchordcharts.views.index, renderer='/site.mako', route_name='index')
+
     config.add_route('chart.create', '/charts/create')
     config.add_view(openchordcharts.views.charts.create, permission='edit', renderer='/chart_edit.mako',
         route_name='chart.create')
@@ -95,20 +100,13 @@ def main(global_config, **settings):
         route_name='chart.edit')
     config.add_route('chart.history', '/charts/{slug}/history')
     config.add_view(openchordcharts.views.charts.history, renderer='/chart_history.mako', route_name='chart.history')
-    config.add_route('chart.json', '/charts/{slug}.json')
-    config.add_view(openchordcharts.views.charts.chart, renderer='jsonp', route_name='chart.json')
     config.add_route('chart.undelete', '/charts/{slug}/undelete')
     config.add_view(openchordcharts.views.charts.undelete, permission='edit', route_name='chart.undelete')
     config.add_route('chart', '/charts/{slug}')
     config.add_view(openchordcharts.views.charts.chart, renderer='/chart.mako', route_name='chart')
     config.add_route('charts', '/charts')
-    config.add_view(openchordcharts.views.charts.charts, renderer='/charts.mako', route_name='charts')
-    config.add_route('charts.json', '/charts.json')
-    config.add_view(openchordcharts.views.charts.charts_json, renderer='jsonp', route_name='charts.json')
-
+    config.add_view(openchordcharts.views.charts.charts, renderer='/site.mako', route_name='charts')
     config.add_route('user', '/users/{slug}')
     config.add_view(openchordcharts.views.users.user, renderer='/user.mako', route_name='user')
-
-    config.add_renderer('jsonp', JSONP(param_name='callback'))
 
     return config.make_wsgi_app()

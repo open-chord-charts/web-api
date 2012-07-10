@@ -23,14 +23,17 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+import pkg_resources
+
 from biryani.baseconv import check, cleanup_line
 from biryani.strings import slugify
+import eco
 from formencode.variabledecode import variable_decode
 from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPFound, HTTPNotFound
 from pyramid.security import has_permission
 
 from openchordcharts.conv import (chart_to_json_dict, params_to_chart_data, params_to_chart_edit_data,
-    params_to_charts_data)
+    params_to_charts_data, params_to_charts_json_data)
 from openchordcharts.model.chart import Chart, HistoryChart
 
 
@@ -75,31 +78,38 @@ def charts(request):
             spec['keywords'] = Chart.get_search_by_keywords_spec(q_slug.split('-'))
     if not data['include_deleted']:
         spec['is_deleted'] = {'$exists': False}
-    charts_cursor = Chart.find(spec).sort('title').limit(int(settings['charts.limit']))
-    nb_deleted_charts = Chart.find(dict(is_deleted=True)).count()
+    charts = [chart_to_json_dict(chart) for chart in Chart.find(spec).sort('title').limit(settings['charts.limit'])]
+    template_string = pkg_resources.resource_string('openchordcharts', '/templates/eco/charts.eco').decode('utf-8')
+    eco_template = eco.render(template_string, charts=charts, q=data['q'],
+        routes={'chart.create': request.route_path('chart.create')})
     return dict(
-        charts_cursor=charts_cursor,
         data=data or {},
-        nb_deleted_charts=nb_deleted_charts,
+        eco_template=eco_template,
         )
 
 
 def charts_json(request):
-    spec = {}
+    settings = request.registry.settings
+    data, errors = params_to_charts_json_data(request.params)
+    if errors is not None:
+        raise HTTPBadRequest(detail=errors)
+    spec = dict()
+    if not data['include_deleted']:
+        spec['is_deleted'] = {'$exists': False}
     title_slug = None
-    if request.GET.get('slug'):
-        slug = check(cleanup_line(request.GET['slug']))
+    if data['slug']:
+        slug = data['slug']
         if slug:
             spec['slug'] = slug
-    if request.GET.get('title'):
-        title_slug = slugify(request.GET['title'])
+    if data['title']:
+        title_slug = slugify(data['title'])
         if title_slug:
             spec['keywords'] = Chart.get_search_by_keywords_spec(title_slug.split('-'))
-    if request.GET.get('user'):
-        user = check(cleanup_line(request.GET['user']))
+    if data['user']:
+        user = data['user']
         if user:
             spec['user'] = user
-    return [chart_to_json_dict(chart) for chart in Chart.find(spec)]
+    return [chart_to_json_dict(chart) for chart in Chart.find(spec).sort('slug').limit(settings['charts.limit'])]
 
 
 def create(request):

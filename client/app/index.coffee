@@ -20,31 +20,32 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-require "es5-shimify"
-require "json2ify"
-Spine = require "spine"
-require "spine/lib/route"
+require "lib/setup"
 
 {ApplicationCacheInfo} = require "controllers/application_cache_info"
+{Chart} = require 'models/chart'
+{NavBar} = require 'controllers/navbar'
 {NavigatorInfo} = require "controllers/navigator_info"
 {Stack} = require "controllers/stack"
-
-{Chart} = require 'models/chart'
 
 
 class App extends Spine.Controller
   elements:
-    ".container article": "article"
     "footer p.application-cache-info": "applicationCacheInfoParagraph"
+    ".container article": "article"
+    ".navbar": "navbarDiv"
     "footer p.navigator-info": "navigatorInfoParagraph"
+  logPrefix: "(App)"
 
   constructor: ->
     super
-    new ApplicationCacheInfo el: @el.find @applicationCacheInfoParagraph
-    new NavigatorInfo el: @el.find @navigatorInfoParagraph
+    new NavBar el: @navbarDiv
+    new ApplicationCacheInfo el: @applicationCacheInfoParagraph
+    new NavigatorInfo el: @navigatorInfoParagraph
     new Stack el: @article
-    Chart.fetchLocalOrAjax()
-    Spine.Route.setup history: true
+    Spine.Route.bind "change", (route, path) =>
+      @log "Route change: ", route, path
+    Spine.Route.setup(history: true)
 
 
 module?.exports.App = App

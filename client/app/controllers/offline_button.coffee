@@ -20,8 +20,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-Spine = require "spine"
-
 {Chart} = require "models/chart"
 
 
@@ -35,7 +33,7 @@ class OfflineButton extends Spine.Controller
   logPrefix: "(OfflineButton)"
   tag: "button"
 
-  constructor: (options) ->
+  constructor: ->
     super
     @el.text "Offline"
     if @chart.offline

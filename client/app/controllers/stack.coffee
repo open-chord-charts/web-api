@@ -20,35 +20,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-Spine = require 'spine'
-require 'spine/lib/manager'
-
-{Chart} = require 'models/chart'
-
-
-class Index extends Spine.Controller
-  constructor: ->
-    super
-    @html(require('views/index')())
-
-
-class Charts extends Spine.Controller
-  constructor: ->
-    super
-    @render Chart.all()
-
-  render: (charts) =>
-    @html(require('views/charts')(charts))
+{ChartsList} = require "controllers/charts/list"
+{Index} = require "controllers/index"
 
 
 class Stack extends Spine.Stack
   controllers:
-    charts: Charts
+    charts: ChartsList
     index: Index
-
+  logPrefix: "(Stack)"
   routes:
-    '/': 'index'
-    '/charts': 'charts'
+    "/": "index"
+    "/charts": "charts"
 
 
 module?.exports.Stack = Stack

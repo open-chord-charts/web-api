@@ -20,13 +20,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-Spine = require "spine"
-
-
 class NavigatorInfo extends Spine.Controller
-  logPrefix: "(Navigator)"
+  logPrefix: "(NavigatorInfo)"
 
-  constructor: (options) ->
+  constructor: ->
     super
     window.ononline = @onNavigatorOnline
     window.onoffline = @onNavigatorOffline
