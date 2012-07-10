@@ -38,11 +38,14 @@ class Chart extends Spine.Model
     @unbind "refresh"
     @one "refresh", (charts, options) =>
       @_callbacks.refresh = refreshCallbacks
-      found = false
-      if @count() and params.query
-        chart = @findByAttribute params.query.name, params.query.value
-        found = true if chart
-      if found
+#      found = false
+#      if @count()
+#        if params.query
+#          chart = @findByAttribute params.query.name, params.query.value
+#          found = true if chart
+#        else
+#          found = true
+      if @count()
         @trigger "refresh", @all(), localStorage: true
       else
         @fetchAjax params

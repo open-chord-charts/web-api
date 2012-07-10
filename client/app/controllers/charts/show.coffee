@@ -50,7 +50,7 @@ class ChartsShow extends Spine.Controller
         @submitButton.detach()
         Chart.bind "change", @render
         Chart.bind "refresh", @onChartRefresh
-        Chart.fetchLocalOrAjax query: {name: "slug", value: @slug}
+#        Chart.fetchLocalOrAjax query: {name: "slug", value: @slug}
 
   onChartRefresh: (charts, options) =>
     @log "onChartRefresh", charts, options

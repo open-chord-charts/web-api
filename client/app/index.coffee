@@ -26,12 +26,15 @@ Spine = require "spine"
 require "spine/lib/route"
 
 {ApplicationCacheInfo} = require "controllers/application_cache_info"
-{ChartsShow} = require "controllers/charts/show"
 {NavigatorInfo} = require "controllers/navigator_info"
+{Stack} = require "controllers/stack"
+
+{Chart} = require 'models/chart'
 
 
 class App extends Spine.Controller
   elements:
+    ".container article": "article"
     "footer p.application-cache-info": "applicationCacheInfoParagraph"
     "footer p.navigator-info": "navigatorInfoParagraph"
 
@@ -39,13 +42,9 @@ class App extends Spine.Controller
     super
     new ApplicationCacheInfo el: @el.find @applicationCacheInfoParagraph
     new NavigatorInfo el: @el.find @navigatorInfoParagraph
-    new ChartsShow el: @el
+    new Stack el: @article
+    Chart.fetchLocalOrAjax()
     Spine.Route.setup history: true
 
 
-start = ->
-    $("*[rel~='external']").attr "target", "_blank"
-    new App el: $("body")
-
-
-module?.exports.start = start
+module?.exports.App = App

@@ -1,0 +1,9 @@
+<% if @.length: %>
+<ul>
+  <% for chart in @: %>
+  <li><a href="/charts/<%= chart.slug %>">chart.title</a></li>
+  <% end %>
+</ul>
+<% else: %>
+<p>No charts found.</p>
+<% end %>

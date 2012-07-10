@@ -61,6 +61,8 @@ def main(global_config, **settings):
 
     config.set_request_factory(RequestWithUserAttribute)
 
+    config.add_static_view('static', 'openchordcharts:static')
+
     # Authentication
     if settings['authentication.fake_login']:
         config.add_route('fake_login', '/login-fake')
@@ -73,13 +75,16 @@ def main(global_config, **settings):
     config.add_route('logout', '/logout')
     config.add_view(openchordcharts.views.auth.logout, route_name='logout')
 
-    config.add_route('index', '/')
-    config.add_view(openchordcharts.views.index, renderer='/index.mako', route_name='index')
     config.add_route('cache.manifest', '/cache.manifest')
     config.add_view(openchordcharts.views.cache_manifest, renderer='/cache_manifest.mako', route_name='cache.manifest')
     config.add_route('offline', '/offline')
     config.add_view(renderer='/offline.mako', route_name='offline')
 
+    config.add_route('catchall', '/*catchall')
+    config.add_view(renderer='/site.mako', route_name='catchall')
+
+    config.add_route('index', '/')
+    config.add_view(renderer='/index.mako', route_name='index')
     config.add_route('chart.create', '/charts/create')
     config.add_view(openchordcharts.views.charts.create, permission='edit', renderer='/chart_edit.mako',
         route_name='chart.create')
@@ -105,7 +110,5 @@ def main(global_config, **settings):
     config.add_view(openchordcharts.views.users.user, renderer='/user.mako', route_name='user')
 
     config.add_renderer('jsonp', JSONP(param_name='callback'))
-
-    config.add_static_view('static', 'openchordcharts:static')
 
     return config.make_wsgi_app()

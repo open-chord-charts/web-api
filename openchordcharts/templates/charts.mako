@@ -65,7 +65,7 @@ rel="nofollow popover" title="Please login first!">Add a new chart</a></p>
 % endif
 
 % if charts_cursor.count():
-<ul class="unstyled">
+<ul>
   % for chart in charts_cursor:
   <li><a href="${request.route_path('chart', slug=chart.slug)}">\
 ${highlight(chart.title, data['q'].split()) if data['q'] else chart.title}\

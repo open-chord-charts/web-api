@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 # Open Chord Charts -- Database of free chord charts
 # By: Christophe Benz <christophe.benz@gmail.com>
 #
@@ -23,17 +20,35 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from pyramid.httpexceptions import HTTPBadRequest, HTTPNotFound
+Spine = require 'spine'
+require 'spine/lib/manager'
 
-from openchordcharts.conv import params_to_index_data
+{Chart} = require 'models/chart'
 
 
-def cache_manifest(request):
-    data, errors = params_to_index_data(request.params)
-    if errors is not None:
-        raise HTTPBadRequest(detail=errors)
-    if data['appcache']:
-        request.response.content_type = 'text/cache-manifest'
-        return {}
-    else:
-        raise HTTPNotFound()
+class Index extends Spine.Controller
+  constructor: ->
+    super
+    @html(require('views/index')())
+
+
+class Charts extends Spine.Controller
+  constructor: ->
+    super
+    @render Chart.all()
+
+  render: (charts) =>
+    @html(require('views/charts')(charts))
+
+
+class Stack extends Spine.Stack
+  controllers:
+    charts: Charts
+    index: Index
+
+  routes:
+    '/': 'index'
+    '/charts': 'charts'
+
+
+module?.exports.Stack = Stack
