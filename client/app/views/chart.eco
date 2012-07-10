@@ -1,16 +1,95 @@
-<table class="table table-bordered table-striped">
-  <tbody>
-<% for part in @partRows: %>
-  <% for row, rowIndex in part.rows: %>
-    <tr>
-    <% if rowIndex == 0: %>
-      <td class="part-name"<% if part.rows.length > 1: %>rowspan="<%= part.rows.length %>"<% end %>><%= part.name %></td>
+<% if @chart.is_deleted: %>
+<div class="alert alert-block">
+  <a class="close" data-dismiss="alert">×</a>
+  <h4 class="alert-heading">Warning!</h4>
+  <p>This chart is marked as deleted.</p>
+  <p><a class="btn" href="<%= @routes['chart.undelete'] %>">Undelete</a></p>
+</div>
+<% end %>
+
+<div class="actions">
+## Previous versions of chart in history do not provide edit and delete buttons.
+<% if not @revision: %>
+  <% if true: %>
+  <a class="btn" href="<%= @routes['chart.edit'] %>">Edit</a>
+    <% if not @chart.is_deleted: %>
+  <a class="btn delete" href="<%= @routes['chart.delete'] %>">Delete</a>
     <% end %>
-    <% for chord in row: %>
-      <td class="bar"><%= chord %></td>
+  % else:
+  <a class="btn" data-content="Edition is restricted to authenticated users." href="${get_login_url(request)}"
+rel="nofollow popover" title="Please login first!">Edit</a>
+    <% if not @chart.is_deleted: %>
+  <a class="btn" data-content="Deletion is restricted to authenticated users." href="${get_login_url(request)}"
+rel="nofollow popover" title="Please login first!">Delete</a>
     <% end %>
-    </tr>
   <% end %>
 <% end %>
-  </tbody>
-</table>
+  <a class="btn" href="<%= @routes['chart.history'] %>">History</a>
+  <a class="btn" href="<%= @routes['chart.json'] %>" title="Get JSON version of this chart (for programmers)">
+Raw data</a>
+</div>
+
+<div class="page-header">
+  <h1>
+    <span class="title">${chart.title}</span>
+<% if @chart.composers: %>
+    <small class="composers">${u', '.join(chart.composers)}</small>
+<% end %>
+  </h1>
+</div>
+
+<% if @revision: %>
+<div class="alert alert-block">
+  <a class="close" data-dismiss="alert">×</a>
+  <h4 class="alert-heading">Previous version!</h4>
+  <p>This chart is a previous version modified at ${format_datetime(chart.modified_at)}).</p>
+  <p><a class="btn" href="<%= @routes['chart'] %>">Current version</a></p>
+</div>
+<% end %>
+
+<div class="properties">
+  <div class="left">
+<% if @chart.structure: %>
+    <span class="structure">${len(list(chart.iter_chords()))} × ${''.join(chart.structure)}</span>
+<% end %>
+<% if @chart.genre: %>
+    <span class="genre">${chart.genre}</span>
+<% end %>
+  </div>
+
+  <div class="key right">
+    <form method="get">
+      <select class="input-mini" name="key" title="Transpose chart into another key">
+<% for key in @commonChromaticKeys: %>
+        <option${u' selected' if key == chart.key else ''} value="${key}">
+${u'{0}{1}'.format(key, u' (original)' if key == original_key else '')}</option>
+<% end %>
+<% if @chart.key not in @commonChromaticKeys: %>
+        <option selected value="${chart.key}">${chart.key}</option>
+<% end %>
+      </select>
+      <input class="btn" type="submit" value="Transpose">
+    </form>
+  </div>
+</div>
+
+<div class="chords">
+<% if @chart.structure: %>
+  <table class="table table-bordered table-striped">
+    <tbody>
+  <% for part in @partRows: %>
+    <% for row, rowIndex in part.rows: %>
+      <tr>
+      <% if rowIndex == 0: %>
+        <td class="part-name"<% if part.rows.length > 1: %>rowspan="<%= part.rows.length %>"<% end %>><%= part.name %></td>
+      <% end %>
+      <% for chord in row: %>
+        <td class="bar"><%= chord %></td>
+      <% end %>
+      </tr>
+    <% end %>
+  <% end %>
+    </tbody>
+  </table>
+<% end %>
+</div>

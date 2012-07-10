@@ -103,7 +103,7 @@ def main(global_config, **settings):
     config.add_route('chart.undelete', '/charts/{slug}/undelete')
     config.add_view(openchordcharts.views.charts.undelete, permission='edit', route_name='chart.undelete')
     config.add_route('chart', '/charts/{slug}')
-    config.add_view(openchordcharts.views.charts.chart, renderer='/chart.mako', route_name='chart')
+    config.add_view(openchordcharts.views.charts.chart, renderer='/site.mako', route_name='chart')
     config.add_route('charts', '/charts')
     config.add_view(openchordcharts.views.charts.charts, renderer='/site.mako', route_name='charts')
     config.add_route('user', '/users/{slug}')

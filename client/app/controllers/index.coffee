@@ -27,6 +27,10 @@ class Index extends Spine.Controller
     "click .hero-unit a.charts": "onNavigateLinkClick"
   logPrefix: "(controllers.index.Index)"
 
+  activate: =>
+    super
+    window.document.title = "OpenChordCharts"
+
   constructor: ->
     super
     @render()

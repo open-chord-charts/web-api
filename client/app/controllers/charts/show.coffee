@@ -21,7 +21,6 @@
 
 
 {Chart} = require "models/chart"
-chartView = require "views/chart"
 {OfflineButton} = require "controllers/offline_button"
 transpose = require "lib/transpose"
 
@@ -73,10 +72,12 @@ class ChartsShow extends Spine.Controller
     @chart.transpose(@keySelect.val()).save()
 
   render: =>
-    @log "render"
     @keySelect.val @chart.key
-    @chordsDiv.html(chartView(partRows: transpose.partsToRows(transpose.decorateChart(@chart.attributes()))))
+    @html(@template(partRows: transpose.partsToRows(transpose.decorateChart(@chart.attributes()))))
     window.document.title = "#{@chart.title} (#{@chart.key})"
+
+  template: =>
+    require "views/chart"
 
 
 module?.exports.ChartsShow = ChartsShow

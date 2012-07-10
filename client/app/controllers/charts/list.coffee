@@ -26,6 +26,10 @@
 class ChartsList extends Spine.Controller
   logPrefix = "(controllers.charts.list.ChartsList)"
 
+  activate: =>
+    super
+    window.document.title = "OpenChordCharts: charts"
+
   constructor: ->
     super
     Chart.bind "refresh change", @render

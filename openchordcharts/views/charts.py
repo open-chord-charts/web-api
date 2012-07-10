@@ -35,6 +35,7 @@ from pyramid.security import has_permission
 from openchordcharts.conv import (chart_to_json_dict, params_to_chart_data, params_to_chart_edit_data,
     params_to_charts_data, params_to_charts_json_data)
 from openchordcharts.model.chart import Chart, HistoryChart
+from openchordcharts.utils import common_chromatic_keys
 
 
 def chart(request):
@@ -55,14 +56,26 @@ def chart(request):
         chart.transpose(data['key'])
     else:
         original_key = None
+    chart_json = chart_to_json_dict(chart)
     if request.matched_route.name == 'chart.json':
-        return chart_to_json_dict(chart)
+        return chart_json
     else:
+        template_string = pkg_resources.resource_string('openchordcharts', '/templates/eco/chart.eco').decode('utf-8')
+        eco_template = eco.render(template_string, chart=chart_json, commonChromaticKeys=common_chromatic_keys,
+            routes={
+                'chart': request.route_path('chart', slug=slug),
+                'chart.delete': request.route_path('chart.delete', slug=slug),
+                'chart.edit': request.route_path('chart.edit', slug=slug),
+                'chart.history': request.route_path('chart.history', slug=slug),
+                'chart.json': request.route_path('chart.json', slug=slug, _query=dict(
+                    key=chart.key,
+                    revision=data['revision'] or '',
+                    )),
+                'chart.undelete': request.route_path('chart.undelete', slug=slug),
+                },
+            )
         return dict(
-            chart=chart,
-            data=data or {},
-            original_key=original_key,
-            slug=slug,
+            eco_template=eco_template,
             )
 
 
