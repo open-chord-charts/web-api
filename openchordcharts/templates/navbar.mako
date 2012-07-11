@@ -59,7 +59,7 @@ rel="nofollow">Logout</a></li>
 % else:
         <ul class="nav pull-right">
           <li>
-            <a href="${get_login_url(request)}" rel="nofollow">Login</a>
+            <a class="login" href="${get_login_url(request)}" rel="nofollow">Login</a>
           </li>
         </ul>
 % endif

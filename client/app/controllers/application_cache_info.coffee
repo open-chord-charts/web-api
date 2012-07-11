@@ -25,25 +25,25 @@ class ApplicationCacheInfo extends Spine.Controller
 
   constructor: ->
     super
-    window.applicationCache.oncached = (event) =>
+    applicationCache.oncached = (event) =>
       @log "cached", event
       @html "cached"
-    window.applicationCache.onchecking = (event) =>
+    applicationCache.onchecking = (event) =>
       @log "checking", event
       @html "checking"
-    window.applicationCache.ondownloading = (event) =>
+    applicationCache.ondownloading = (event) =>
       @log "downloading", event
       @html "downloading"
-    window.applicationCache.onerror = (event) =>
+    applicationCache.onerror = (event) =>
       @log "error", event
       @html "error"
-    window.applicationCache.onnoupdate = (event) =>
+    applicationCache.onnoupdate = (event) =>
       @log "noupdate", event
       @html "noupdate"
-    window.applicationCache.onobsolete = (event) =>
+    applicationCache.onobsolete = (event) =>
       @log "obsolete", event
       @html "obsolete"
-    window.applicationCache.onprogress = (event) =>
+    applicationCache.onprogress = (event) =>
       if event.lengthComputable
         percentage = Math.round(event.loaded / event.total * 100) + '%'
         @log "progress #{percentage}", event
@@ -51,10 +51,10 @@ class ApplicationCacheInfo extends Spine.Controller
       else
         @log "progress", event
         @html "progress"
-    window.applicationCache.onupdateready = (event) =>
-      window.applicationCache.swapCache()
+    applicationCache.onupdateready = (event) =>
+      applicationCache.swapCache()
       if confirm "New version available. Reload page?"
-        window.location.reload()
+        location.reload()
       @log "updateready", event
       @html "updateready"
 

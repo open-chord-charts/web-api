@@ -20,21 +20,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-{ChartsList} = require "controllers/charts/list"
-{ChartsShow} = require "controllers/charts/show"
-{Index} = require "controllers/index"
+class User extends Spine.Model
+  @configure "User", "created_at", "email", "modified_at", "slug"
 
 
-class Stack extends Spine.Stack
-  controllers:
-    charts: ChartsList
-    chart: ChartsShow
-    index: Index
-  logPrefix: "(Stack)"
-  routes:
-    "/": "index"
-    "/charts": "charts"
-    "/charts/:slug": "chart"
-
-
-module?.exports.Stack = Stack
+module?.exports.User = User

@@ -91,7 +91,6 @@ params_to_charts_json_data = struct(
 
 params_to_chart_data = struct(
     dict(
-        key=pipe(cleanup_line, input_to_key),
         revision=pipe(cleanup_line, input_to_object_id),
         ),
     default=noop,
@@ -104,6 +103,20 @@ params_to_index_data = struct(
         ),
     default=noop,
     keep_none_values=True,
+    )
+
+user_to_json_dict = check(
+    pipe(
+        object_to_clean_dict,
+        struct(
+            dict(
+                _id=set_value(None),
+                created_at=datetime_to_iso8601_str,
+                modified_at=datetime_to_iso8601_str,
+                ),
+            default=noop,
+            ),
+        )
     )
 
 validate_settings = check(

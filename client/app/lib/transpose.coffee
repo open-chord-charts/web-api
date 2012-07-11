@@ -20,9 +20,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-exports = module?.exports or @
-
-
 chordRegex = /([A-G][b#]?)(.*)/
 chromaticKeys = [
     ['G#', 'Ab'],
@@ -38,10 +35,11 @@ chromaticKeys = [
     ['F#', 'Gb'],
     ['G'],
     ]
+commonChromaticKeys = ['Ab', 'A', 'Bb', 'B', 'C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G']
 diatonicKeys = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 
 
-exports.decorateChart = (chart) ->
+decorateChart = (chart) ->
   parts = []
   for partName, partIndex in chart.structure
     newPart = name: partName, chords: []
@@ -61,7 +59,7 @@ getChromaticIndex = (key) ->
     throw new Error("Chromatic index not found")
 
 
-exports.partsToRows = (parts) ->
+partsToRows = (parts) ->
   newParts = []
   for part in parts
     rows = []
@@ -79,7 +77,7 @@ renderChord = (chord) ->
   renderedChord
 
 
-exports.transposeChord = (chord, fromKey, toKey) ->
+transposeChord = (chord, fromKey, toKey) ->
   return chord if fromKey == toKey
   m = chordRegex.exec chord
   key = m[1]
@@ -104,3 +102,10 @@ transposeKey = (key, fromKey, toKey) ->
           if transposedKeyChromatic[0] == transposedKeyDiatonic
               return transposedKeyChromatic
   throw new Error("Transposed key not found")
+
+
+module?.exports =
+  commonChromaticKeys: commonChromaticKeys
+  decorateChart: decorateChart
+  partsToRows: partsToRows
+  transposeChord: transposeChord

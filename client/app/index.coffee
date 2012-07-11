@@ -27,6 +27,7 @@ require "lib/setup"
 {NavBar} = require 'controllers/navbar'
 {NavigatorInfo} = require "controllers/navigator_info"
 {Stack} = require "controllers/stack"
+{User} = require 'models/user'
 
 
 class App extends Spine.Controller
@@ -46,6 +47,8 @@ class App extends Spine.Controller
     Spine.Route.bind "change", (route, path) =>
       @log "Route change: ", route, path
     Spine.Route.setup(history: true)
+    Chart.fetchAjax()
+    @user = User.create(@options.user) if @options.user
 
 
 module?.exports.App = App

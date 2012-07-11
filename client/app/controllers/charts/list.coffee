@@ -21,29 +21,39 @@
 
 
 {Chart} = require "models/chart"
+{User} = require "models/user"
 
 
+# TODO Extend Spine.List (?)
 class ChartsList extends Spine.Controller
-  logPrefix = "(controllers.charts.list.ChartsList)"
-
-  activate: =>
-    super
-    window.document.title = "OpenChordCharts: charts"
+  elements:
+    ".add.btn": "addButton"
+    "ul li a": "chartLink"
+  events:
+    "click ul li a": "onChartLinkClick"
+  logPrefix: "(controllers.charts.list.ChartsList)"
 
   constructor: ->
     super
+    @active @onActive
     Chart.bind "refresh change", @render
-    Chart.fetchAjax()
+
+  onActive: =>
+    document.title = "OpenChordCharts.org: charts"
+
+  onChartLinkClick: (event) =>
+    event.preventDefault()
+    @navigate event.target.pathname
 
   render: =>
-    @html(@template(
+    @html(require("views/charts")(
       charts: Chart.all()
+      isLogged: User.count() > 0
+      routes:
+        "chart.create": "/charts/create"
+        "login": $(".navbar a.login").attr("href")
     ))
-
-  template: (args = {}) =>
-    defaults = routes:
-      "chart.create": "/charts/create"
-    require("views/charts")($.extend({}, args, defaults))
+    @addButton.popover placement: "bottom"
 
 
 module?.exports.ChartsList = ChartsList

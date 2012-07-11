@@ -23,13 +23,14 @@
 class Index extends Spine.Controller
   elements:
     ".hero-unit a.charts": "chartsLink"
+    "a[rel~='external']": "externalLinks"
   events:
     "click .hero-unit a.charts": "onNavigateLinkClick"
   logPrefix: "(controllers.index.Index)"
 
   activate: =>
     super
-    window.document.title = "OpenChordCharts"
+    document.title = "OpenChordCharts.org"
 
   constructor: ->
     super
@@ -40,12 +41,8 @@ class Index extends Spine.Controller
     @navigate event.target.pathname
 
   render: =>
-    @html(@template())
-
-  template: (args = {}) =>
-    defaults = routes:
-      charts: "/charts"
-    require("views/index")($.extend({}, args, defaults))
+    @html(require("views/index")(routes: charts: "/charts"))
+    @externalLinks.attr "target", "_blank"
 
 
 module?.exports.Index = Index

@@ -8,32 +8,28 @@
 <% end %>
 
 <div class="actions">
-## Previous versions of chart in history do not provide edit and delete buttons.
 <% if not @revision: %>
-  <% if true: %>
-  <a class="btn" href="<%= @routes['chart.edit'] %>">Edit</a>
+  <% if @isLogged: %>
+  <a class="btn edit" href="<%= @routes['chart.edit'] %>">Edit</a>
     <% if not @chart.is_deleted: %>
   <a class="btn delete" href="<%= @routes['chart.delete'] %>">Delete</a>
     <% end %>
-  % else:
-  <a class="btn" data-content="Edition is restricted to authenticated users." href="${get_login_url(request)}"
-rel="nofollow popover" title="Please login first!">Edit</a>
+  <% else: %>
+  <a class="btn edit" data-content="Edition is restricted to authenticated users.<br>Click to login."
+href="<%= @routes['login'] %>" rel="nofollow" title="Login required!">Edit</a>
     <% if not @chart.is_deleted: %>
-  <a class="btn" data-content="Deletion is restricted to authenticated users." href="${get_login_url(request)}"
-rel="nofollow popover" title="Please login first!">Delete</a>
+  <a class="btn delete" data-content="Deletion is restricted to authenticated users.<br>Click to login."
+href="<%= @routes['login'] %>" rel="nofollow" title="Login required!">Delete</a>
     <% end %>
   <% end %>
 <% end %>
-  <a class="btn" href="<%= @routes['chart.history'] %>">History</a>
-  <a class="btn" href="<%= @routes['chart.json'] %>" title="Get JSON version of this chart (for programmers)">
-Raw data</a>
 </div>
 
 <div class="page-header">
   <h1>
-    <span class="title">${chart.title}</span>
+    <span class="title"><%= @chart.title %></span>
 <% if @chart.composers: %>
-    <small class="composers">${u', '.join(chart.composers)}</small>
+    <small class="composers"><%= @chart.composers.join ", " %></small>
 <% end %>
   </h1>
 </div>
@@ -42,7 +38,7 @@ Raw data</a>
 <div class="alert alert-block">
   <a class="close" data-dismiss="alert">×</a>
   <h4 class="alert-heading">Previous version!</h4>
-  <p>This chart is a previous version modified at ${format_datetime(chart.modified_at)}).</p>
+  <p>This chart is a previous version modified at <%= @chart.modified_at %>.</p>
   <p><a class="btn" href="<%= @routes['chart'] %>">Current version</a></p>
 </div>
 <% end %>
@@ -50,26 +46,22 @@ Raw data</a>
 <div class="properties">
   <div class="left">
 <% if @chart.structure: %>
-    <span class="structure">${len(list(chart.iter_chords()))} × ${''.join(chart.structure)}</span>
+    <span class="structure"><%= @chart.structure.join "" %></span>
 <% end %>
 <% if @chart.genre: %>
-    <span class="genre">${chart.genre}</span>
+    <span class="genre"><%= @chart.genre %></span>
 <% end %>
   </div>
 
   <div class="key right">
-    <form method="get">
-      <select class="input-mini" name="key" title="Transpose chart into another key">
+    <select class="input-mini" name="key" title="Transpose chart into another key">
 <% for key in @commonChromaticKeys: %>
-        <option${u' selected' if key == chart.key else ''} value="${key}">
-${u'{0}{1}'.format(key, u' (original)' if key == original_key else '')}</option>
+      <option<% if key == @chart.key: %> selected<% end %> value="<%= key %>"><%= key %></option>
 <% end %>
 <% if @chart.key not in @commonChromaticKeys: %>
-        <option selected value="${chart.key}">${chart.key}</option>
+      <option selected value="<%= @chart.key %>"><%= @chart.key %></option>
 <% end %>
-      </select>
-      <input class="btn" type="submit" value="Transpose">
-    </form>
+    </select>
   </div>
 </div>
 
@@ -81,7 +73,9 @@ ${u'{0}{1}'.format(key, u' (original)' if key == original_key else '')}</option>
     <% for row, rowIndex in part.rows: %>
       <tr>
       <% if rowIndex == 0: %>
-        <td class="part-name"<% if part.rows.length > 1: %>rowspan="<%= part.rows.length %>"<% end %>><%= part.name %></td>
+        <td class="part-name"<% if part.rows.length > 1: %>rowspan="<%= part.rows.length %>"<% end %>>
+          <%= part.name %>
+        </td>
       <% end %>
       <% for chord in row: %>
         <td class="bar"><%= chord %></td>
@@ -92,4 +86,11 @@ ${u'{0}{1}'.format(key, u' (original)' if key == original_key else '')}</option>
     </tbody>
   </table>
 <% end %>
+</div>
+
+<div class="actions advanced">
+  <a class="btn history" href="<%= @routes['chart.history'] %>">History</a>
+  <a class="btn json" href="<%= @routes['chart.json'] %>" title="Get JSON version of this chart (for programmers)">
+    Raw data
+  </a>
 </div>

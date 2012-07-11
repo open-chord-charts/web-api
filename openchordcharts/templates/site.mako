@@ -25,14 +25,20 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+<%!
+import json
+
+from openchordcharts.conv import user_to_json_dict
+%>
+
+
   <head>
     <meta charset="utf-8">
     <meta name="description" content="Open Chord Charts project">
     <meta name="author" content="Christophe Benz">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1.0, \
 user-scalable=0">
-    <title><%block name="title">OpenChordCharts</%block></title>
-    <%block name="css">
+    <title>OpenChordCharts.org</title>
     <link href="${request.static_path('openchordcharts:static/bootstrap-2.0.4/css/bootstrap{0}.css'.format(
 '' if request.registry.settings['development_mode'] else '.min'))}" rel="stylesheet">
     <style>
@@ -41,11 +47,9 @@ user-scalable=0">
         padding-bottom: 40px;
       }
     </style>
-
     <link href="${request.static_path('openchordcharts:static/bootstrap-2.0.4/css/bootstrap-responsive{0}.css'.format(
 '' if request.registry.settings['development_mode'] else '.min'))}" rel="stylesheet">
     <link href="${request.static_path('openchordcharts:static/application.css')}" rel="stylesheet">
-    </%block>
    </head>
   <body>
 
@@ -57,14 +61,12 @@ user-scalable=0">
       </article>
       <footer>
         <hr>
-        <%block name="footer"/>
         <p>Copyright © The Open Chord Charts contributors, 2012</p>
         <p class="application-cache-info"></p>
         <p class="navigator-info"></p>
       </footer>
     </div>
 
-    <%block name="script">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="${request.static_path('openchordcharts:static/bootstrap-2.0.4/js/bootstrap{0}.js'.format(
 '' if request.registry.settings['development_mode'] else '.min'))}"></script>
@@ -72,8 +74,9 @@ user-scalable=0">
     <script>
 $(function() {
   var index = require("index");
-  var app = new index.App({
-    el: $("body")
+  this.app = new index.App({
+    el: $("body"),
+    user: ${json.dumps(user_to_json_dict(request.user) if request.user else None) | n}
   });
 });
 
@@ -88,6 +91,5 @@ _gaq.push(['_trackPageview']);
 })();
 % endif
     </script>
-    </%block>
   </body>
 </html>

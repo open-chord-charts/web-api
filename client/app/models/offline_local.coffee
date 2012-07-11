@@ -30,10 +30,10 @@ OfflineLocal =
     @fetch @loadLocal
 
   saveLocal: ->
-    window.localStorage[@className] = JSON.stringify (record for cid, record of @records when record.offline)
+    localStorage[@className] = JSON.stringify (record for cid, record of @records when record.offline)
 
   loadLocal: ->
-    @refresh(window.localStorage[@className] or [], clear: true)
+    @refresh(localStorage[@className] or [], clear: true)
 
 
 module?.exports.OfflineLocal = OfflineLocal

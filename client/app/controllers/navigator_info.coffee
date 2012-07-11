@@ -25,9 +25,9 @@ class NavigatorInfo extends Spine.Controller
 
   constructor: ->
     super
-    window.ononline = @onNavigatorOnline
-    window.onoffline = @onNavigatorOffline
-    if window.navigator.onLine
+    ononline = @onNavigatorOnline
+    onoffline = @onNavigatorOffline
+    if navigator.onLine
       @onNavigatorOnline()
     else
       @onNavigatorOffline()

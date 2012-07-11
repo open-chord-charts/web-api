@@ -1,13 +1,16 @@
 <div class="hero-unit">
+  <h1>Open Chord Charts</h1>
   <p>
     The Open Chord Charts project aims to provide a database of music chord charts.
   </p>
   <ul>
-    <li><p>For musicians, jazzmen in particular.</p></li>
+    <li><p>For musicians, jazz, blues, songs, etc.</p></li>
+    <li><p>Unique and shared pool of charts.</p></li>
     <li><p>Contribution is possible for everyone.</p></li>
-    <li><p>Charts are published under Creative Commons licence (see below).</p></li>
+    <li><p>Data published under Creative Commons licence (see below).</p></li>
   </ul>
   <p>
+    <a class="btn btn-large" href="http://en.wikipedia.org/wiki/Chord_chart" rel="external">What is a chord chart?</a>
     <a class="btn btn-primary btn-large charts" href="<%= @routes.charts %>">View charts »</a>
   </p>
 </div>

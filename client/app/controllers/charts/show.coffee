@@ -21,6 +21,7 @@
 
 
 {Chart} = require "models/chart"
+{User} = require "models/user"
 {OfflineButton} = require "controllers/offline_button"
 transpose = require "lib/transpose"
 
@@ -28,56 +29,67 @@ transpose = require "lib/transpose"
 class ChartsShow extends Spine.Controller
   elements:
     ".actions": "actionsDiv"
-    ".actions .btn.delete": "deleteButton"
     ".chords": "chordsDiv"
+    ".actions .btn.delete": "deleteButton"
+    ".actions .btn.edit": "editButton"
+    ".actions .btn.json": "jsonButton"
     ".properties .key select": "keySelect"
-    ".properties .key input[type='submit']": "submitButton"
-    ".properties .key form": "transposeForm"
   events:
     "click .actions .btn.delete": "onDeleteButtonClicked"
     "change .properties .key select": "onKeySelectChange"
-    "submit .properties .key form": "onTransposeFormSubmit"
   logPrefix: "(controllers.charts.show.ChartsShow)"
 
   constructor: ->
     super
-    @routes
-      "/charts/:slug": (params) ->
-        @slug = params.slug
-        @submitButton.detach()
-        Chart.bind "change", @render
-        Chart.bind "refresh", @onChartRefresh
+    @active @onActive
 #        Chart.fetchLocalOrAjax query: {name: "slug", value: @slug}
 
-  onChartRefresh: (charts, options) =>
-    @log "onChartRefresh", charts, options
+  onActive: (params) =>
+    Chart.bind "change", @onChartChange
+    Chart.bind "refresh", @onChartRefresh
+    @slug = params.slug
     @chart = Chart.findByAttribute "slug", @slug
     if @chart
-      @offlineButton.release() if @offlineButton
-      @offlineButton = new OfflineButton(chart: @chart)
-      @actionsDiv.prepend(@offlineButton.$el)
       @render()
     else
-      @log "Chart \"#{@slug}\" not found"
+      @log "Chart not found, waiting"
+
+  onChartChange: (chart, sourceEvent, options) =>
+    @render() if chart.id == @chart.id
+
+  onChartRefresh: (charts) =>
+    @chart = Chart.findByAttribute "slug", @slug
+    if @chart
+      @render()
+    else
+      @log "Chart not found from refresh (404)"
 
   onDeleteButtonClicked: (event) =>
     if not confirm "Delete \"#{@chart.title}\"?"
       event.preventDefault()
 
   onKeySelectChange: (event) =>
-    @transposeForm.trigger "submit"
-
-  onTransposeFormSubmit: (event) =>
-    event.preventDefault()
     @chart.transpose(@keySelect.val()).save()
 
   render: =>
-    @keySelect.val @chart.key
-    @html(@template(partRows: transpose.partsToRows(transpose.decorateChart(@chart.attributes()))))
-    window.document.title = "#{@chart.title} (#{@chart.key})"
-
-  template: =>
-    require "views/chart"
+    @html(require("views/chart")(
+      chart: @chart
+      commonChromaticKeys: transpose.commonChromaticKeys
+      isLogged: User.count() > 0
+      partRows: transpose.partsToRows(transpose.decorateChart(@chart))
+      routes:
+        "chart": "/charts/#{@chart.slug}"
+        "chart.delete": "/charts/#{@chart.slug}/delete"
+        "chart.edit": "/charts/#{@chart.slug}/edit"
+        "chart.history": "/charts/#{@chart.slug}/history"
+        "chart.json": "/charts/#{@chart.slug}.json"
+        "chart.undelete": "/charts/#{@chart.slug}/undelete"
+        "login": $(".navbar a.login").attr("href")
+    ))
+    @deleteButton.popover placement: "bottom"
+    @editButton.popover placement: "bottom"
+    @jsonButton.attr "target", "_blank"
+    document.title = "#{@chart.title} (#{@chart.key}) – OpenChordCharts.org"
 
 
 module?.exports.ChartsShow = ChartsShow

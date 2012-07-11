@@ -34,6 +34,7 @@ from pyramid.security import has_permission
 
 from openchordcharts.conv import (chart_to_json_dict, params_to_chart_data, params_to_chart_edit_data,
     params_to_charts_data, params_to_charts_json_data)
+from openchordcharts.helpers import get_login_url
 from openchordcharts.model.chart import Chart, HistoryChart
 from openchordcharts.utils import common_chromatic_keys
 
@@ -51,18 +52,25 @@ def chart(request):
         chart = Chart.find_one(dict(slug=slug))
     if chart is None:
         raise HTTPNotFound()
-    if data['key'] is not None and data['key'] != chart.key:
-        original_key = chart.key
-        chart.transpose(data['key'])
-    else:
-        original_key = None
     chart_json = chart_to_json_dict(chart)
     if request.matched_route.name == 'chart.json':
         return chart_json
     else:
+        part_rows = []
+        for part_name in chart.structure:
+            rows = []
+            chords = chart.parts[part_name]
+            i = 0
+            while i < len(chart.parts[part_name]):
+                rows.append(chords[i:i + 8])
+                i += 8
+            part_rows.append(dict(
+                name=part_name,
+                rows=rows,
+                ))
         template_string = pkg_resources.resource_string('openchordcharts', '/templates/eco/chart.eco').decode('utf-8')
         eco_template = eco.render(template_string, chart=chart_json, commonChromaticKeys=common_chromatic_keys,
-            routes={
+            isLogged=request.user is not None, partRows=part_rows, routes={
                 'chart': request.route_path('chart', slug=slug),
                 'chart.delete': request.route_path('chart.delete', slug=slug),
                 'chart.edit': request.route_path('chart.edit', slug=slug),
@@ -72,6 +80,7 @@ def chart(request):
                     revision=data['revision'] or '',
                     )),
                 'chart.undelete': request.route_path('chart.undelete', slug=slug),
+                'login': get_login_url(request),
                 },
             )
         return dict(
@@ -93,7 +102,7 @@ def charts(request):
         spec['is_deleted'] = {'$exists': False}
     charts = [chart_to_json_dict(chart) for chart in Chart.find(spec).sort('title').limit(settings['charts.limit'])]
     template_string = pkg_resources.resource_string('openchordcharts', '/templates/eco/charts.eco').decode('utf-8')
-    eco_template = eco.render(template_string, charts=charts, q=data['q'],
+    eco_template = eco.render(template_string, charts=charts, isLogged=request.user is not None, q=data['q'],
         routes={'chart.create': request.route_path('chart.create')})
     return dict(
         data=data or {},
