@@ -25,7 +25,6 @@
 
 import pkg_resources
 
-from biryani.baseconv import check, cleanup_line
 from biryani.strings import slugify
 import eco
 from formencode.variabledecode import variable_decode
