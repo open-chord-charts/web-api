@@ -6,5 +6,6 @@
 *.mo
 *.pt.py
 client/node_modules
+data/templates
 openchordcharts/static/application.css
 openchordcharts/static/application.js
