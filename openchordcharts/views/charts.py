@@ -67,7 +67,7 @@ def chart(request):
                 name=part_name,
                 rows=rows,
                 ))
-        template_string = pkg_resources.resource_string('openchordcharts', '/templates/eco/chart.eco').decode('utf-8')
+        template_string = pkg_resources.resource_string('openchordcharts', '/templates/eco/chart.eco')
         eco_template = eco.render(template_string, chart=chart_json, commonChromaticKeys=common_chromatic_keys,
             isLogged=request.user is not None, partRows=part_rows, routes={
                 'chart': request.route_path('chart', slug=slug),
@@ -100,7 +100,7 @@ def charts(request):
     if not data['include_deleted']:
         spec['is_deleted'] = {'$exists': False}
     charts = [chart_to_json_dict(chart) for chart in Chart.find(spec).sort('title').limit(settings['charts.limit'])]
-    template_string = pkg_resources.resource_string('openchordcharts', '/templates/eco/charts.eco').decode('utf-8')
+    template_string = pkg_resources.resource_string('openchordcharts', '/templates/eco/charts.eco')
     eco_template = eco.render(template_string, charts=charts, isLogged=request.user is not None, q=data['q'],
         routes={'chart.create': request.route_path('chart.create')})
     return dict(

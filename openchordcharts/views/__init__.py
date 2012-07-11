@@ -43,7 +43,7 @@ def cache_manifest(request):
 
 
 def index(request):
-    template_string = pkg_resources.resource_string('openchordcharts', '/templates/eco/index.eco').decode('utf-8')
+    template_string = pkg_resources.resource_string('openchordcharts', '/templates/eco/index.eco')
     eco_template = eco.render(template_string, routes=dict(charts=request.route_path('charts')))
     return dict(
         eco_template=eco_template,
