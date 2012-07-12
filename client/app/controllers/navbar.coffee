@@ -20,13 +20,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+{Chart} = require "models/chart"
+
+
 class NavBar extends Spine.Controller
   elements:
     "a.brand": "brandLink"
     "a.charts": "chartsLink"
+    "input.search-query": "searchInput"
   events:
     "click a.brand": "onNavigateLinkClick"
     "click a.charts": "onNavigateLinkClick"
+    "change input.search-query": "onSearchInputChange"
   logPrefix: "(NavBar)"
 
   constructor: ->
@@ -43,6 +48,14 @@ class NavBar extends Spine.Controller
       $li.addClass "active"
     else
       $li.removeClass "active"
+
+  onSearchInputChange: (event) =>
+    q = event.target.value.trim()
+    return if not q
+    keywords = (keyword for keyword in q.split(" ") when keyword)
+    @log "onSearchInputChange: keywords: #{keywords}"
+    @navigate "/charts#q=#{keywords}"
+#    Chart.findByKeywords(keywords)
 
 
 module?.exports.NavBar = NavBar

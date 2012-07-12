@@ -4,6 +4,7 @@
     "json2ify",
     "spine",
     "spine/lib/ajax",
+    "spine/lib/local",
     "spine/lib/manager",
     "spine/lib/route"
   ],

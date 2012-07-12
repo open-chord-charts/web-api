@@ -14,7 +14,9 @@ href="<%= @routes['login'] %>" rel="nofollow popover" title="Login required!">Ad
 <% if @charts.length: %>
 <ul>
   <% for chart in @charts: %>
-  <li><a href="/charts/<%= chart.slug %>"><%= chart.title %></a></li>
+  <li>
+    <a href="/charts/<%= chart.slug %>"><%= chart.title %></a><% if chart.offline: %> (offline)<% end %>
+  </li>
   <% end %>
 </ul>
 <% else: %>

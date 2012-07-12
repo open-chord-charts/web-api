@@ -40,9 +40,9 @@ from openchordcharts.helpers import get_login_url
             <a class="charts" href="${request.route_path('charts')}">Charts</a>
           </li>
         </ul>
-        <form action="${request.route_path('charts')}" class="navbar-search pull-left">
-          <input class="search-query" name="q" placeholder="Search (ex: All of me)" type="text" value="${request.GET.get('q', '')}">
-        </form>
+        <div class="navbar-search">
+          <input class="search-query" placeholder="Search (ex: All of me)" type="search">
+        </div>
 % if request.user:
         <div class="btn-group pull-right">
           <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">

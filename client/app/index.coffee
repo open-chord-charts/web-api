@@ -47,7 +47,8 @@ class App extends Spine.Controller
     Spine.Route.bind "change", (route, path) =>
       @log "Route change: ", route, path
     Spine.Route.setup(history: true)
-    Chart.fetchAjax()
+#    Chart.ajax().fetch()
+    Chart.fetchLocalOrAjax()
     @user = User.create(@options.user) if @options.user
 
 

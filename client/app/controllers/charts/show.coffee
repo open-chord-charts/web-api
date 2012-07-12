@@ -22,7 +22,6 @@
 
 {Chart} = require "models/chart"
 {User} = require "models/user"
-{OfflineButton} = require "controllers/offline_button"
 transpose = require "lib/transpose"
 
 
@@ -34,9 +33,11 @@ class ChartsShow extends Spine.Controller
     ".actions .btn.edit": "editButton"
     ".actions .btn.json": "jsonButton"
     ".properties .key select": "keySelect"
+    ".actions .btn.offline": "offlineButton"
   events:
     "click .actions .btn.delete": "onDeleteButtonClicked"
     "change .properties .key select": "onKeySelectChange"
+    "click .actions .btn.offline": "onOfflineButtonClick"
   logPrefix: "(controllers.charts.show.ChartsShow)"
 
   constructor: ->
@@ -71,8 +72,17 @@ class ChartsShow extends Spine.Controller
   onKeySelectChange: (event) =>
     @chart.transpose(@keySelect.val()).save()
 
+  onOfflineButtonClick: (event) =>
+    @offlineButton.data("popover").tip().remove()
+    newOfflineValue = not @chart.offline
+    if newOfflineValue
+      @log "Chart is now offline"
+    else
+      @log "Chart is now online"
+    @chart.updateAttribute "offline", newOfflineValue
+
   render: =>
-    @html(require("views/chart")(
+    @html(require("views/charts/show")(
       chart: @chart
       commonChromaticKeys: transpose.commonChromaticKeys
       isLogged: User.count() > 0
@@ -89,6 +99,16 @@ class ChartsShow extends Spine.Controller
     @deleteButton.popover placement: "bottom"
     @editButton.popover placement: "bottom"
     @jsonButton.attr "target", "_blank"
+    @offlineButton.button "toggle" if @chart.offline
+    if @chart.offline
+      offlineButtonPopoverOptions =
+        content: "You won't be able to access this page while being offline."
+        title: "Delete offline data"
+    else
+      offlineButtonPopoverOptions =
+        content: "You will be able to access this page while being offline."
+        title: "Keep data offline"
+    @offlineButton.popover $.extend({}, {placement: "bottom"}, offlineButtonPopoverOptions)
     document.title = "#{@chart.title} (#{@chart.key}) – OpenChordCharts.org"
 
 

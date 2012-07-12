@@ -46,7 +46,7 @@ class ChartsList extends Spine.Controller
     @navigate event.target.pathname
 
   render: =>
-    @html(require("views/charts")(
+    @html(require("views/charts/list")(
       charts: Chart.all()
       isLogged: User.count() > 0
       routes:

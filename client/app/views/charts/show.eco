@@ -8,6 +8,7 @@
 <% end %>
 
 <div class="actions">
+  <button class="btn offline" data-toggle="button">Offline</button>
 <% if not @revision: %>
   <% if @isLogged: %>
   <a class="btn edit" href="<%= @routes['chart.edit'] %>">Edit</a>
@@ -23,6 +24,10 @@ href="<%= @routes['login'] %>" rel="nofollow" title="Login required!">Delete</a>
     <% end %>
   <% end %>
 <% end %>
+  <a class="btn history" href="<%= @routes['chart.history'] %>">History</a>
+  <a class="btn json" href="<%= @routes['chart.json'] %>" title="Get JSON version of this chart (for programmers)">
+    Raw data
+  </a>
 </div>
 
 <div class="page-header">
@@ -86,11 +91,4 @@ href="<%= @routes['login'] %>" rel="nofollow" title="Login required!">Delete</a>
     </tbody>
   </table>
 <% end %>
-</div>
-
-<div class="actions advanced">
-  <a class="btn history" href="<%= @routes['chart.history'] %>">History</a>
-  <a class="btn json" href="<%= @routes['chart.json'] %>" title="Get JSON version of this chart (for programmers)">
-    Raw data
-  </a>
 </div>
