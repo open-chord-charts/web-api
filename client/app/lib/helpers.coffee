@@ -20,39 +20,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-{Chart} = require "models/chart"
-helpers = require "lib/helpers"
-{User} = require "models/user"
+highlight = (text, keywords) ->
+  newText = text
+  for keyword in keywords
+    regexp = new RegExp "(#{keyword})", "gi"
+    newText = newText.replace regexp, "<strong>$1</strong>"
+  newText
 
 
-class ChartsSearch extends Spine.Controller
-  elements:
-    "ul li a": "chartLink"
-  events:
-    "click ul li a": "onChartLinkClick"
-  logPrefix: "(controllers.charts.list.ChartsList)"
-
-  constructor: ->
-    super
-    @active @onActive
-
-  onActive: (params) =>
-    @q = params.q
-    document.title = "\"#{@q}\" – OpenChordCharts.org"
-    @render()
-
-  onChartLinkClick: (event) =>
-    event.preventDefault()
-    @navigate event.target.pathname
-
-  render: =>
-    keywords = (keyword for keyword in @q.split(" ") when keyword)
-    @html(require("views/charts/list")(
-      charts: Chart.findByKeywords(keywords)
-      highlight: helpers.highlight
-      keywords: keywords
-      q: @q
-    ))
-
-
-module?.exports.ChartsSearch = ChartsSearch
+module?.exports.highlight = highlight

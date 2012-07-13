@@ -43,6 +43,11 @@ from openchordcharts.helpers import get_login_url
         <div class="navbar-search">
           <input class="search-query" placeholder="Search (ex: All of me)" type="search">
         </div>
+        <ul class="nav pull-right">
+          <li>
+            <a class="offline" href="${request.route_path('offline')}">Offline</a>
+          </li>
+        </ul>
 % if request.user:
         <div class="btn-group pull-right">
           <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">

@@ -23,4 +23,6 @@
 <%inherit file="site.mako"/>
 
 
-<div class="chords"></div>
+<%block name="html_tag_opening">
+<html manifest="${request.route_path('cache_manifest')}">
+</%block>

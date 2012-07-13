@@ -107,7 +107,7 @@ def main(global_config, **settings):
     config.add_route('charts', '/charts')
     config.add_view(openchordcharts.views.charts.charts, renderer='/site.mako', route_name='charts')
     config.add_route('search', '/search/{q}')
-    config.add_view(openchordcharts.views.index, renderer='/site.mako', route_name='search')
+    config.add_view(openchordcharts.views.empty, renderer='/site.mako', route_name='search')
     config.add_route('user', '/users/{slug}')
     config.add_view(openchordcharts.views.users.user, renderer='/user.mako', route_name='user')
 
