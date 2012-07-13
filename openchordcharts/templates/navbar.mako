@@ -25,7 +25,7 @@ from openchordcharts.helpers import get_login_url
 %>
 
 
-<div class="navbar navbar-fixed-top">
+<nav class="navbar navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container">
       <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -66,4 +66,4 @@ rel="nofollow">Logout</a></li>
       </div>
     </div>
   </div>
-</div>
+</nav>

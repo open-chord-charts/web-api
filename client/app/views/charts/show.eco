@@ -8,7 +8,7 @@
 <% end %>
 
 <div class="actions">
-  <button class="btn offline" data-toggle="button">Offline</button>
+  <button class="btn local" data-toggle="button">Local</button>
 <% if not @revision: %>
   <% if @isLogged: %>
   <a class="btn edit" href="<%= @routes['chart.edit'] %>">Edit</a>

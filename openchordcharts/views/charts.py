@@ -32,7 +32,7 @@ from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPFound, HTT
 from pyramid.security import has_permission
 
 from openchordcharts.conv import (chart_to_json_dict, params_to_chart_data, params_to_chart_edit_data,
-    params_to_charts_data, params_to_charts_json_data)
+    params_to_charts_json_data)
 from openchordcharts.helpers import get_login_url
 from openchordcharts.model.chart import Chart, HistoryChart
 from openchordcharts.utils import common_chromatic_keys
@@ -89,22 +89,11 @@ def chart(request):
 
 def charts(request):
     settings = request.registry.settings
-    data, errors = params_to_charts_data(request.params)
-    if errors is not None:
-        raise HTTPBadRequest(detail=errors)
-    spec = dict()
-    if data['q']:
-        q_slug = slugify(data['q'])
-        if q_slug:
-            spec['keywords'] = Chart.get_search_by_keywords_spec(q_slug.split('-'))
-    if not data['include_deleted']:
-        spec['is_deleted'] = {'$exists': False}
-    charts = [chart_to_json_dict(chart) for chart in Chart.find(spec).sort('title').limit(settings['charts.limit'])]
+    charts = [chart_to_json_dict(chart) for chart in Chart.find().sort('title').limit(settings['charts.limit'])]
     template_string = pkg_resources.resource_string('openchordcharts', '/templates/eco/charts/list.eco')
-    eco_template = eco.render(template_string, charts=charts, isLogged=request.user is not None, q=data['q'],
+    eco_template = eco.render(template_string, charts=charts, isLogged=request.user is not None,
         routes={'chart.create': request.route_path('chart.create')})
     return dict(
-        data=data or {},
         eco_template=eco_template,
         )
 

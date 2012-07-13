@@ -68,15 +68,6 @@ input_to_key = pipe(
     function(lambda s: s.capitalize()),
     )
 
-params_to_charts_data = struct(
-    dict(
-        include_deleted=guess_bool,
-        q=cleanup_line,
-        ),
-    default=noop,
-    keep_none_values=True,
-    )
-
 params_to_charts_json_data = struct(
     dict(
         include_deleted=guess_bool,

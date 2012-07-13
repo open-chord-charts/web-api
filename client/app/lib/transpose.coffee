@@ -99,8 +99,8 @@ transposeKey = (key, fromKey, toKey) ->
       return transposedKeysChromatic[0]
   else
       for transposedKeyChromatic in transposedKeysChromatic
-          if transposedKeyChromatic[0] == transposedKeyDiatonic
-              return transposedKeyChromatic
+        if transposedKeyChromatic[0] == transposedKeyDiatonic
+          return transposedKeyChromatic
   throw new Error("Transposed key not found")
 
 

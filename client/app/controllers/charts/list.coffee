@@ -24,7 +24,6 @@
 {User} = require "models/user"
 
 
-# TODO Extend Spine.List (?)
 class ChartsList extends Spine.Controller
   elements:
     ".add.btn": "addButton"
@@ -39,7 +38,7 @@ class ChartsList extends Spine.Controller
     Chart.bind "refresh change", @render
 
   onActive: =>
-    document.title = "OpenChordCharts.org: charts"
+    document.title = "Charts – OpenChordCharts.org"
 
   onChartLinkClick: (event) =>
     event.preventDefault()

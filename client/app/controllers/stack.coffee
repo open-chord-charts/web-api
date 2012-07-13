@@ -21,20 +21,23 @@
 
 
 {ChartsList} = require "controllers/charts/list"
+{ChartsSearch} = require "controllers/charts/search"
 {ChartsShow} = require "controllers/charts/show"
 {Index} = require "controllers/index"
 
 
 class Stack extends Spine.Stack
   controllers:
-    charts: ChartsList
     chart: ChartsShow
+    charts: ChartsList
     index: Index
+    search: ChartsSearch
   logPrefix: "(Stack)"
   routes:
     "/": "index"
-    "/charts": "charts"
     "/charts/:slug": "chart"
+    "/charts": "charts"
+    "/search/:q": "search"
 
 
 module?.exports.Stack = Stack

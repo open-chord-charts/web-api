@@ -21,38 +21,35 @@
 
 
 {Chart} = require "models/chart"
+{User} = require "models/user"
 
 
-class NavBar extends Spine.Controller
+class ChartsSearch extends Spine.Controller
   elements:
-    "a.brand": "brandLink"
-    "a.charts": "chartsLink"
-    "input.search-query": "searchInput"
+    "ul li a": "chartLink"
   events:
-    "click a.brand": "onNavigateLinkClick"
-    "click a.charts": "onNavigateLinkClick"
-    "search input.search-query": "onSearchInputSearch"
-  logPrefix: "(NavBar)"
+    "click ul li a": "onChartLinkClick"
+  logPrefix: "(controllers.charts.list.ChartsList)"
 
   constructor: ->
     super
-    Spine.Route.bind "change", @onRouteChange
+    @active @onActive
 
-  onNavigateLinkClick: (event) =>
+  onActive: (params) =>
+    @q = params.q
+    document.title = "\"#{@q}\" – OpenChordCharts.org"
+    @render()
+
+  onChartLinkClick: (event) =>
     event.preventDefault()
     @navigate event.target.pathname
 
-  onRouteChange: (route, path) =>
-    $li = @chartsLink.parent "li"
-    if route.path == "/charts"
-      $li.addClass "active"
-    else
-      $li.removeClass "active"
-
-  onSearchInputSearch: (event) =>
-    q = event.target.value.trim()
-    return if not q
-    @navigate "/search/#{q}"
+  render: =>
+    keywords = (keyword for keyword in @q.split(" ") when keyword)
+    @html(require("views/charts/list")(
+      charts: Chart.findByKeywords(keywords)
+      q: @q
+    ))
 
 
-module?.exports.NavBar = NavBar
+module?.exports.ChartsSearch = ChartsSearch

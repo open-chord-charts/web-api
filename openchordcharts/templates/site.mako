@@ -55,7 +55,7 @@ user-scalable=0">
 
     <%include file="navbar.mako"/>
 
-    <div class="container">
+    <section class="container">
       <article>
         ${eco_template | n}
       </article>
@@ -65,7 +65,7 @@ user-scalable=0">
         <p class="application-cache-info"></p>
         <p class="navigator-info"></p>
       </footer>
-    </div>
+    </section>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="${request.static_path('openchordcharts:static/bootstrap-2.0.4/js/bootstrap{0}.js'.format(
