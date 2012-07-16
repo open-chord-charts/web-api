@@ -24,6 +24,7 @@ require "lib/setup"
 
 {Chart} = require 'models/chart'
 {NavBar} = require 'controllers/navbar'
+{Offline} = require 'controllers/offline'
 {Stack} = require "controllers/stack"
 {User} = require 'models/user'
 
@@ -43,4 +44,16 @@ class App extends Spine.Controller
     @user = User.create(@options.user) if @options.user
 
 
+class OfflineApp extends Spine.Controller
+  elements:
+    ".content": "contentDiv"
+    ".navbar a.offline": "offlineLink"
+  logPrefix: "(OfflineApp)"
+
+  constructor: ->
+    super
+    @offline = new Offline el: @contentDiv
+
+
 module?.exports.App = App
+module?.exports.OfflineApp = OfflineApp

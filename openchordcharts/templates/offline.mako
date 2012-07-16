@@ -25,10 +25,9 @@
 
 <%block name="application_script">
 $(function() {
-  require("lib/setup");
-  var offline = require("controllers/offline");
-  this.offline = new offline.Offline({
-    el: $(".content")
+  var index = require("index");
+  this.app = new index.OfflineApp({
+    el: $("body")
   });
 });
 </%block>

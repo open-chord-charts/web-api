@@ -27,6 +27,7 @@ class NavBar extends Spine.Controller
   elements:
     "a.brand": "brandLink"
     "a.charts": "chartsLink"
+    "li": "navigationItems"
     "input.search-query": "searchInput"
   events:
     "click a.brand": "onNavigateLinkClick"
@@ -43,12 +44,9 @@ class NavBar extends Spine.Controller
     @navigate event.target.pathname
 
   onRouteChange: (route, path) =>
-    # FIXME Should use signals between controllers.
-    $li = @chartsLink.parent "li"
+    @navigationItems.removeClass "active"
     if route.path == "/charts"
-      $li.addClass "active"
-    else
-      $li.removeClass "active"
+      @chartsLink.parent("li").addClass("active")
 
   onSearchInputSearch: (event) =>
     q = event.target.value.trim()
