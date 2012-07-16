@@ -49,6 +49,9 @@ class Chart extends Spine.Model
   keywords: =>
     @slug.split("-")
 
+  @slugSort: (a, b) ->
+    if a.slug > b.slug then 1 else -1
+
   transpose: (toKey) =>
     if toKey != @key
       for partName, chords of @parts

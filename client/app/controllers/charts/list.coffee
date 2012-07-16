@@ -46,7 +46,7 @@ class ChartsList extends Spine.Controller
 
   render: =>
     @html(require("views/charts/list")(
-      charts: Chart.all()
+      charts: Chart.all().sort(Chart.slugSort)
       isLogged: User.count() > 0
       routes:
         "chart.create": "/charts/create"
