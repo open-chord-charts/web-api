@@ -25,12 +25,10 @@ transpose = require "lib/transpose"
 
 
 class Chart extends Spine.Model
-  @configure "Chart", "composers", "genre", "is_deleted", "key", "local", "parts", "slug", "structure", "title"
+  @configure "Chart", "composers", "genre", "is_deleted", "key", "local", "modified_at", "obsolete", "parts", "slug",
+    "structure", "title"
   @extend SelectedLocal
   @extend Spine.Model.Ajax
-#  @extend Spine.Model.Ajax.Methods
-  @include Spine.Log
-  logPrefix: "[MODEL] (Chart)"
   @url: "/charts.json"
 
   @findByKeywords: (keywords) =>
@@ -43,7 +41,12 @@ class Chart extends Spine.Model
     dedupedObjects = []
     for object in objects
       originalObject = @findByAttribute "slug", object.slug
-      dedupedObjects.push(originalObject or object)
+      if originalObject
+        if new Date(originalObject.modified_at).getTime() < new Date(object.modified_at).getTime()
+          originalObject.obsolete = true
+        dedupedObjects.push originalObject
+      else
+        dedupedObjects.push object
     dedupedObjects
 
   keywords: =>

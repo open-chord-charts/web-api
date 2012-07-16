@@ -62,7 +62,7 @@ class ChartsShow extends Spine.Controller
     if @chart
       @render()
     else
-      @log "Chart not found from refresh (404)"
+      @log "Chart not found from refresh event (404)"
       if not navigator.onLine
         @html """
 You navigator is offline. Open Chord Charts is running from the application cache.
@@ -105,9 +105,14 @@ This chart was not found in local storage.
     @jsonButton.attr "target", "_blank"
     @localButton.button "toggle" if @chart.local
     if @chart.local
-      localButtonPopoverOptions =
-        content: "You won't be able to access this page while being offline."
-        title: "Delete local data"
+      if @chart.obsolete
+        localButtonPopoverOptions =
+          content: "Local data is obsolete: a new version of this chart is available. Click to update."
+          title: "Update local data"
+      else
+        localButtonPopoverOptions =
+          content: "You won't be able to access this page while being offline."
+          title: "Delete local data"
     else
       localButtonPopoverOptions =
         content: "You will be able to access this page while being offline."

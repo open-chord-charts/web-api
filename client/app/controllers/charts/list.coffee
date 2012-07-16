@@ -35,10 +35,11 @@ class ChartsList extends Spine.Controller
   constructor: ->
     super
     @active @onActive
-    Chart.bind "refresh change", @render
 
   onActive: =>
+    Chart.bind "change refresh", @render
     document.title = "Charts – OpenChordCharts.org"
+    @render()
 
   onChartLinkClick: (event) =>
     event.preventDefault()

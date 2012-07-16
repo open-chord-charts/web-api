@@ -37,6 +37,7 @@ class ChartsSearch extends Spine.Controller
     @active @onActive
 
   onActive: (params) =>
+    Chart.bind "change refresh", @render
     @q = params.q
     document.title = "\"#{@q}\" – OpenChordCharts.org"
     @render()
@@ -48,7 +49,7 @@ class ChartsSearch extends Spine.Controller
   render: =>
     keywords = (keyword for keyword in @q.split(" ") when keyword)
     @html(require("views/charts/list")(
-      charts: Chart.findByKeywords(keywords)
+      charts: Chart.findByKeywords(keywords).sort(Chart.slugSort)
       highlight: helpers.highlight
       keywords: keywords
       q: @q
