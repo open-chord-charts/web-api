@@ -89,7 +89,10 @@ def chart(request):
 
 def charts(request):
     settings = request.registry.settings
-    charts = [chart_to_json_dict(chart) for chart in Chart.find().sort('title').limit(settings['charts.limit'])]
+    spec = dict(
+        is_deleted={'$exists': False},
+        )
+    charts = [chart_to_json_dict(chart) for chart in Chart.find(spec).sort('title').limit(settings['charts.limit'])]
     template_string = pkg_resources.resource_string('openchordcharts', '/templates/eco/charts/list.eco')
     eco_template = eco.render(template_string, charts=charts, isLogged=request.user is not None,
         routes={'chart.create': request.route_path('chart.create')})

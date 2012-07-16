@@ -20,43 +20,85 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-class ApplicationCacheInfo extends Spine.Controller
-  logPrefix: "(ApplicationCacheInfo)"
+class Offline extends Spine.Controller
+  elements:
+    ".progress": "progressDiv"
+    ".progress .bar": "progressBarDiv"
+    ".row.progress-bar": "progressRowDiv"
+    ".status": "statusParagraph"
+    "button.stop": "stopButton"
+  events:
+    "click button.stop": "onStopButtonClicked"
+  logPrefix: "(Offline)"
 
   constructor: ->
     super
+
+    # Online/Offline status
+    ononline = @onNavigatorOnline
+    onoffline = @onNavigatorOffline
+    if navigator.onLine
+      @onNavigatorOnline()
+    else
+      @onNavigatorOffline()
+
+    # Application Cache
+    @stopButton.hide()
     applicationCache.oncached = (event) =>
       @log "cached", event
-      @html "cached"
+      @progressDiv.removeClass "active progress-striped"
+      @setStatus "cached"
+      @stopButton.hide()
     applicationCache.onchecking = (event) =>
       @log "checking", event
-      @html "checking"
+      @progressDiv.addClass "active progress-striped"
+      @setStatus "checking"
     applicationCache.ondownloading = (event) =>
       @log "downloading", event
-      @html "downloading"
+      @setStatus "downloading"
+      @stopButton.show()
     applicationCache.onerror = (event) =>
       @log "error", event
-      @html "error"
+      @setStatus "error. You may be offline"
+      @progressRowDiv.hide()
+      @stopButton.hide()
     applicationCache.onnoupdate = (event) =>
       @log "noupdate", event
-      @html "noupdate"
+      @progressDiv.removeClass "active progress-striped"
+      @progressBarDiv.css "width", "100%"
+      @setStatus "no update"
+      @stopButton.hide()
     applicationCache.onobsolete = (event) =>
       @log "obsolete", event
-      @html "obsolete"
+      @setStatus "obsolete"
+      @stopButton.hide()
     applicationCache.onprogress = (event) =>
       if event.lengthComputable
         percentage = Math.round(event.loaded / event.total * 100) + '%'
         @log "progress #{percentage}", event
-        @html "progress #{percentage}"
+        @progressBarDiv.css "width", percentage
       else
-        @log "progress", event
-        @html "progress"
+        @log "progress (length not computable)", event
+        @progressBarDiv.css "width", "100%"
     applicationCache.onupdateready = (event) =>
       applicationCache.swapCache()
-      if confirm "New version available. Reload page?"
-        location.reload()
       @log "updateready", event
-      @html "updateready"
+      @progressDiv.removeClass "active progress-striped"
+      @setStatus "update ready"
+      @stopButton.hide()
+
+  onNavigatorOffline: (event) =>
+    @log "offline"
+    @setStatus "offline"
+
+  onNavigatorOnline: (event) =>
+    @log "online"
+
+  onStopButtonClicked: (event) =>
+    applicationCache.abort()
+
+  setStatus: (status) =>
+    @statusParagraph.text "Status: #{status}"
 
 
-module?.exports.ApplicationCacheInfo = ApplicationCacheInfo
+module?.exports.Offline = Offline

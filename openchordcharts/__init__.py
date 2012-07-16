@@ -81,6 +81,8 @@ def main(global_config, **settings):
     config.add_view(openchordcharts.views.cache_manifest, renderer='/cache_manifest.mako', route_name='cache.manifest')
     config.add_route('offline', '/offline')
     config.add_view(renderer='/offline.mako', route_name='offline')
+    config.add_route('fallback', '/fallback')
+    config.add_view(openchordcharts.views.empty, renderer='/site.mako', route_name='fallback')
 
     config.add_route('chart.json', '/charts/{slug}.json')
     config.add_view(openchordcharts.views.charts.chart, renderer='jsonp', route_name='chart.json')

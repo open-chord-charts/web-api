@@ -43,7 +43,6 @@ class ChartsShow extends Spine.Controller
   constructor: ->
     super
     @active @onActive
-#        Chart.fetchLocalOrAjax query: {name: "slug", value: @slug}
 
   onActive: (params) =>
     Chart.bind "change", @onChartChange
@@ -55,7 +54,7 @@ class ChartsShow extends Spine.Controller
     else
       @log "Chart not found, waiting"
 
-  onChartChange: (chart, sourceEvent, options) =>
+  onChartChange: (chart, type, options) =>
     @render() if chart.id == @chart.id
 
   onChartRefresh: (charts) =>
@@ -64,13 +63,18 @@ class ChartsShow extends Spine.Controller
       @render()
     else
       @log "Chart not found from refresh (404)"
+      if not navigator.onLine
+        @html """
+You navigator is offline. Open Chord Charts is running from the application cache.
+This chart was not found in local storage.
+"""
 
   onDeleteButtonClicked: (event) =>
     if not confirm "Delete \"#{@chart.title}\"?"
       event.preventDefault()
 
   onKeySelectChange: (event) =>
-    @chart.transpose(@keySelect.val()).save()
+    @chart.transpose(@keySelect.val()).save(ajax: false)
 
   onLocalButtonClick: (event) =>
     @localButton.data("popover").tip().remove()
@@ -79,7 +83,7 @@ class ChartsShow extends Spine.Controller
       @log "Chart is now stored in localStorage"
     else
       @log "Chart is no more stored in localStorage"
-    @chart.updateAttribute "local", newLocalValue
+    @chart.updateAttribute "local", newLocalValue, ajax: false
 
   render: =>
     @html(require("views/charts/show")(

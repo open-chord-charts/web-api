@@ -57,13 +57,13 @@ user-scalable=0">
 
     <section class="container">
       <article>
+      <%block name="article">
         ${eco_template | n}
+      </%block>
       </article>
       <footer>
         <hr>
         <p>Copyright © The Open Chord Charts contributors, 2012</p>
-        <p class="application-cache-info"></p>
-        <p class="navigator-info"></p>
       </footer>
     </section>
 
@@ -72,6 +72,7 @@ user-scalable=0">
 '' if request.registry.settings['development_mode'] else '.min'))}"></script>
     <script src="${request.static_path('openchordcharts:static/application.js')}"></script>
     <script>
+    <%block name="application_script">
 $(function() {
   var index = require("index");
   this.app = new index.App({
@@ -79,7 +80,7 @@ $(function() {
     user: ${json.dumps(user_to_json_dict(request.user) if request.user else None) | n}
   });
 });
-
+    </%block>
 % if request.registry.settings['google.analytics.key']:
 var _gaq = _gaq || [];
 _gaq.push(['_setAccount', '${request.registry.settings['google.analytics.key']}']);

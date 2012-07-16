@@ -43,6 +43,7 @@ class NavBar extends Spine.Controller
     @navigate event.target.pathname
 
   onRouteChange: (route, path) =>
+    # FIXME Should use signals between controllers.
     $li = @chartsLink.parent "li"
     if route.path == "/charts"
       $li.addClass "active"

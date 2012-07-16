@@ -22,33 +22,24 @@
 
 require "lib/setup"
 
-{ApplicationCacheInfo} = require "controllers/application_cache_info"
 {Chart} = require 'models/chart'
 {NavBar} = require 'controllers/navbar'
-{NavigatorInfo} = require "controllers/navigator_info"
 {Stack} = require "controllers/stack"
 {User} = require 'models/user'
 
 
 class App extends Spine.Controller
   elements:
-    "footer p.application-cache-info": "applicationCacheInfoParagraph"
     ".container article": "article"
     ".navbar": "navbarDiv"
-    "footer p.navigator-info": "navigatorInfoParagraph"
   logPrefix: "(App)"
 
   constructor: ->
     super
     new NavBar el: @navbarDiv
-    new ApplicationCacheInfo el: @applicationCacheInfoParagraph
-    new NavigatorInfo el: @navigatorInfoParagraph
     new Stack el: @article
-    Spine.Route.bind "change", (route, path) =>
-      @log "Route change: ", route, path
     Spine.Route.setup(history: true)
-#    Chart.ajax().fetch()
-    Chart.fetchLocalOrAjax()
+    Chart.fetch()
     @user = User.create(@options.user) if @options.user
 
 

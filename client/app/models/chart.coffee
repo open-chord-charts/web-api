@@ -20,41 +20,31 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+{SelectedLocal} = require "models/selected_local"
 transpose = require "lib/transpose"
 
 
 class Chart extends Spine.Model
   @configure "Chart", "composers", "genre", "is_deleted", "key", "local", "parts", "slug", "structure", "title"
-  @extend Spine.Model.Local
-  @extend Spine.Model.Ajax.Methods
+  @extend SelectedLocal
+  @extend Spine.Model.Ajax
+#  @extend Spine.Model.Ajax.Methods
   @include Spine.Log
   logPrefix: "[MODEL] (Chart)"
   @url: "/charts.json"
-
-  @fetchLocalOrAjax: (params) =>
-    refreshCallbacks = @_callbacks.refresh
-    @unbind "refresh"
-    @one "refresh", (charts, options) =>
-      @_callbacks.refresh = refreshCallbacks
-#      found = false
-#      if @count()
-#        if params.query
-#          chart = @findByAttribute params.query.name, params.query.value
-#          found = true if chart
-#        else
-#          found = true
-      if @count()
-        @::log "Charts found in localStorage"
-        @trigger "refresh", @all(), localStorage: true
-      else
-        @::log "Fetching charts with an AJAX request"
-        @ajax().fetch(params)
-    @fetch params
 
   @findByKeywords: (keywords) =>
     @select (chart) ->
       chartKeywords = chart.keywords()
       keywords.every (item) -> item in chartKeywords
+
+  @fromJSON: (objects) =>
+    objects = super
+    dedupedObjects = []
+    for object in objects
+      originalObject = @findByAttribute "slug", object.slug
+      dedupedObjects.push(originalObject or object)
+    dedupedObjects
 
   keywords: =>
     @slug.split("-")

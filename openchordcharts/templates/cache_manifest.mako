@@ -39,7 +39,7 @@ ${request.static_path('openchordcharts:static/application.css')}
 ${request.static_path('openchordcharts:static/application.js')}
 
 FALLBACK:
-/ /offline
+/ /fallback
 
 NETWORK:
 *
