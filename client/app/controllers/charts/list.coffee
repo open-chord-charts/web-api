@@ -36,9 +36,9 @@ class ChartsList extends Spine.Controller
   constructor: ->
     super
     @active @onActive
+    Chart.bind "change refresh", @render
 
   onActive: =>
-    Chart.bind "change refresh", @render
     document.title = "Charts – OpenChordCharts.org"
     @render()
 
