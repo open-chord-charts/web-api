@@ -31,14 +31,16 @@ require "lib/setup"
 
 class App extends Spine.Controller
   elements:
-    ".container article": "article"
+    "section.container": "section"
+    "section.container article.first": "firstArticle"
     ".navbar": "navbarDiv"
   logPrefix: "(App)"
 
   constructor: ->
     super
     new NavBar el: @navbarDiv
-    new Stack el: @article
+    new Stack el: @section
+    @firstArticle.remove()
     Spine.Route.setup(history: true)
     Chart.fetch()
     @user = User.create(@options.user) if @options.user

@@ -56,16 +56,17 @@ user-scalable=0">
     <%include file="navbar.mako"/>
 
     <section class="container">
-      <article>
+      <article class="first">
       <%block name="article">
         ${eco_template | n}
       </%block>
       </article>
-      <footer>
-        <hr>
-        <p>Copyright © The Open Chord Charts contributors, 2012</p>
-      </footer>
     </section>
+
+    <footer class="container">
+      <hr>
+      <p>Copyright © The Open Chord Charts contributors, 2012</p>
+    </footer>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="${request.static_path('openchordcharts:static/bootstrap-2.0.4/js/bootstrap{0}.js'.format(
