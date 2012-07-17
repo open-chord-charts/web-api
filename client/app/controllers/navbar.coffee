@@ -47,6 +47,9 @@ class NavBar extends Spine.Controller
     @navigationItems.removeClass "active"
     if route.path == "/charts"
       @chartsLink.parent("li").addClass("active")
+    else if route.path == "/search/:q"
+      match = route.route.exec(path)
+      @searchInput.val(match[1])
 
   onSearchInputSearch: (event) =>
     q = event.target.value.trim()
