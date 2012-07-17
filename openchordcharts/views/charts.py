@@ -35,7 +35,6 @@ from openchordcharts.conv import (chart_to_json_dict, params_to_chart_data, para
     params_to_charts_json_data)
 from openchordcharts.helpers import get_login_url
 from openchordcharts.model.chart import Chart, HistoryChart
-from openchordcharts.utils import common_chromatic_keys
 
 
 def chart(request):
@@ -68,6 +67,7 @@ def chart(request):
                 rows=rows,
                 ))
         template_string = pkg_resources.resource_string('openchordcharts', '/templates/eco/charts/show.eco')
+        common_chromatic_keys = ['Ab', 'A', 'Bb', 'B', 'C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G']
         eco_template = eco.render(template_string, chart=chart_json, commonChromaticKeys=common_chromatic_keys,
             isLogged=request.user is not None, partRows=part_rows, routes={
                 'chart': request.route_path('chart', slug=slug),

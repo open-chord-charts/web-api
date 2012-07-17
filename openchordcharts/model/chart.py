@@ -31,8 +31,6 @@ from biryani.objectconv import object_to_clean_dict
 from biryani.strings import slugify
 from suq.monpyjama import Mapper, Wrapper
 
-from openchordcharts.utils import get_transposed_chord
-
 
 class Chart(Mapper, Wrapper):
     collection_name = 'charts'
@@ -81,15 +79,6 @@ class Chart(Mapper, Wrapper):
         keywords_regexps = [re.compile(u'^{0}'.format(re.escape(keyword))) for keyword in keywords]
         return {'$all': keywords_regexps}
 
-    def iter_chords(self, to_key=None, part_name=None):
-        parts = self.structure if part_name is None else [part_name]
-        for part_name in parts:
-            for chord in self.parts[part_name]:
-                if to_key is None:
-                    yield chord
-                else:
-                    yield get_transposed_chord(chord=chord, from_key=self.key, to_key=to_key)
-
     def save(self, *args, **kwargs):
         if self.created_at is None:
             self.created_at = datetime.datetime.utcnow()
@@ -101,11 +90,6 @@ class Chart(Mapper, Wrapper):
             self.slug = self.generate_unique_slug()
         self.keywords = self.compute_keywords()
         return check(object_to_clean_dict(self))
-
-    def transpose(self, to_key):
-        for part_name in self.parts:
-            self.parts[part_name] = list(self.iter_chords(part_name=part_name, to_key=to_key))
-        self.key = to_key
 
     def update_from_dict(self, data):
         for k, v in data.iteritems():

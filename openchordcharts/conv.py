@@ -24,13 +24,11 @@
 
 
 from biryani.baseconv import (check, cleanup_line, default, function, guess_bool, input_to_email, input_to_int,
-    make_input_to_url, noop, not_none, pipe, set_value, struct, test, test_in, uniform_mapping, uniform_sequence)
+    make_input_to_url, noop, not_none, pipe, set_value, struct, test, uniform_mapping, uniform_sequence)
 from biryani.bsonconv import input_to_object_id
 from biryani.datetimeconv import datetime_to_iso8601_str
 from biryani.objectconv import object_to_clean_dict
 import biryani.states
-
-from openchordcharts.utils import iter_chromatic_keys
 
 
 # State
@@ -59,13 +57,6 @@ chart_to_json_dict = check(
 csv_input_to_list = pipe(
     function(lambda value: value.split(',')),
     uniform_sequence(cleanup_line),
-    )
-
-input_to_key = pipe(
-    cleanup_line,
-    function(lambda s: s.lower()),
-    test_in([key.lower() for key in iter_chromatic_keys()]),
-    function(lambda s: s.capitalize()),
     )
 
 params_to_charts_json_data = struct(
@@ -150,7 +141,7 @@ def params_to_chart_edit_data(params, state=default_state):
         dict(
             composers=csv_input_to_list,
             genre=cleanup_line,
-            key=input_to_key,
+            key=cleanup_line,
             parts=uniform_mapping(
                 cleanup_line,
                 pipe(
