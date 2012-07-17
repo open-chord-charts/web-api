@@ -32,14 +32,12 @@ class Stack extends Spine.Stack
     chart: ChartsShow
     charts: ChartsList
     index: Index
-    offline: Offline
     search: ChartsSearch
   logPrefix: "(Stack)"
   routes:
     "/": "index"
     "/charts/:slug": "chart"
     "/charts": "charts"
-    "/offline": "offline"
     "/search/:q": "search"
 
 
