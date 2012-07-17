@@ -22,11 +22,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
-@import "chart.styl"
-
-
-.stack > article:not(.active)
-  display none
-
-
-/*@import "debug.styl"*/
+.stack > article
+  &.active
+    min-height 20em
+    border 1px solid red
+  &:not(.active)
+    display block
+    border 1px solid gray

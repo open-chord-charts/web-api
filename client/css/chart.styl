@@ -22,11 +22,36 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
-@import "chart.styl"
+@font-face
+  font-family lilyjazzchord
+  src url(/static/fonts/lilyjazzchord.otf)
 
+@media (max-width: 767px)
+  .chords
+    margin-left -10px
+    margin-right -10px
+  table
+    td.bar
+      padding-left 2px
+      padding-right 2px
+    td.part-name
+      padding 0.1em
 
-.stack > article:not(.active)
-  display none
+.chords
+  clear both
+  table
+    table-layout fixed
+    td
+      text-align center
+    td.bar
+      font-family 'lilyjazzchord', sans-serif
+    td.part-name
+      width 1em
 
-
-/*@import "debug.styl"*/
+.properties
+  .left
+    float left
+    .genre
+      margin-left 2em
+  .right
+    float right
