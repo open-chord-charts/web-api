@@ -49,18 +49,18 @@ class Chart extends Spine.Model
         dedupedObjects.push object
     dedupedObjects
 
+  getTransposedParts: (toKey) =>
+    transposedParts = {}
+    if toKey != @key
+      for partName, chords of @parts
+        transposedParts[partName] = (transpose.transposeChord(chord, @key, toKey) for chord in chords)
+    transposedParts
+
   keywords: =>
     @slug.split("-")
 
   @slugSort: (a, b) ->
     if a.slug > b.slug then 1 else -1
-
-  transpose: (toKey) =>
-    if toKey != @key
-      for partName, chords of @parts
-        @parts[partName] = (transpose.transposeChord(chord, @key, toKey) for chord in chords)
-      @key = toKey
-    @
 
 
 module?.exports.Chart = Chart

@@ -35,53 +35,20 @@ chromaticKeys = [
     ['F#', 'Gb'],
     ['G'],
     ]
-commonChromaticKeys = ['Ab', 'A', 'Bb', 'B', 'C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G']
 diatonicKeys = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 
 
-decorateChart = (chart) ->
-  parts = []
-  for partName, partIndex in chart.structure
-    newPart = name: partName, chords: []
-    for chord, chordIndex in chart.parts[partName]
-      if chordIndex > 0 and previousChord == chord or chart.structure.indexOf(partName) != partIndex
-        newPart.chords.push "—"
-      else
-        newPart.chords.push(renderChord(chord))
-      previousChord = chord
-    parts.push newPart
-  parts
-
-
 getChromaticIndex = (key) ->
-    for keys, keyIndex in chromaticKeys
-      return keyIndex if key in keys
-    throw new Error("Chromatic index not found")
-
-
-partsToRows = (parts) ->
-  newParts = []
-  for part in parts
-    rows = []
-    for chord, index in part.chords by 8
-      rows.push(part.chords[index...index + 8])
-    newParts.push name: part.name, rows: rows
-  newParts
-
-
-renderChord = (chord) ->
-  renderedChord = chord
-  # FIXME This is not semantic, I have to rewrite the font!
-  renderedChord = renderedChord.replace "#", "<"
-  renderedChord = renderedChord.replace "b", ">"
-  renderedChord
+  for keys, keyIndex in chromaticKeys
+    return keyIndex if key in keys
+  throw new Error("Chromatic index not found")
 
 
 transposeChord = (chord, fromKey, toKey) ->
   return chord if fromKey == toKey
-  m = chordRegex.exec chord
-  key = m[1]
-  quality = m[2]
+  match = chordRegex.exec chord
+  key = match[1]
+  quality = match[2]
   return transposeKey(key, fromKey, toKey) + quality
 
 
@@ -105,7 +72,4 @@ transposeKey = (key, fromKey, toKey) ->
 
 
 module?.exports =
-  commonChromaticKeys: commonChromaticKeys
-  decorateChart: decorateChart
-  partsToRows: partsToRows
   transposeChord: transposeChord

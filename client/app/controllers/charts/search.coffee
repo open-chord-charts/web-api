@@ -21,7 +21,7 @@
 
 
 {Chart} = require "models/chart"
-helpers = require "lib/helpers"
+{highlight} = require "lib/helpers/search"
 {User} = require "models/user"
 
 
@@ -51,7 +51,7 @@ class ChartsSearch extends Spine.Controller
     keywords = (keyword for keyword in @q.split(" ") when keyword)
     @html(require("views/charts/list")(
       charts: Chart.findByKeywords(keywords).sort(Chart.slugSort)
-      highlight: helpers.highlight
+      highlight: highlight
       keywords: keywords
       q: @q
     ))

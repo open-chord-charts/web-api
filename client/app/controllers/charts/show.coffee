@@ -21,8 +21,8 @@
 
 
 {Chart} = require "models/chart"
+chartHelpers = require "lib/helpers/chart"
 {User} = require "models/user"
-transpose = require "lib/transpose"
 
 
 class ChartsShow extends Spine.Controller
@@ -75,7 +75,8 @@ This chart was not found in local storage.
       event.preventDefault()
 
   onKeySelectChange: (event) =>
-    @chart.transpose(@keySelect.val()).save(ajax: false)
+    @transposedKey = @keySelect.val()
+    @render()
 
   onLocalButtonClick: (event) =>
     @localButton.data("popover").tip().remove()
@@ -86,12 +87,15 @@ This chart was not found in local storage.
       @log "Chart is no more stored in localStorage"
     @chart.updateAttribute "local", newLocalValue, ajax: false
 
-  render: =>
+  render: () =>
+    chart = @chart.attributes()
+    if @transposedKey
+      chart.parts = @chart.getTransposedParts(@transposedKey)
+    chart = chartHelpers.partsToRows(chartHelpers.decorateChart(chart))
     @html(require("views/charts/show")(
-      chart: @chart
-      commonChromaticKeys: transpose.commonChromaticKeys
+      chart: chart
+      commonChromaticKeys: chartHelpers.commonChromaticKeys
       isLogged: User.count() > 0
-      partRows: transpose.partsToRows(transpose.decorateChart(@chart))
       routes:
         "chart": "/charts/#{@chart.slug}"
         "chart.delete": "/charts/#{@chart.slug}/delete"
@@ -101,6 +105,8 @@ This chart was not found in local storage.
         "chart.undelete": "/charts/#{@chart.slug}/undelete"
         "login": $(".navbar a.login").attr("href")
     ))
+    if @transposedKey
+      @keySelect.val(@transposedKey)
     @deleteButton.popover placement: "bottom"
     @editButton.popover placement: "bottom"
     @jsonButton.attr "target", "_blank"

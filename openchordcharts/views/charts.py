@@ -66,10 +66,11 @@ def chart(request):
                 name=part_name,
                 rows=rows,
                 ))
+        chart_json['parts'] = part_rows
         template_string = pkg_resources.resource_string('openchordcharts', '/templates/eco/charts/show.eco')
         common_chromatic_keys = ['Ab', 'A', 'Bb', 'B', 'C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G']
         eco_template = eco.render(template_string, chart=chart_json, commonChromaticKeys=common_chromatic_keys,
-            isLogged=request.user is not None, partRows=part_rows, routes={
+            isLogged=request.user is not None, routes={
                 'chart': request.route_path('chart', slug=slug),
                 'chart.delete': request.route_path('chart.delete', slug=slug),
                 'chart.edit': request.route_path('chart.edit', slug=slug),

@@ -74,7 +74,7 @@ href="<%= @routes['login'] %>" rel="nofollow" title="Login required!">Delete</a>
 <% if @chart.structure: %>
   <table class="table table-bordered table-striped">
     <tbody>
-  <% for part in @partRows: %>
+  <% for part in @chart.parts: %>
     <% for row, rowIndex in part.rows: %>
       <tr>
       <% if rowIndex == 0: %>
