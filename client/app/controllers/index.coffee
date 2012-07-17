@@ -27,6 +27,7 @@ class Index extends Spine.Controller
   events:
     "click .hero-unit a.charts": "onNavigateLinkClick"
   logPrefix: "(controllers.index.Index)"
+  tag: "article"
 
   activate: =>
     super

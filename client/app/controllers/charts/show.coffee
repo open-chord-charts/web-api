@@ -39,6 +39,7 @@ class ChartsShow extends Spine.Controller
     "change .properties .key select": "onKeySelectChange"
     "click .actions .btn.local": "onLocalButtonClick"
   logPrefix: "(controllers.charts.show.ChartsShow)"
+  tag: "article"
 
   constructor: ->
     super

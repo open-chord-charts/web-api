@@ -31,6 +31,7 @@ class ChartsSearch extends Spine.Controller
   events:
     "click ul li a": "onChartLinkClick"
   logPrefix: "(controllers.charts.list.ChartsList)"
+  tag: "article"
 
   constructor: ->
     super
