@@ -1,9 +1,9 @@
 <% if not @q?: %>
-  <% if @isLogged: %>
+  <% if @user?: %>
 <p><a class="add btn" href="<%= @routes['chart.create'] %>">Add a new chart</a></p>
   <% else: %>
 <p><a class="add btn" data-content="Creation is restricted to authenticated users.<br>Click to login."
-href="<%= @routes['login'] %>" rel="nofollow popover" title="Login required!">Add a new chart</a></p>
+href="<%= @routes.login %>" rel="nofollow popover" title="Login required!">Add a new chart</a></p>
   <% end %>
 <% end %>
 

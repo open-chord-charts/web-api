@@ -10,17 +10,17 @@
 <div class="actions">
   <button class="btn<% if @chart.obsolete: %> btn-info<% end %> local" data-toggle="button">Local</button>
 <% if not @revision: %>
-  <% if @isLogged: %>
+  <% if @user?: %>
   <a class="btn edit" href="<%= @routes['chart.edit'] %>">Edit</a>
     <% if not @chart.is_deleted: %>
   <a class="btn delete" href="<%= @routes['chart.delete'] %>">Delete</a>
     <% end %>
   <% else: %>
   <a class="btn edit" data-content="Edition is restricted to authenticated users.<br>Click to login."
-href="<%= @routes['login'] %>" rel="nofollow" title="Login required!">Edit</a>
+href="<%= @routes.login %>" rel="nofollow" title="Login required!">Edit</a>
     <% if not @chart.is_deleted: %>
   <a class="btn delete" data-content="Deletion is restricted to authenticated users.<br>Click to login."
-href="<%= @routes['login'] %>" rel="nofollow" title="Login required!">Delete</a>
+href="<%= @routes.login %>" rel="nofollow" title="Login required!">Delete</a>
     <% end %>
   <% end %>
 <% end %>
@@ -44,7 +44,7 @@ href="<%= @routes['login'] %>" rel="nofollow" title="Login required!">Delete</a>
   <a class="close" data-dismiss="alert">×</a>
   <h4 class="alert-heading">Previous version!</h4>
   <p>This chart is a previous version modified at <%= @chart.modified_at %>.</p>
-  <p><a class="btn" href="<%= @routes['chart'] %>">Current version</a></p>
+  <p><a class="btn" href="<%= @routes.chart %>">Current version</a></p>
 </div>
 <% end %>
 
@@ -92,3 +92,13 @@ href="<%= @routes['login'] %>" rel="nofollow" title="Login required!">Delete</a>
   </table>
 <% end %>
 </div>
+
+<% if @chart.modified_at != @chart.created_at: %>
+<p>
+  Last modified by <a class="user" href="/users/<%= @chart.user %>"><%= @chart.user %></a> on <%= @chart.modified_at %>.
+</p>
+<% end %>
+
+<p>
+  Created by <a class="user" href="/users/<%= @chart.user %>"><%= @chart.user %></a> on <%= @chart.created_at %>.
+</p>

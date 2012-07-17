@@ -38,6 +38,7 @@ class ChartsShow extends Spine.Controller
     "click .actions .btn.delete": "onDeleteButtonClicked"
     "change .properties .key select": "onKeySelectChange"
     "click .actions .btn.local": "onLocalButtonClick"
+    "click a.user": "onNavigateLinkClick"
   logPrefix: "(controllers.charts.show.ChartsShow)"
   tag: "article"
 
@@ -87,7 +88,10 @@ This chart was not found in local storage.
       @log "Chart is no more stored in localStorage"
     @chart.updateAttribute "local", newLocalValue, ajax: false
 
-  render: () =>
+  onNavigateLinkClick: (event) =>
+    event.preventDefault()
+    @navigate event.target.pathname
+  render: =>
     chart = @chart.attributes()
     if @transposedKey
       chart.parts = @chart.getTransposedParts(@transposedKey)
@@ -95,15 +99,15 @@ This chart was not found in local storage.
     @html(require("views/charts/show")(
       chart: chart
       commonChromaticKeys: chartHelpers.commonChromaticKeys
-      isLogged: User.count() > 0
       routes:
-        "chart": "/charts/#{@chart.slug}"
+        chart: "/charts/#{@chart.slug}"
         "chart.delete": "/charts/#{@chart.slug}/delete"
         "chart.edit": "/charts/#{@chart.slug}/edit"
         "chart.history": "/charts/#{@chart.slug}/history"
         "chart.json": "/charts/#{@chart.slug}.json"
         "chart.undelete": "/charts/#{@chart.slug}/undelete"
-        "login": $(".navbar a.login").attr("href")
+        login: $(".navbar a.login").attr("href")
+      user: User.first()
     ))
     if @transposedKey
       @keySelect.val(@transposedKey)

@@ -32,7 +32,7 @@ from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPFound, HTT
 from pyramid.security import has_permission
 
 from openchordcharts.conv import (chart_to_json_dict, params_to_chart_data, params_to_chart_edit_data,
-    params_to_charts_json_data)
+    params_to_charts_json_data, user_to_json_dict)
 from openchordcharts.helpers import get_login_url
 from openchordcharts.model.chart import Chart, HistoryChart
 
@@ -69,19 +69,18 @@ def chart(request):
         chart_json['parts'] = part_rows
         template_string = pkg_resources.resource_string('openchordcharts', '/templates/eco/charts/show.eco')
         common_chromatic_keys = ['Ab', 'A', 'Bb', 'B', 'C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G']
-        eco_template = eco.render(template_string, chart=chart_json, commonChromaticKeys=common_chromatic_keys,
-            isLogged=request.user is not None, routes={
-                'chart': request.route_path('chart', slug=slug),
-                'chart.delete': request.route_path('chart.delete', slug=slug),
-                'chart.edit': request.route_path('chart.edit', slug=slug),
-                'chart.history': request.route_path('chart.history', slug=slug),
-                'chart.json': request.route_path('chart.json', slug=slug, _query=dict(
-                    key=chart.key,
-                    revision=data['revision'] or '',
-                    )),
-                'chart.undelete': request.route_path('chart.undelete', slug=slug),
-                'login': get_login_url(request),
-                },
+        eco_template = eco.render(template_string, chart=chart_json, commonChromaticKeys=common_chromatic_keys, routes={
+            'chart': request.route_path('chart', slug=slug),
+            'chart.delete': request.route_path('chart.delete', slug=slug),
+            'chart.edit': request.route_path('chart.edit', slug=slug),
+            'chart.history': request.route_path('chart.history', slug=slug),
+            'chart.json': request.route_path('chart.json', slug=slug, _query=dict(
+                key=chart.key,
+                revision=data['revision'] or '',
+                )),
+            'chart.undelete': request.route_path('chart.undelete', slug=slug),
+            'login': get_login_url(request),
+            }, user=user_to_json_dict(request.user),
             )
         return dict(
             eco_template=eco_template,
@@ -95,8 +94,10 @@ def charts(request):
         )
     charts = [chart_to_json_dict(chart) for chart in Chart.find(spec).sort('title').limit(settings['charts.limit'])]
     template_string = pkg_resources.resource_string('openchordcharts', '/templates/eco/charts/list.eco')
-    eco_template = eco.render(template_string, charts=charts, isLogged=request.user is not None,
-        routes={'chart.create': request.route_path('chart.create')})
+    eco_template = eco.render(template_string, charts=charts, routes={
+        'chart.create': request.route_path('chart.create'),
+        }, user=user_to_json_dict(request.user),
+        )
     return dict(
         eco_template=eco_template,
         )

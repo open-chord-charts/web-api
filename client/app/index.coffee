@@ -42,8 +42,8 @@ class App extends Spine.Controller
     new Stack el: @section
     @firstArticle.remove()
     Spine.Route.setup(history: true)
+    User.create(@options.user) if @options.user
     Chart.fetch()
-    @user = User.create(@options.user) if @options.user
 
 
 class OfflineApp extends Spine.Controller

@@ -30,7 +30,7 @@ class ChartsSearch extends Spine.Controller
     "ul li a": "chartLink"
   events:
     "click ul li a": "onChartLinkClick"
-  logPrefix: "(controllers.charts.list.ChartsList)"
+  logPrefix: "(controllers.charts.search.ChartsSearch)"
   tag: "article"
 
   constructor: ->
@@ -40,7 +40,6 @@ class ChartsSearch extends Spine.Controller
   onActive: (params) =>
     Chart.bind "change refresh", @render
     @q = params.q
-    document.title = "\"#{@q}\" – OpenChordCharts.org"
     @render()
 
   onChartLinkClick: (event) =>
@@ -55,6 +54,7 @@ class ChartsSearch extends Spine.Controller
       keywords: keywords
       q: @q
     ))
+    document.title = "\"#{@q}\" – OpenChordCharts.org"
 
 
 module?.exports.ChartsSearch = ChartsSearch

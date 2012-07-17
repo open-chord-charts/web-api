@@ -27,11 +27,13 @@ class NavBar extends Spine.Controller
   elements:
     "a.brand": "brandLink"
     "a.charts": "chartsLink"
+    "a.my-charts": "myChartsLink"
     "li": "navigationItems"
     "input.search-query": "searchInput"
   events:
     "click a.brand": "onNavigateLinkClick"
     "click a.charts": "onNavigateLinkClick"
+    "click a.my-charts": "onNavigateLinkClick"
     "search input.search-query": "onSearchInputSearch"
   logPrefix: "(NavBar)"
 

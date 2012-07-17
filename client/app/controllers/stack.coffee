@@ -25,6 +25,7 @@
 {ChartsShow} = require "controllers/charts/show"
 {Index} = require "controllers/index"
 {Offline} = require "controllers/offline"
+{UsersShow} = require "controllers/users/show"
 
 
 class Stack extends Spine.Stack
@@ -33,12 +34,14 @@ class Stack extends Spine.Stack
     charts: ChartsList
     index: Index
     search: ChartsSearch
+    user: UsersShow
   logPrefix: "(Stack)"
   routes:
     "/": "index"
     "/charts/:slug": "chart"
     "/charts": "charts"
     "/search/:q": "search"
+    "/users/:slug": "user"
 
 
 module?.exports.Stack = Stack

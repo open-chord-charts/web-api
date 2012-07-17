@@ -58,7 +58,7 @@ from openchordcharts.helpers import get_login_url
             <span class="caret"></span>
           </a>
           <ul class="dropdown-menu">
-            <li><a href="${request.route_path('user', slug=request.user.slug)}">Profile</a></li>
+            <li><a class="my-charts" href="${request.route_path('user', slug=request.user.slug)}">My charts</a></li>
             <li class="divider"></li>
             <li><a href="${request.route_path('logout', _query=dict(state=request.current_route_path()))}" \
 rel="nofollow">Logout</a></li>

@@ -111,6 +111,6 @@ def main(global_config, **settings):
     config.add_route('search', '/search/{q}')
     config.add_view(openchordcharts.views.empty, renderer='/site.mako', route_name='search')
     config.add_route('user', '/users/{slug}')
-    config.add_view(openchordcharts.views.users.user, renderer='/user.mako', route_name='user')
+    config.add_view(openchordcharts.views.users.user, renderer='/site.mako', route_name='user')
 
     return config.make_wsgi_app()

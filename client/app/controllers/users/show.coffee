@@ -24,37 +24,41 @@
 {User} = require "models/user"
 
 
-class ChartsList extends Spine.Controller
-  elements:
-    ".add.btn": "addButton"
-    "ul li a": "chartLink"
+class UsersShow extends Spine.Controller
   events:
-    "click ul li a": "onChartLinkClick"
-  logPrefix: "(controllers.charts.list.ChartsList)"
+    "click a": "onNavigateLinkClick"
+  logPrefix: "(controllers.users.show.UsersShow)"
   tag: "article"
 
   constructor: ->
     super
-    @active @onActive
+    User.bind "change", @onUserChange
     Chart.bind "change refresh", @render
+    @active @onActive
 
-  onActive: =>
-    document.title = "Charts – OpenChordCharts.org"
+  onActive: (params) =>
+    @slug = params.slug
     @render()
 
-  onChartLinkClick: (event) =>
+  onNavigateLinkClick: (event) =>
     event.preventDefault()
     @navigate event.target.pathname
 
+  onUserChange: (user, type, options) =>
+    @user = User.first()
+    @render()
+
   render: =>
-    @html(require("views/charts/list")(
-      charts: Chart.all().sort(Chart.slugSort)
+    return if not @slug
+    @html(require("views/users/show")(
+      charts: Chart.findAllByAttribute("user", @slug)
       routes:
+        charts: "/charts"
         "chart.create": "/charts/create"
-        login: $(".navbar a.login").attr("href")
-      user: User.first()
+      slug: @slug
+      user: @user
     ))
-    @addButton.popover placement: "bottom"
+    document.title = "#{@slug} profile – OpenChordCharts.org"
 
 
-module?.exports.ChartsList = ChartsList
+module?.exports.UsersShow = UsersShow

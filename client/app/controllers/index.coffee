@@ -29,13 +29,13 @@ class Index extends Spine.Controller
   logPrefix: "(controllers.index.Index)"
   tag: "article"
 
-  activate: =>
-    super
-    document.title = "OpenChordCharts.org"
-
   constructor: ->
     super
+    @active @onActive
     @render()
+
+  onActive: =>
+    document.title = "OpenChordCharts.org"
 
   onNavigateLinkClick: (event) =>
     event.preventDefault()
