@@ -21,6 +21,7 @@
 
 
 {Chart} = require "models/chart"
+{getLinkPathname} = require "lib/javascript"
 {User} = require "models/user"
 
 
@@ -44,7 +45,7 @@ class ChartsList extends Spine.Controller
 
   onChartLinkClick: (event) =>
     event.preventDefault()
-    @navigate event.target.pathname
+    @navigate getLinkPathname(event.target)
 
   render: =>
     @html(require("views/charts/list")(

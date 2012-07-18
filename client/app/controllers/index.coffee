@@ -20,6 +20,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+{getLinkPathname} = require "lib/javascript"
+
+
 class Index extends Spine.Controller
   elements:
     ".hero-unit a.charts": "chartsLink"
@@ -39,7 +42,7 @@ class Index extends Spine.Controller
 
   onNavigateLinkClick: (event) =>
     event.preventDefault()
-    @navigate event.target.pathname
+    @navigate getLinkPathname(event.target)
 
   render: =>
     @html(require("views/index")(routes: charts: "/charts"))

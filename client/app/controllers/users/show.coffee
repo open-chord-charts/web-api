@@ -21,6 +21,7 @@
 
 
 {Chart} = require "models/chart"
+{getLinkPathname} = require "lib/javascript"
 {User} = require "models/user"
 
 
@@ -42,7 +43,7 @@ class UsersShow extends Spine.Controller
 
   onNavigateLinkClick: (event) =>
     event.preventDefault()
-    @navigate event.target.pathname
+    @navigate getLinkPathname(event.target)
 
   onUserChange: (user, type, options) =>
     @user = User.first()

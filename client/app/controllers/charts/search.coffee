@@ -21,6 +21,7 @@
 
 
 {Chart} = require "models/chart"
+{getLinkPathname} = require "lib/javascript"
 {highlight} = require "lib/helpers/search"
 {User} = require "models/user"
 
@@ -44,7 +45,7 @@ class ChartsSearch extends Spine.Controller
 
   onChartLinkClick: (event) =>
     event.preventDefault()
-    @navigate event.target.pathname
+    @navigate getLinkPathname(event.target)
 
   render: =>
     keywords = (keyword for keyword in @q.split(" ") when keyword)

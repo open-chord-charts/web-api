@@ -22,6 +22,7 @@
 
 {Chart} = require "models/chart"
 chartHelpers = require "lib/helpers/chart"
+{getLinkPathname} = require "lib/javascript"
 {User} = require "models/user"
 
 
@@ -90,7 +91,8 @@ This chart was not found in local storage.
 
   onNavigateLinkClick: (event) =>
     event.preventDefault()
-    @navigate event.target.pathname
+    @navigate getLinkPathname(event.target)
+
   render: =>
     chart = @chart.attributes()
     if @transposedKey

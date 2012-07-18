@@ -21,6 +21,7 @@
 
 
 {Chart} = require "models/chart"
+{getLinkPathname} = require "lib/javascript"
 
 
 class NavBar extends Spine.Controller
@@ -43,7 +44,7 @@ class NavBar extends Spine.Controller
 
   onNavigateLinkClick: (event) =>
     event.preventDefault()
-    @navigate event.target.pathname
+    @navigate getLinkPathname(event.target)
 
   onRouteChange: (route, path) =>
     @navigationItems.removeClass "active"
