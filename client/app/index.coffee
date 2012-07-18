@@ -32,7 +32,6 @@ require "lib/setup"
 class App extends Spine.Controller
   elements:
     "section.container": "section"
-    "section.container article.first": "firstArticle"
     ".navbar": "navbarDiv"
   logPrefix: "(App)"
 
@@ -40,7 +39,6 @@ class App extends Spine.Controller
     super
     new NavBar el: @navbarDiv
     new Stack el: @section
-    @firstArticle.remove()
     Spine.Route.setup(history: true)
     User.create(@options.user) if @options.user
     Chart.fetch()
@@ -48,7 +46,7 @@ class App extends Spine.Controller
 
 class OfflineApp extends Spine.Controller
   elements:
-    "article.first": "article"
+    "article.static": "article"
   logPrefix: "(OfflineApp)"
 
   constructor: ->

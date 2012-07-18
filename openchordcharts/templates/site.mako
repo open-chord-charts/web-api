@@ -60,7 +60,7 @@ user-scalable=0">
     <%include file="navbar.mako"/>
 
     <section class="container">
-      <article class="first">
+      <article class="static">
       <%block name="article">
         ${eco_template | n}
       </%block>

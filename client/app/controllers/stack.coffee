@@ -28,9 +28,22 @@
 {UsersShow} = require "controllers/users/show"
 
 
+class StaticContentsController extends Spine.Controller
+  tag: "article"
+
+  constructor: ->
+    super
+    @active @onActive
+
+  onActive: =>
+    $("article.static").appendTo(@el)
+
+
 class Stack extends Spine.Stack
   controllers:
     chart: ChartsShow
+    chartEdit: StaticContentsController
+    chartHistory: StaticContentsController
     charts: ChartsList
     index: Index
     search: ChartsSearch
@@ -39,6 +52,8 @@ class Stack extends Spine.Stack
   routes:
     "/": "index"
     "/charts/:slug": "chart"
+    "/charts/:slug/edit": "chartEdit"
+    "/charts/:slug/history": "chartHistory"
     "/charts": "charts"
     "/search/:q": "search"
     "/users/:slug": "user"

@@ -28,6 +28,7 @@ from babel.dates import format_datetime
 <%inherit file="site.mako"/>
 
 
+<%block name="article">
 <div class="page-header">
   <h1>
     <span class="title">${chart.title}</span>
@@ -46,4 +47,4 @@ ${history_chart.title} (${format_datetime(history_chart.modified_at)})</a></li>
 % if history_charts_cursor.count() == 0:
 <p>This chart has no previous version.</p>
 % endif
-
+</%block>

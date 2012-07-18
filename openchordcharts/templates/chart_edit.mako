@@ -23,16 +23,7 @@
 <%inherit file="site.mako"/>
 
 
-<%!
-from openchordcharts.utils import common_chromatic_keys
-%>
-
-
-<%block name="title">
-Edit "${chart.title}" - <%parent:title/>
-</%block>
-
-
+<%block name="article">
 <div class="alert alert-block">
   <a class="close" data-dismiss="alert">×</a>
   <h4 class="alert-heading">Warning!</h4>
@@ -144,7 +135,9 @@ title="Click to cancel changes and go back to chart">Cancel</a>
 
   </fieldset>
 </form>
+</%block>
 
-<%block name="footer">
-<%include file="chart_footer.mako"/>
+
+<%block name="title">
+Edit "${chart.title}" - <%parent:title/>
 </%block>

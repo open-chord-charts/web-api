@@ -37,6 +37,9 @@ from openchordcharts.helpers import get_login_url
 from openchordcharts.model.chart import Chart, HistoryChart
 
 
+common_chromatic_keys = ['Ab', 'A', 'Bb', 'B', 'C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G']
+
+
 def chart(request):
     slug = request.matchdict.get('slug')
     if not slug:
@@ -68,7 +71,6 @@ def chart(request):
                 ))
         chart_json['parts'] = part_rows
         template_string = pkg_resources.resource_string('openchordcharts', '/templates/eco/charts/show.eco')
-        common_chromatic_keys = ['Ab', 'A', 'Bb', 'B', 'C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G']
         eco_template = eco.render(template_string, chart=chart_json, commonChromaticKeys=common_chromatic_keys, routes={
             'chart': request.route_path('chart', slug=slug),
             'chart.delete': request.route_path('chart.delete', slug=slug),
@@ -195,6 +197,7 @@ def edit(request):
         chart=chart,
         chart_data=chart_data,
         chart_errors=chart_errors or {},
+        common_chromatic_keys=common_chromatic_keys,
         form_action_url=request.route_path('chart.edit', slug=chart.slug),
         )
 
