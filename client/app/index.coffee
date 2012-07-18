@@ -48,13 +48,12 @@ class App extends Spine.Controller
 
 class OfflineApp extends Spine.Controller
   elements:
-    ".content": "contentDiv"
-    ".navbar a.offline": "offlineLink"
+    "article.first": "article"
   logPrefix: "(OfflineApp)"
 
   constructor: ->
     super
-    @offline = new Offline el: @contentDiv
+    new Offline el: @article
 
 
 module?.exports.App = App

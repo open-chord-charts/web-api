@@ -40,18 +40,16 @@ $(function() {
     <small>Use Open Chord Charts as an application.</small>
   </h1>
 </div>
-<div class="content">
-  <div class="row">
-    <p class="span9 status"></p>
-  </div>
-  <div class="progress-bar row">
-    <p class="span1">Progress:</p>
-    <div class="active progress progress-striped span6">
-      <div class="bar" style="width: 0%;"></div>
-    </div>
-  </div>
-  <button class="btn stop">Stop</button>
+<div class="row">
+  <p class="span9 status"></p>
 </div>
+<div class="progress-bar row">
+  <p class="span1">Progress:</p>
+  <div class="active progress progress-striped span6">
+    <div class="bar" style="width: 0%;"></div>
+  </div>
+</div>
+<button class="btn stop">Stop</button>
 </%block>
 
 
