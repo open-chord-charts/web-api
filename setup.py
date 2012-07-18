@@ -31,7 +31,7 @@ from setuptools import setup, find_packages
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
 
-requires = ['babel', 'biryani', 'formencode', 'pymongo', 'pyramid', 'suq-monpyjama', 'Wannanou>=0.1dev', 'webhelpers']
+requires = ['babel', 'biryani', 'eco', 'formencode', 'pymongo', 'pyramid', 'suq-monpyjama', 'Wannanou>=0.1dev']
 
 setup(name='open-chord-charts',
       version='0.0',
