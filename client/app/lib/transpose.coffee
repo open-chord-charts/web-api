@@ -63,11 +63,11 @@ transposeKey = (key, fromKey, toKey) ->
   transposedKeysChromatic = chromaticKeys[(keyChromaticOffset + chromaticOffsetDelta + chromaticKeys.length) %
     chromaticKeys.length]
   if transposedKeysChromatic.length == 1
-      return transposedKeysChromatic[0]
+    return transposedKeysChromatic[0]
   else
-      for transposedKeyChromatic in transposedKeysChromatic
-        if transposedKeyChromatic[0] == transposedKeyDiatonic
-          return transposedKeyChromatic
+    for transposedKeyChromatic in transposedKeysChromatic
+      if transposedKeyChromatic[0] == transposedKeyDiatonic
+        return transposedKeyChromatic
   throw new Error("Transposed key not found")
 
 
