@@ -52,6 +52,7 @@ user-scalable=0">
     </style>
     <link href="${request.static_path('openchordcharts:static/bootstrap-2.0.4/css/bootstrap-responsive{0}.css'.format(
 '' if request.registry.settings['development_mode'] else '.min'))}" rel="stylesheet">
+    <link href="${request.static_path('openchordcharts:static/css/lilyjazzchord.css')}" rel="stylesheet">
     <link href="${request.static_path('openchordcharts:static/application.css')}" rel="stylesheet">
    </head>
   <body>

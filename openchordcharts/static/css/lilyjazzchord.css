@@ -1,0 +1,10 @@
+@font-face {
+    font-family: 'lilyjazzchordMedium';
+    src: url('/static/fonts/lilyjazzchord-webfont.eot');
+    src: url('/static/fonts/lilyjazzchord-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/static/fonts/lilyjazzchord-webfont.woff') format('woff'),
+         url('/static/fonts/lilyjazzchord-webfont.ttf') format('truetype'),
+         url('/static/fonts/lilyjazzchord-webfont.svg#lilyjazzchordMedium') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
