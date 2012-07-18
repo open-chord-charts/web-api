@@ -66,11 +66,6 @@ class ChartsShow extends Spine.Controller
       @render()
     else
       @log "Chart not found from refresh event (404)"
-      if not navigator.onLine
-        @html """
-You navigator is offline. Open Chord Charts is running from the application cache.
-This chart was not found in local storage.
-"""
 
   onDeleteButtonClicked: (event) =>
     if not confirm "Delete \"#{@chart.title}\"?"
