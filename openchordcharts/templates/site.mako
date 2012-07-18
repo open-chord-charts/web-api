@@ -39,6 +39,9 @@ from openchordcharts.conv import user_to_json_dict
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1.0, \
 user-scalable=0">
     <title>OpenChordCharts.org</title>
+    <!--[if lt IE 9]>
+      <script src="${request.static_path('openchordcharts:static/ie/html5shiv.js')}"></script>
+    <![endif]-->
     <link href="${request.static_path('openchordcharts:static/bootstrap-2.0.4/css/bootstrap{0}.css'.format(
 '' if request.registry.settings['development_mode'] else '.min'))}" rel="stylesheet">
     <style>
