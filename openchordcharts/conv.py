@@ -107,10 +107,14 @@ validate_settings = check(
             struct(
                 {
                     'authentication.fake_login': pipe(cleanup_line, input_to_email),
-                    'authentication.openid.application_name': cleanup_line,
+                    'authentication.openid.api_key': cleanup_line,
+                    'authentication.openid.api_url': pipe(
+                        make_input_to_url(add_prefix=None, error_if_fragment=True, error_if_path=True,
+                            error_if_query=True, full=True),
+                        not_none,
+                        ),
                     'authentication.openid.client_id': cleanup_line,
                     'authentication.openid.client_secret': cleanup_line,
-                    'authentication.openid.provider_url': pipe(cleanup_line, make_input_to_url()),
                     'authentication.secret': pipe(cleanup_line, not_none),
                     'charts.limit': input_to_int,
                     'css.bootstrap': cleanup_line,
@@ -126,10 +130,10 @@ validate_settings = check(
                 keep_none_values=True,
                 ),
             test(lambda values: len(filter(None, [value for key, value in values.iteritems() if key in [
-                    'authentication.openid.application_name',
+                    'authentication.openid.api_key',
+                    'authentication.openid.api_url',
                     'authentication.openid.client_id',
                     'authentication.openid.client_secret',
-                    'authentication.openid.provider_url',
                     ]])) in [0, 4], default_state._(u'Not all authentication.openid keys are set')
                 ),
             )

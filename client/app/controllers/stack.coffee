@@ -20,6 +20,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+{ChartsEdit} = require "controllers/charts/edit"
 {ChartsList} = require "controllers/charts/list"
 {ChartsSearch} = require "controllers/charts/search"
 {ChartsShow} = require "controllers/charts/show"
@@ -42,7 +43,7 @@ class StaticContentsController extends Spine.Controller
 class Stack extends Spine.Stack
   controllers:
     chart: ChartsShow
-    chartEdit: StaticContentsController
+    chartEdit: ChartsEdit
     chartHistory: StaticContentsController
     charts: ChartsList
     index: Index
@@ -51,9 +52,9 @@ class Stack extends Spine.Stack
   logPrefix: "(Stack)"
   routes:
     "/": "index"
-    "/charts/:slug": "chart"
     "/charts/:slug/edit": "chartEdit"
     "/charts/:slug/history": "chartHistory"
+    "/charts/:slug": "chart"
     "/charts": "charts"
     "/search/:q": "search"
     "/users/:slug": "user"

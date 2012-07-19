@@ -1,0 +1,43 @@
+<div class="page-header">
+  <h1>
+    Edit <span class="title"><%= @chart.title %></span>
+<% if @chart.composers: %>
+    <small class="composers"><%= @chart.composers.join ", " %></small>
+<% end %>
+  </h1>
+</div>
+
+<div class="properties">
+  <div class="left">
+<% if @chart.structure: %>
+    <span class="structure"><%= @chart.structure.join "" %></span>
+<% end %>
+<% if @chart.genre: %>
+    <span class="genre"><%= @chart.genre %></span>
+<% end %>
+  </div>
+</div>
+
+<% if @chart.structure: %>
+<div class="chords">
+  <table class="table table-bordered table-striped">
+    <tbody>
+  <% for part in @chart.parts: %>
+    <% for row, rowIndex in part.rows: %>
+      <tr>
+      <% if rowIndex == 0: %>
+        <td class="part-name"<% if part.rows.length > 1: %>rowspan="<%= part.rows.length %>"<% end %>>
+          <%= part.name %>
+        </td>
+      <% end %>
+      <% for chord in row: %>
+        <td class="bar"><%= chord %></td>
+      <% end %>
+      </tr>
+    <% end %>
+  <% end %>
+    </tbody>
+  </table>
+</div>
+<% end %>
+

@@ -70,8 +70,8 @@ href="<%= @routes.login %>" rel="nofollow" title="Login required!">Delete</a>
   </div>
 </div>
 
-<div class="chords">
 <% if @chart.structure: %>
+<div class="chords">
   <table class="table table-bordered table-striped">
     <tbody>
   <% for part in @chart.parts: %>
@@ -90,8 +90,8 @@ href="<%= @routes.login %>" rel="nofollow" title="Login required!">Delete</a>
   <% end %>
     </tbody>
   </table>
-<% end %>
 </div>
+<% end %>
 
 <% if @chart.modified_at != @chart.created_at: %>
 <p>

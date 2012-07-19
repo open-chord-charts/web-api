@@ -50,7 +50,7 @@ def get_login_url(request):
     settings = request.registry.settings
     if settings['authentication.fake_login']:
         return request.route_path('fake_login', _query=dict(callback_path=request.path_qs))
-    elif settings['authentication.openid.application_name']:
+    elif settings['authentication.openid.api_key']:
         return request.route_path('openidconnect_login', _query=dict(callback_path=request.path_qs))
     else:
         return None

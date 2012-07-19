@@ -23,81 +23,69 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+import json
 import urlparse
 
 from pyramid.httpexceptions import HTTPBadRequest, HTTPFound
 from pyramid.security import remember
-import wannanou
+import requests
 
-from openchordcharts.model.openidconnect import Authentication, Provider
 from openchordcharts.model.user import User
 
 
 def login(request):
+    settings = request.registry.settings
+
     callback_path = request.GET.get('callback_path')
     if callback_path and urlparse.urlsplit(callback_path)[1]:
         raise HTTPBadRequest(explanation=u'Error for "state" parameter: Value must not be an absolute URL.')
     if callback_path and callback_path.startswith('/login-callback'):
         callback_path = None
 
-    provider, error = Provider.retrieve_updated(request)
-    if error is not None:
-        raise HTTPBadRequest(explanation=u'Error when looking for provider and registering as client: {}'.format(
-            error))
-
-    authentication, error = provider.new_authorize_authentication(
+    request_object = dict(
+        api_key=settings['authentication.openid.api_key'],
+#        client_id=settings['authentication.openid.client_id'],
+#        client_secret=settings['authentication.openid.client_secret'],
         prompt='select_account',
         redirect_uri=request.route_url('login_callback'),
-        response_type=u'code',
         scope=u'openid email',
-        use_request_object=True,
-        userinfo_request=dict(
+        stash=dict(callback_path=callback_path),
+        userinfo=dict(
             claims=dict(
                 email=dict(essential=True),
                 email_verified=dict(essential=True),
                 ),
             ),
         )
-    if error is not None:
-        raise HTTPBadRequest(explanation=u'Error when creating OpenID Connect authentication: {}'.format(error))
-
-    authorize_url, error = authentication.generate_authorization_url()
-    if error is not None:
-        raise HTTPBadRequest(explanation=u'Error when generating URL of OpenID Connect authorization: {}'.format(error))
-
-    request.session['callback_path'] = callback_path
-#    request.session.save()
-
-    return HTTPFound(location=authorize_url)
+    response_text = requests.post(urlparse.urljoin(settings['authentication.openid.api_url'], '/api/v1/authorize-url'),
+        data=json.dumps(request_object, encoding='utf-8', ensure_ascii=False, indent=2, sort_keys=True),
+        headers={
+            'Content-Type': 'application/json; charset=utf-8',
+            },
+        ).text
+    response_json = json.loads(response_text)
+    if 'error' in response_json:
+        raise HTTPBadRequest(
+            detail=response_text,
+            explanation=u'Error while generating authorize URL',
+            )
+    return HTTPFound(location=response_json['data']['authorize_url'])
 
 
 def login_callback(request):
-    inputs = wannanou.extract_authorization_callback_inputs_from_params(request.GET)
-    data, errors = wannanou.make_authorization_callback_inputs_to_data('code')(inputs, state=None)
-    if errors is not None or data.get('error') is not None:
-        raise HTTPBadRequest(explanation=u'An error occurred during remote authentication')
+    settings = request.registry.settings
 
-    authentication, error = Authentication.pop_by_authorization_callback_data(data, state=None)
-    if error is not None:
-        if request.session is None or request.authenticated_user is None:
-            # Token is not valid and no session => Error.
-            raise HTTPBadRequest(
-                explanation=u'The user has already been validated or the confirmation delay has expired.',
-                title=u'Remote Authentication Failed',
-                )
-        # Token is not valid, but a session already exists => Warn user.
+    response_text = requests.post(urlparse.urljoin(settings['authentication.openid.api_url'], '/api/v1/user'),
+        data=request.query_string,
+        ).text
+    response_json = json.loads(response_text)
+    if 'error' in response_json:
         raise HTTPBadRequest(
-            explanation=u'Authentication has failed, but you are already signed-in.',
-            title=u'Remote Authentication Failed, but user is already authenticated',
+            detail=response_text,
+            explanation=u'Error while retrieving user infos',
             )
-
-    token_data, error = authentication.request_token_by_authorization_code(state=None)
-    if error is not None:
-        raise HTTPBadRequest(explanation=u'An error occurred during remote authentication.')
-
-    userinfo, error = authentication.request_userinfo(state=None)
-    if error is not None:
-        raise HTTPBadRequest(explanation=u'An error occurred when retrieving user informations.')
+    authentication = response_json['data']
+    userinfo = authentication['userinfo']
 
     email = userinfo.get('email')
     if email is None:
@@ -109,7 +97,6 @@ def login_callback(request):
         raise HTTPBadRequest(
             explanation=u'Email not confirmed.',
             )
-
     user = User.find_one(dict(email=email))
     if user is None:
         user = User()
@@ -117,8 +104,4 @@ def login_callback(request):
         user.save(safe=True)
     headers = remember(request, user.email)
 
-    callback_path = request.session.pop('callback_path', None)
-    request.session['openid_expiration'] = authentication.expiration
-#    request.session.save()
-
-    return HTTPFound(headers=headers, location=callback_path or request.route_path('index'))
+    return HTTPFound(headers=headers, location=authentication['stash']['callback_path'] or request.route_path('index'))

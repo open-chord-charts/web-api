@@ -26,7 +26,7 @@ chartHelpers = require "lib/helpers/chart"
 {User} = require "models/user"
 
 
-class ChartsShow extends Spine.Controller
+class ChartsEdit extends Spine.Controller
   elements:
     ".actions": "actionsDiv"
     ".chords": "chordsDiv"
@@ -39,9 +39,8 @@ class ChartsShow extends Spine.Controller
     "click .actions .btn.delete": "onDeleteButtonClicked"
     "change .properties .key select": "onKeySelectChange"
     "click .actions .btn.local": "onLocalButtonClick"
-    "click .actions .btn.edit": "onNavigateLinkClick"
     "click a.user": "onNavigateLinkClick"
-  logPrefix: "(controllers.charts.show.ChartsShow)"
+  logPrefix: "(controllers.charts.show.ChartsEdit)"
   tag: "article"
 
   constructor: ->
@@ -49,6 +48,7 @@ class ChartsShow extends Spine.Controller
     @active @onActive
 
   onActive: (params) =>
+    Chart.bind "change", @onChartChange
     Chart.bind "refresh", @onChartRefresh
     @slug = params.slug
     @chart = Chart.findByAttribute "slug", @slug
@@ -56,6 +56,9 @@ class ChartsShow extends Spine.Controller
       @render()
     else
       @log "Chart not found, waiting"
+
+  onChartChange: (chart, type, options) =>
+    @render() if chart.id == @chart.id
 
   onChartRefresh: (charts) =>
     @chart = Chart.findByAttribute "slug", @slug
@@ -90,7 +93,7 @@ class ChartsShow extends Spine.Controller
     if @transposedKey
       chart.parts = @chart.getTransposedParts(@transposedKey)
     chart = chartHelpers.partsToRows(chartHelpers.decorateChart(chart))
-    @html(require("views/charts/show")(
+    @html(require("views/charts/edit")(
       chart: chart
       commonChromaticKeys: chartHelpers.commonChromaticKeys
       routes:
@@ -126,4 +129,4 @@ class ChartsShow extends Spine.Controller
     document.title = "#{@chart.title} (#{@chart.key}) – OpenChordCharts.org"
 
 
-module?.exports.ChartsShow = ChartsShow
+module?.exports.ChartsEdit = ChartsEdit

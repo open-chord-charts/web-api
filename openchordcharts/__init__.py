@@ -69,7 +69,7 @@ def main(global_config, **settings):
     if settings['authentication.fake_login']:
         config.add_route('fake_login', '/login-fake')
         config.add_view(openchordcharts.views.auth.fake.login, route_name='fake_login')
-    if settings['authentication.openid.client_id']:
+    if settings['authentication.openid.api_key']:
         config.add_route('login_callback', '/login-callback')
         config.add_view(openchordcharts.views.auth.openidconnect.login_callback, route_name='login_callback')
         config.add_route('openidconnect_login', '/login-openidconnect')
