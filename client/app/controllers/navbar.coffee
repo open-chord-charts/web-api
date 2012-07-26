@@ -26,7 +26,6 @@
 
 class NavBar extends Spine.Controller
   elements:
-    "a.brand": "brandLink"
     "a.charts": "chartsLink"
     "a.my-charts": "myChartsLink"
     "li": "navigationItems"
