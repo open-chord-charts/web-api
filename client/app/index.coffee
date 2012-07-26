@@ -22,11 +22,11 @@
 
 require "lib/setup"
 
-{Chart} = require 'models/chart'
-{NavBar} = require 'controllers/navbar'
-{Offline} = require 'controllers/offline'
+{Chart} = require "models/chart"
+{NavBar} = require "controllers/navbar"
+{Offline} = require "controllers/offline"
 {Stack} = require "controllers/stack"
-{User} = require 'models/user'
+{User} = require "models/user"
 
 
 class App extends Spine.Controller
