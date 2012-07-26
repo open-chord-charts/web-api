@@ -1,28 +1,10 @@
-<% if @chart.is_deleted: %>
-<div class="alert alert-block">
-  <a class="close" data-dismiss="alert">×</a>
-  <h4 class="alert-heading">Warning!</h4>
-  <p>This chart is marked as deleted.</p>
-  <p><a class="btn" href="<%= @routes['chart.undelete'] %>">Undelete</a></p>
-</div>
-<% end %>
-
 <div class="actions">
-  <button class="btn<% if @chart.obsolete: %> btn-info<% end %> local" data-toggle="button">Local</button>
+  <button class="btn local" data-toggle="button">Local</button>
+<% if @chart.local: %>
+  <button class="btn update" data-error-text="Error!" data-loading-text="Loading...">Update</button>
+<% end %>
 <% if not @revision: %>
-  <% if @user?: %>
   <a class="btn edit" href="<%= @routes['chart.edit'] %>">Edit</a>
-    <% if not @chart.is_deleted: %>
-  <a class="btn delete" href="<%= @routes['chart.delete'] %>">Delete</a>
-    <% end %>
-  <% else: %>
-  <a class="btn edit" data-content="Edition is restricted to authenticated users.<br>Click to login."
-href="<%= @routes.login %>" rel="nofollow" title="Login required!">Edit</a>
-    <% if not @chart.is_deleted: %>
-  <a class="btn delete" data-content="Deletion is restricted to authenticated users.<br>Click to login."
-href="<%= @routes.login %>" rel="nofollow" title="Login required!">Delete</a>
-    <% end %>
-  <% end %>
 <% end %>
   <a class="btn history" href="<%= @routes['chart.history'] %>">History</a>
   <a class="btn json" href="<%= @routes['chart.json'] %>" title="Get JSON version of this chart (for programmers)">

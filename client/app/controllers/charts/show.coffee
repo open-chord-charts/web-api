@@ -34,11 +34,13 @@ class ChartsShow extends Spine.Controller
     ".actions .btn.json": "jsonButton"
     ".properties .key select": "keySelect"
     ".actions .btn.local": "localButton"
+    ".btn.update": "updateButton"
   events:
     "change .properties .key select": "onKeySelectChange"
     "click .actions .btn.local": "onLocalButtonClick"
     "click .actions .btn.edit": "onNavigateLinkClick"
     "click a.user": "onNavigateLinkClick"
+    "click .btn.update": "onUpdateButtonClick"
   logPrefix: "(controllers.charts.show.ChartsShow)"
   tag: "article"
 
@@ -47,6 +49,8 @@ class ChartsShow extends Spine.Controller
     @active @onActive
 
   onActive: (params) =>
+    Chart.bind "ajaxError", @onAjaxError
+    Chart.bind "change", @render
     Chart.bind "refresh", @onChartRefresh
     @slug = params.slug
     @chart = Chart.findByAttribute "slug", @slug
@@ -54,6 +58,9 @@ class ChartsShow extends Spine.Controller
       @render()
     else
       @log "Chart not found, waiting"
+
+  onAjaxError: (record, xhr, statusText, error) =>
+    @updateButton.button("error")
 
   onChartRefresh: (charts) =>
     @chart = Chart.findByAttribute "slug", @slug
@@ -79,6 +86,14 @@ class ChartsShow extends Spine.Controller
     event.preventDefault()
     @navigate getLinkPathname(event.currentTarget)
 
+  onUpdateButtonClick: (event) =>
+    @updateButton.button("loading")
+    Chart.ajax().fetch(
+      data:
+        slug: @chart.slug
+      processData: true
+    )
+
   render: =>
     chart = @chart.attributes()
     if @transposedKey
@@ -101,14 +116,9 @@ class ChartsShow extends Spine.Controller
     @jsonButton.attr "target", "_blank"
     @localButton.button "toggle" if @chart.local
     if @chart.local
-      if @chart.obsolete
-        localButtonPopoverOptions =
-          content: "Local data is obsolete: a new version of this chart is available. Click to update."
-          title: "Update local data"
-      else
-        localButtonPopoverOptions =
-          content: "You won't be able to access this page while being offline."
-          title: "Delete local data"
+      localButtonPopoverOptions =
+        content: "You won't be able to access this page while being offline."
+        title: "Forget local data"
     else
       localButtonPopoverOptions =
         content: "You will be able to access this page while being offline."

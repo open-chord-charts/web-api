@@ -104,14 +104,9 @@ class ChartsEdit extends Spine.Controller
     @jsonButton.attr "target", "_blank"
     @localButton.button "toggle" if @chart.local
     if @chart.local
-      if @chart.obsolete
-        localButtonPopoverOptions =
-          content: "Local data is obsolete: a new version of this chart is available. Click to update."
-          title: "Update local data"
-      else
-        localButtonPopoverOptions =
-          content: "You won't be able to access this page while being offline."
-          title: "Delete local data"
+      localButtonPopoverOptions =
+        content: "You won't be able to access this page while being offline."
+        title: "Forget local data"
     else
       localButtonPopoverOptions =
         content: "You will be able to access this page while being offline."

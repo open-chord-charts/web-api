@@ -1,10 +1,10 @@
 <% if not @q?: %>
-  <% if @user?: %>
-<p><a class="add btn" href="<%= @routes['chart.create'] %>">Add a new chart</a></p>
-  <% else: %>
-<p><a class="add btn" data-content="Creation is restricted to authenticated users.<br>Click to login."
-href="<%= @routes.login %>" rel="nofollow popover" title="Login required!">Add a new chart</a></p>
+<p>
+  <a class="btn create" href="<%= @routes['chart.create'] %>">Create</a>
+  <% if (chart for chart in @charts when chart.local).length: %>
+  <button class="btn update" data-error-text="Error!" data-loading-text="Loading...">Update</button>
   <% end %>
+</p>
 <% end %>
 
 <div class="page-header">

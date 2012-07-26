@@ -27,25 +27,33 @@
 
 class ChartsList extends Spine.Controller
   elements:
-    ".add.btn": "addButton"
-    "ul li a": "chartLink"
+    ".btn.update": "updateButton"
   events:
     "click ul li a": "onChartLinkClick"
+    "click .btn.update": "onUpdateButtonClick"
   logPrefix: "(controllers.charts.list.ChartsList)"
   tag: "article"
 
   constructor: ->
     super
     @active @onActive
+    Chart.bind "ajaxError", @onAjaxError
     Chart.bind "change refresh", @render
 
   onActive: =>
     document.title = "Charts – OpenChordCharts.org"
     @render()
 
+  onAjaxError: (record, xhr, statusText, error) =>
+    @updateButton.button("error")
+
   onChartLinkClick: (event) =>
     event.preventDefault()
     @navigate getLinkPathname(event.currentTarget)
+
+  onUpdateButtonClick: (event) =>
+    @updateButton.button("loading")
+    Chart.updateAllLocal()
 
   render: =>
     @html(require("views/charts/list")(
@@ -55,7 +63,6 @@ class ChartsList extends Spine.Controller
         login: $(".navbar a.login").attr("href")
       user: User.first()
     ))
-    @addButton.popover placement: "bottom"
 
 
 module?.exports.ChartsList = ChartsList

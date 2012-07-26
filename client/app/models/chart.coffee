@@ -74,5 +74,13 @@ class Chart extends Spine.Model
   @slugSort: (a, b) ->
     if a.slug > b.slug then 1 else -1
 
+  @updateAllLocal: ->
+    @ajax().fetch(
+      data:
+        slug: (chart.slug for chart in @findAllByAttribute("local", true))
+      processData: true
+      traditional: true
+    )
+
 
 module?.exports.Chart = Chart
