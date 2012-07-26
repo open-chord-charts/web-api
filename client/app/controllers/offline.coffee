@@ -29,7 +29,7 @@ class Offline extends Spine.Controller
     "button.stop": "stopButton"
   events:
     "click button.stop": "onStopButtonClicked"
-  logPrefix: "(Offline)"
+  logPrefix: "(controllers.offline.Offline)"
 
   constructor: ->
     super

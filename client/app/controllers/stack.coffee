@@ -49,7 +49,7 @@ class Stack extends Spine.Stack
     index: Index
     search: ChartsSearch
     user: UsersShow
-  logPrefix: "(Stack)"
+  logPrefix: "(controllers.stack.Stack)"
   routes:
     "/": "index"
     "/charts/:slug/edit": "chartEdit"

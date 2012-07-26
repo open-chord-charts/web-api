@@ -35,7 +35,7 @@ class NavBar extends Spine.Controller
     "click a.charts": "onNavigateLinkClick"
     "click a.my-charts": "onNavigateLinkClick"
     "search input.search-query": "onSearchInputSearch"
-  logPrefix: "(NavBar)"
+  logPrefix: "(controllers.navbar.NavBar)"
 
   constructor: ->
     super
