@@ -73,7 +73,7 @@ class ChartsShow extends Spine.Controller
       @log "Chart is now stored in localStorage"
     else
       @log "Chart is no more stored in localStorage"
-    @chart.updateAttribute "local", newLocalValue, ajax: false
+    @chart.updateAttribute "local", newLocalValue
 
   onNavigateLinkClick: (event) =>
     event.preventDefault()

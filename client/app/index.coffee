@@ -41,7 +41,9 @@ class App extends Spine.Controller
     new Stack el: @section
     Spine.Route.setup(history: true)
     User.create(@options.user) if @options.user
-    Chart.fetch()
+    Chart.one "refresh", (charts) =>
+      Chart.ajax().fetch()
+    Chart.loadLocal()
 
 
 class OfflineApp extends Spine.Controller

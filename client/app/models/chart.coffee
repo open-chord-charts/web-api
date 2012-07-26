@@ -28,7 +28,7 @@ class Chart extends Spine.Model
   @configure "Chart", "composers", "created_at", "genre", "key", "local", "modified_at", "parts", "slug", "structure",
     "title", "user"
   @extend SelectedLocal
-  @extend Spine.Model.Ajax
+  @extend Spine.Model.Ajax.Methods
   @url: "/charts.json"
 
   @findByKeywords: (keywords) =>
