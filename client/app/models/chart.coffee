@@ -49,7 +49,6 @@ class Chart extends Spine.Model
           attributes = {}
           for key, value of object.attributes()
             if JSON.stringify(object[key]) isnt JSON.stringify(originalObject[key])
-              debugger
               attributes[key] = value
           originalObject.updateAttributes(attributes)
         else
