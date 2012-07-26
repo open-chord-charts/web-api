@@ -36,16 +36,24 @@ class Chart extends Spine.Model
       chartKeywords = chart.keywords()
       keywords.every (item) -> item in chartKeywords
 
-  @fromJSON: (objects) =>
+  @fromJSON: (records) =>
     objects = super
+    return objects if @count() is 0
     dedupedObjects = []
     for object in objects
       originalObject = @findByAttribute "slug", object.slug
       if originalObject
-        if new Date(originalObject.modified_at).getTime() < new Date(object.modified_at).getTime()
-          originalObject.obsolete = true
+        objectDate = new Date(object.modified_at).getTime()
+        originalObjectDate = new Date(originalObject.modified_at).getTime()
+        if originalObjectDate <= objectDate
+          attributes = {}
+          for key, value of object.attributes()
+            if JSON.stringify(object[key]) isnt JSON.stringify(originalObject[key])
+              debugger
+              attributes[key] = value
+          originalObject.updateAttributes(attributes)
         else
-          for key, value of object
+          for key, value of object.attributes()
             if not originalObject[key]?
               originalObject[key] = value
         dedupedObjects.push originalObject
