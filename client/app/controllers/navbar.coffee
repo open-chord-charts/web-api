@@ -44,7 +44,7 @@ class NavBar extends Spine.Controller
 
   onNavigateLinkClick: (event) =>
     event.preventDefault()
-    @navigate getLinkPathname(event.target)
+    @navigate getLinkPathname(event.currentTarget)
 
   onRouteChange: (route, path) =>
     @navigationItems.removeClass "active"
@@ -55,7 +55,7 @@ class NavBar extends Spine.Controller
       @searchInput.val(match[1])
 
   onSearchInputSearch: (event) =>
-    q = event.target.value.trim()
+    q = event.currentTarget.value.trim()
     return if not q
     @navigate "/search/#{q}"
 

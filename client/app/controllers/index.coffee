@@ -42,7 +42,7 @@ class Index extends Spine.Controller
 
   onNavigateLinkClick: (event) =>
     event.preventDefault()
-    @navigate getLinkPathname(event.target)
+    @navigate getLinkPathname(event.currentTarget)
 
   render: =>
     @html(require("views/index")(routes: charts: "/charts"))

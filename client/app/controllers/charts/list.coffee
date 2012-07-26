@@ -45,7 +45,7 @@ class ChartsList extends Spine.Controller
 
   onChartLinkClick: (event) =>
     event.preventDefault()
-    @navigate getLinkPathname(event.target)
+    @navigate getLinkPathname(event.currentTarget)
 
   render: =>
     @html(require("views/charts/list")(

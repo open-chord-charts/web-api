@@ -45,7 +45,7 @@ class ChartsSearch extends Spine.Controller
 
   onChartLinkClick: (event) =>
     event.preventDefault()
-    @navigate getLinkPathname(event.target)
+    @navigate getLinkPathname(event.currentTarget)
 
   render: =>
     keywords = (keyword for keyword in @q.split(" ") when keyword)
