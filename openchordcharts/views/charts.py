@@ -25,7 +25,6 @@
 
 import pkg_resources
 
-from biryani.strings import slugify
 import eco
 from formencode.variabledecode import variable_decode
 from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPFound, HTTPNotFound
