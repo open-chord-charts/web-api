@@ -33,16 +33,6 @@ class Offline extends Spine.Controller
 
   constructor: ->
     super
-
-    # Online/Offline status
-    ononline = @onNavigatorOnline
-    onoffline = @onNavigatorOffline
-    if navigator.onLine
-      @onNavigatorOnline()
-    else
-      @onNavigatorOffline()
-
-    # Application Cache
     @stopButton.hide()
     applicationCache.oncached = (event) =>
       @log "cached", event
@@ -86,13 +76,6 @@ class Offline extends Spine.Controller
       @progressDiv.removeClass "active progress-striped"
       @setStatus "update ready"
       @stopButton.hide()
-
-  onNavigatorOffline: (event) =>
-    @log "offline"
-    @setStatus "offline"
-
-  onNavigatorOnline: (event) =>
-    @log "online"
 
   onStopButtonClicked: (event) =>
     applicationCache.abort()
