@@ -40,7 +40,6 @@ def initialize_model(settings):
     db = connection[database_name]
     Wrapper.db = db
 
-    Chart.ensure_index('is_deleted')
     Chart.ensure_index('keywords')
     Chart.ensure_index('slug')
     Chart.ensure_index('title')

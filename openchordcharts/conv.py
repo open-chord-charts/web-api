@@ -62,10 +62,8 @@ csv_input_to_list = pipe(
 
 params_to_charts_json_data = struct(
     dict(
-        include_deleted=guess_bool,
         q=cleanup_line,
-        slug=cleanup_line,
-        title=cleanup_line,
+        slugs=uniform_sequence(cleanup_line),
         user=cleanup_line,
         ),
     default=noop,

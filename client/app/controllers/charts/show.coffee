@@ -30,13 +30,11 @@ class ChartsShow extends Spine.Controller
   elements:
     ".actions": "actionsDiv"
     ".chords": "chordsDiv"
-    ".actions .btn.delete": "deleteButton"
     ".actions .btn.edit": "editButton"
     ".actions .btn.json": "jsonButton"
     ".properties .key select": "keySelect"
     ".actions .btn.local": "localButton"
   events:
-    "click .actions .btn.delete": "onDeleteButtonClicked"
     "change .properties .key select": "onKeySelectChange"
     "click .actions .btn.local": "onLocalButtonClick"
     "click .actions .btn.edit": "onNavigateLinkClick"
@@ -63,10 +61,6 @@ class ChartsShow extends Spine.Controller
       @render()
     else
       @log "Chart not found from refresh event (404)"
-
-  onDeleteButtonClicked: (event) =>
-    if not confirm "Delete \"#{@chart.title}\"?"
-      event.preventDefault()
 
   onKeySelectChange: (event) =>
     @transposedKey = @keySelect.val()
@@ -95,17 +89,14 @@ class ChartsShow extends Spine.Controller
       commonChromaticKeys: chartHelpers.commonChromaticKeys
       routes:
         chart: "/charts/#{@chart.slug}"
-        "chart.delete": "/charts/#{@chart.slug}/delete"
         "chart.edit": "/charts/#{@chart.slug}/edit"
         "chart.history": "/charts/#{@chart.slug}/history"
         "chart.json": "/charts/#{@chart.slug}.json"
-        "chart.undelete": "/charts/#{@chart.slug}/undelete"
         login: $(".navbar a.login").attr("href")
       user: User.first()
     ))
     if @transposedKey
       @keySelect.val(@transposedKey)
-    @deleteButton.popover placement: "bottom"
     @editButton.popover placement: "bottom"
     @jsonButton.attr "target", "_blank"
     @localButton.button "toggle" if @chart.local

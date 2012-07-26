@@ -73,14 +73,12 @@ def chart(request):
         template_string = pkg_resources.resource_string('openchordcharts', '/templates/eco/charts/show.eco')
         eco_template = eco.render(template_string, chart=chart_json, commonChromaticKeys=common_chromatic_keys, routes={
             'chart': request.route_path('chart', slug=slug),
-            'chart.delete': request.route_path('chart.delete', slug=slug),
             'chart.edit': request.route_path('chart.edit', slug=slug),
             'chart.history': request.route_path('chart.history', slug=slug),
             'chart.json': request.route_path('chart.json', slug=slug, _query=dict(
                 key=chart.key,
                 revision=data['revision'] or '',
                 )),
-            'chart.undelete': request.route_path('chart.undelete', slug=slug),
             'login': get_login_url(request),
             }, user=user_to_json_dict(request.user),
             )
@@ -91,9 +89,7 @@ def chart(request):
 
 def charts(request):
     settings = request.registry.settings
-    spec = dict(
-        is_deleted={'$exists': False},
-        )
+    spec = {}
     charts = [chart_to_json_dict(chart) for chart in Chart.find(spec).sort('title').limit(settings['charts.limit'])]
     template_string = pkg_resources.resource_string('openchordcharts', '/templates/eco/charts/list.eco')
     eco_template = eco.render(template_string, charts=charts, routes={
@@ -107,21 +103,16 @@ def charts(request):
 
 def charts_json(request):
     settings = request.registry.settings
-    data, errors = params_to_charts_json_data(request.params)
+    data, errors = params_to_charts_json_data(dict(
+        q=request.params.get('q'),
+        slugs=request.params.getall('slug'),
+        user=request.params.get('user'),
+        ))
     if errors is not None:
         raise HTTPBadRequest(detail=errors)
     spec = dict()
-    if not data['include_deleted']:
-        spec['is_deleted'] = {'$exists': False}
-    title_slug = None
-    if data['slug']:
-        slug = data['slug']
-        if slug:
-            spec['slug'] = slug
-    if data['title']:
-        title_slug = slugify(data['title'])
-        if title_slug:
-            spec['keywords'] = Chart.get_search_by_keywords_spec(title_slug.split('-'))
+    if data['slugs']:
+        spec['slug'] = data['slugs'][0] if len(data['slugs']) == 1 else {'$in': data['slugs']}
     if data['user']:
         user = data['user']
         if user:
@@ -150,22 +141,6 @@ def create(request):
         chart_errors=chart_errors or {},
         form_action_url=request.route_path('chart.create'),
         )
-
-
-def delete(request):
-    if request.user is None or not has_permission('edit', request.root, request):
-        raise HTTPForbidden()
-    slug = request.matchdict.get('slug')
-    if not slug:
-        raise HTTPForbidden()
-    chart = Chart.find_one(dict(slug=slug))
-    if chart is None:
-        raise HTTPNotFound()
-    if chart.is_deleted:
-        raise HTTPBadRequest(explanation=u'Chart is already deleted')
-    chart.is_deleted = True
-    chart.save(safe=True)
-    return HTTPFound(location=request.route_path('chart', slug=chart.slug))
 
 
 def edit(request):
@@ -214,19 +189,3 @@ def history(request):
         chart=chart,
         history_charts_cursor=history_charts_cursor,
         )
-
-
-def undelete(request):
-    if request.user is None or not has_permission('edit', request.root, request):
-        raise HTTPForbidden()
-    slug = request.matchdict.get('slug')
-    if not slug:
-        raise HTTPForbidden()
-    chart = Chart.find_one(dict(slug=slug))
-    if chart is None:
-        raise HTTPNotFound()
-    if not chart.is_deleted:
-        raise HTTPBadRequest(explanation=u'Chart is not deleted')
-    chart.is_deleted = None
-    chart.save(safe=True)
-    return HTTPFound(location=request.route_path('chart', slug=chart.slug))

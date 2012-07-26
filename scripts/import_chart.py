@@ -57,7 +57,7 @@ def main(args=None):
         chart.update_from_dict(dict(
             (key, value)
             for key, value in json_chart.iteritems()
-            if key not in ['_id', 'created_at', 'is_deleted', 'keywords', 'modified_at', 'slug']
+            if key not in ['_id', 'created_at', 'keywords', 'modified_at', 'slug']
             ))
         if arguments.user:
             chart.user = arguments.user

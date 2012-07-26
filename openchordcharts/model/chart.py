@@ -37,7 +37,6 @@ class Chart(Mapper, Wrapper):
     composers = None
     created_at = None
     genre = None
-    is_deleted = None
     keywords = None
     modified_at = None
     key = None
@@ -55,7 +54,7 @@ class Chart(Mapper, Wrapper):
         return keywords
 
     def equals(self, other_dict):
-        ignored_attributes = ['_id', 'created_at', 'is_deleted', 'keywords', 'modified_at', 'slug', 'user']
+        ignored_attributes = ['_id', 'created_at', 'keywords', 'modified_at', 'slug', 'user']
         return dict((key, value) for key, value in other_dict.iteritems() if key not in ignored_attributes) == \
             dict(
                 (key, value)
