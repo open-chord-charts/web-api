@@ -77,7 +77,7 @@ class ChartsShow extends Spine.Controller
 
   onNavigateLinkClick: (event) =>
     event.preventDefault()
-    @navigate getLinkPathname(event.target)
+    @navigate getLinkPathname(event.currentTarget)
 
   render: =>
     chart = @chart.attributes()
