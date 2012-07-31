@@ -25,7 +25,6 @@
 {ChartsSearch} = require "controllers/charts/search"
 {ChartsShow} = require "controllers/charts/show"
 {Index} = require "controllers/index"
-{Offline} = require "controllers/offline"
 {UsersShow} = require "controllers/users/show"
 
 

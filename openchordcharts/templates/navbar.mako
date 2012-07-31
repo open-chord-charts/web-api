@@ -40,18 +40,10 @@ from openchordcharts.helpers import get_login_url
             <a class="charts" href="${request.route_path('charts')}">Charts</a>
           </li>
         </ul>
-% if request.matched_route.name != 'offline':
         <div class="navbar-search">
           <input class="search-query" placeholder="Search (ex: All of me)" type="search">
         </div>
-% endif
-        <ul class="nav pull-right">
-          <li${u' class="active"' if request.matched_route.name == 'offline' else '' | n}>
-            <a class="offline" href="${request.route_path('offline')}">Offline</a>
-          </li>
-        </ul>
-% if request.matched_route.name != 'offline':
-  % if request.user:
+% if request.user:
         <div class="btn-group pull-right">
           <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
             <i class="icon-user"></i> ${request.user.email}
@@ -64,13 +56,12 @@ from openchordcharts.helpers import get_login_url
 rel="nofollow">Logout</a></li>
           </ul>
         </div>
-  % else:
+% else:
         <ul class="nav pull-right">
           <li>
             <a class="login" href="${get_login_url(request)}" rel="nofollow">Login</a>
           </li>
         </ul>
-  % endif
 % endif
       </div>
     </div>

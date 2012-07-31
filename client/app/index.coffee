@@ -37,6 +37,7 @@ class App extends Spine.Controller
 
   constructor: ->
     super
+    @offline = new Offline() if $("html").attr("manifest")
     new NavBar el: @navbarDiv
     new Stack el: @section
     Spine.Route.setup(history: true)
@@ -46,15 +47,4 @@ class App extends Spine.Controller
     Chart.loadLocal()
 
 
-class OfflineApp extends Spine.Controller
-  elements:
-    "article.static": "article"
-  logPrefix: "(OfflineApp)"
-
-  constructor: ->
-    super
-    new Offline el: @article
-
-
 module?.exports.App = App
-module?.exports.OfflineApp = OfflineApp

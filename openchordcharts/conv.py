@@ -23,7 +23,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from biryani.baseconv import (check, cleanup_line, default, function, guess_bool, input_to_email, input_to_int,
+from biryani.baseconv import (check, cleanup_line, function, guess_bool, input_to_email, input_to_int,
     make_input_to_url, noop, not_none, pipe, set_value, struct, test, uniform_mapping, uniform_sequence)
 from biryani.bsonconv import input_to_object_id
 from biryani.datetimeconv import datetime_to_iso8601_str
@@ -73,14 +73,6 @@ params_to_charts_json_data = struct(
 params_to_chart_data = struct(
     dict(
         revision=pipe(cleanup_line, input_to_object_id),
-        ),
-    default=noop,
-    keep_none_values=True,
-    )
-
-params_to_index_data = struct(
-    dict(
-        appcache=pipe(guess_bool, default(True)),
         ),
     default=noop,
     keep_none_values=True,

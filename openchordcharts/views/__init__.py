@@ -26,20 +26,11 @@
 import pkg_resources
 
 import eco
-from pyramid.httpexceptions import HTTPBadRequest, HTTPNotFound
-
-from openchordcharts.conv import params_to_index_data
 
 
 def cache_manifest(request):
-    data, errors = params_to_index_data(request.params)
-    if errors is not None:
-        raise HTTPBadRequest(detail=errors)
-    if data['appcache']:
-        request.response.content_type = 'text/cache-manifest'
-        return {}
-    else:
-        raise HTTPNotFound()
+    request.response.content_type = 'text/cache-manifest'
+    return {}
 
 
 def empty(request):
