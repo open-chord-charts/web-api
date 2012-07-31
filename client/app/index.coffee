@@ -43,7 +43,7 @@ class App extends Spine.Controller
     Spine.Route.setup(history: true)
     User.create(@options.user) if @options.user
     Chart.one "refresh", (charts) =>
-      Chart.ajax().fetch()
+      Chart.ajax().fetch() if navigator.onLine
     Chart.loadLocal()
 
 
