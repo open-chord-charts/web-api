@@ -50,7 +50,6 @@ class ChartsShow extends Spine.Controller
 
   onActive: (params) =>
     Chart.bind "ajaxError", @onAjaxError
-    Chart.bind "change", @render
     Chart.bind "refresh", @onChartRefresh
     @slug = params.slug
     @chart = Chart.findByAttribute "slug", @slug
@@ -65,6 +64,7 @@ class ChartsShow extends Spine.Controller
   onChartRefresh: (charts) =>
     @chart = Chart.findByAttribute "slug", @slug
     if @chart
+      @chart.bind "change", @render
       @render()
     else
       @log "Chart not found from refresh event (404)"
