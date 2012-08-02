@@ -19,10 +19,10 @@
 ## You should have received a copy of the GNU Affero General Public License
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <%!
-from openchordcharts.helpers import get_git_revision
+from openchordcharts.helpers import get_revision_hash
 %>\
 CACHE MANIFEST
-# rev ${get_git_revision() or u'UNKNOWN!'}
+# rev ${get_revision_hash() or u'UNKNOWN!'}
 
 CACHE:
 //ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js
