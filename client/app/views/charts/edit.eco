@@ -1,22 +1,54 @@
 <div class="page-header">
   <h1>
     Edit <span class="title"><%= @chart.title %></span>
-<% if @chart.composers: %>
-    <small class="composers"><%= @chart.composers.join ", " %></small>
-<% end %>
   </h1>
 </div>
 
-<div class="properties">
-  <div class="left">
-<% if @chart.structure: %>
-    <span class="structure"><%= @chart.structure.join "" %></span>
+<form class="edit form-horizontal">
+  <fieldset>
+    <div class="control-group">
+      <label class="control-label" for="title">Title</label>
+      <div class="controls">
+        <input class="input-xlarge" id="title" name="title" type="text" value="<%= @chart.title %>">
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="composers">Composers</label>
+      <div class="controls">
+        <input class="input-xlarge" id="composers" name="composers" type="text"
+          value="<%= if @chart.composers then @chart.composers.join ", " else "" %>">
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="genre">Genre</label>
+      <div class="controls">
+        <input class="input-xlarge" id="genre" name="genre" type="text" value="<%= @chart.genre %>">
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="structure">Structure</label>
+      <div class="controls">
+        <input class="input-xlarge" id="structure" type="text"
+          value="<%= if @chart.structure then @chart.structure.join "" else "" %>">
+      </div>
+    </div>
+<% for partName, chords of @chart.parts: %>
+    <div class="control-group">
+      <label class="control-label">Chords of part <%= partName %></label>
+      <div class="controls">
+        <div class="textarea">
+          <textarea class="input-xlarge"><%= if chords then chords.join " " else "" %></textarea>
+        </div>
+      </div>
+    </div>
 <% end %>
-<% if @chart.genre: %>
-    <span class="genre"><%= @chart.genre %></span>
-<% end %>
-  </div>
-</div>
+    <div class="form-actions">
+      <button class="btn btn-primary save">Save</button>
+      <button class="btn cancel">Cancel</button>
+    </div>
+  </fieldset>
+</form>
+
 
 <% if @chart.structure: %>
 <div class="chords">

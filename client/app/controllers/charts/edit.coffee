@@ -28,25 +28,26 @@ chartHelpers = require "lib/helpers/chart"
 
 class ChartsEdit extends Spine.Controller
   elements:
-    ".actions": "actionsDiv"
-    ".chords": "chordsDiv"
-    ".actions .btn.edit": "editButton"
-    ".actions .btn.json": "jsonButton"
-    ".properties .key select": "keySelect"
-    ".actions .btn.local": "localButton"
+    "form.edit": "editForm"
   events:
-    "change .properties .key select": "onKeySelectChange"
-    "click .actions .btn.local": "onLocalButtonClick"
-    "click a.user": "onNavigateLinkClick"
-  logPrefix: "(controllers.charts.show.ChartsEdit)"
+    "submit form.edit": "onEditFormSubmit"
+  logPrefix: "(controllers.charts.edit.ChartsEdit)"
   tag: "article"
 
   constructor: ->
     super
     @active @onActive
 
+  getChartAttributes: (inputs) =>
+    newAttributes = {}
+    for input in inputs
+      value = input.value
+      if input.name is "composers"
+        value = (value.trim() for value in value.split(","))
+      newAttributes[input.name] = value
+    newAttributes
+
   onActive: (params) =>
-    Chart.bind "change", @onChartChange
     Chart.bind "refresh", @onChartRefresh
     @slug = params.slug
     @chart = Chart.findByAttribute "slug", @slug
@@ -55,9 +56,6 @@ class ChartsEdit extends Spine.Controller
     else
       @log "Chart not found, waiting"
 
-  onChartChange: (chart, type, options) =>
-    @render() if chart.id == @chart.id
-
   onChartRefresh: (charts) =>
     @chart = Chart.findByAttribute "slug", @slug
     if @chart
@@ -65,54 +63,17 @@ class ChartsEdit extends Spine.Controller
     else
       @log "Chart not found from refresh event (404)"
 
-  onKeySelectChange: (event) =>
-    @transposedKey = @keySelect.val()
-    @render()
-
-  onLocalButtonClick: (event) =>
-    @localButton.data("popover").tip().remove()
-    newLocalValue = not @chart.local
-    if newLocalValue
-      @log "Chart is now stored in localStorage"
-    else
-      @log "Chart is no more stored in localStorage"
-    @chart.updateAttribute "local", newLocalValue
-
-  onNavigateLinkClick: (event) =>
+  onEditFormSubmit: (event) =>
     event.preventDefault()
-    @navigate getLinkPathname(event.currentTarget)
+    newAttributes = @getChartAttributes($(event.currentTarget).serializeArray())
+    @chart.updateAttributes(newAttributes)
 
   render: =>
     chart = @chart.attributes()
-    if @transposedKey
-      chart.parts = @chart.getTransposedParts(@transposedKey)
-    chart = chartHelpers.partsToRows(chartHelpers.decorateChart(chart))
     @html(require("views/charts/edit")(
       chart: chart
-      commonChromaticKeys: chartHelpers.commonChromaticKeys
-      routes:
-        chart: "/charts/#{@chart.slug}"
-        "chart.edit": "/charts/#{@chart.slug}/edit"
-        "chart.history": "/charts/#{@chart.slug}/history"
-        "chart.json": "/charts/#{@chart.slug}.json"
-        login: $(".navbar a.login").attr("href")
-      user: User.first()
     ))
-    if @transposedKey
-      @keySelect.val(@transposedKey)
-    @editButton.popover placement: "bottom"
-    @jsonButton.attr "target", "_blank"
-    @localButton.button "toggle" if @chart.local
-    if @chart.local
-      localButtonPopoverOptions =
-        content: "You won't be able to access this page while being offline."
-        title: "Forget local data"
-    else
-      localButtonPopoverOptions =
-        content: "You will be able to access this page while being offline."
-        title: "Keep local data"
-    @localButton.popover $.extend({}, {placement: "bottom"}, localButtonPopoverOptions)
-    document.title = "#{@chart.title} (#{@chart.key}) – OpenChordCharts.org"
+    document.title = "Edit #{@chart.title} – OpenChordCharts.org"
 
 
 module?.exports.ChartsEdit = ChartsEdit

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-% if request.matched_route.name == 'index':
+% if request.matched_route.name == 'index' and not request.registry.settings['development_mode']:
 <html manifest="${request.route_path('cache.manifest')}">
 % else:
 <html>
