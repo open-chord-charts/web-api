@@ -49,7 +49,6 @@ class ChartsShow extends Spine.Controller
     @active @onActive
 
   onActive: (params) =>
-    Chart.bind "ajaxError", @onAjaxError
     Chart.bind "refresh", @onChartRefresh
     @slug = params.slug
     @chart = Chart.findByAttribute "slug", @slug
@@ -57,9 +56,6 @@ class ChartsShow extends Spine.Controller
       @render()
     else
       @log "Chart not found, waiting"
-
-  onAjaxError: (record, xhr, statusText, error) =>
-    @updateButton.button("error")
 
   onChartRefresh: (charts) =>
     @chart = Chart.findByAttribute "slug", @slug
@@ -124,6 +120,8 @@ class ChartsShow extends Spine.Controller
         content: "You will be able to access this page while being offline."
         title: "Keep local data"
     @localButton.popover $.extend({}, {placement: "bottom"}, localButtonPopoverOptions)
+    if @chart.local_modified_at and new Date(@chart.local_modified_at).getTime() > new Date(@chart.modified_at).getTime()
+      @localButton.addClass "obsolete"
     document.title = "#{@chart.title} (#{@chart.key}) – OpenChordCharts.org"
 
 

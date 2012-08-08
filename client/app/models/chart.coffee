@@ -25,8 +25,8 @@ transpose = require "lib/transpose"
 
 
 class Chart extends Spine.Model
-  @configure "Chart", "composers", "created_at", "genre", "key", "local", "modified_at", "parts", "slug", "structure",
-    "title", "user"
+  @configure "Chart", "composers", "created_at", "genre", "key", "local", "local_modified_at", "modified_at", "parts",
+    "slug", "structure", "title", "user"
   @extend SelectedLocal
   @extend Spine.Model.Ajax.Methods
   @url: "/charts.json"
@@ -48,7 +48,7 @@ class Chart extends Spine.Model
         if originalObjectDate <= objectDate
           attributes = {}
           for key, value of object.attributes()
-            if JSON.stringify(object[key]) isnt JSON.stringify(originalObject[key])
+            if not originalObject[key]
               attributes[key] = value
           originalObject.updateAttributes(attributes)
         else

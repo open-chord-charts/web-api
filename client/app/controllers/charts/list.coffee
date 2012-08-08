@@ -37,15 +37,11 @@ class ChartsList extends Spine.Controller
   constructor: ->
     super
     @active @onActive
-    Chart.bind "ajaxError", @onAjaxError
     Chart.bind "change refresh", @render
 
   onActive: =>
     document.title = "Charts – OpenChordCharts.org"
     @render()
-
-  onAjaxError: (record, xhr, statusText, error) =>
-    @updateButton.button("error")
 
   onChartLinkClick: (event) =>
     event.preventDefault()

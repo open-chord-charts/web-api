@@ -2,7 +2,7 @@
 <p>
   <a class="btn create" href="<%= @routes['chart.create'] %>">Create</a>
   <% if (chart for chart in @charts when chart.local).length: %>
-  <button class="btn update" data-error-text="Error!" data-loading-text="Loading...">Update</button>
+  <button class="btn update" data-loading-text="Loading...">Update</button>
   <% end %>
 </p>
 <% end %>

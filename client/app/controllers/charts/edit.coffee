@@ -67,9 +67,15 @@ class ChartsEdit extends Spine.Controller
   onEditFormSubmit: (event) =>
     event.preventDefault()
     newAttributes = @getChartAttributes($(event.currentTarget).serializeArray())
+    newAttributes.local_modified_at = new Date()
     @chart.updateAttributes(newAttributes)
+    if @modified
+      window.onbeforeunload = null
+      @chart.ajax().update()
+    @navigate("/charts/#{@chart.slug}")
 
   onInputChange: (event) =>
+    @modified = true
     return if window.onbeforeunload
     window.onbeforeunload = (e) ->
       e = e || window.event

@@ -1,7 +1,7 @@
 <div class="actions">
   <button class="btn local" data-toggle="button">Local</button>
 <% if @chart.local: %>
-  <button class="btn update" data-error-text="Error!" data-loading-text="Loading...">Update</button>
+  <button class="btn update" data-loading-text="Loading...">Update</button>
 <% end %>
 <% if not @revision: %>
   <a class="btn edit" href="<%= @routes['chart.edit'] %>">Edit</a>
