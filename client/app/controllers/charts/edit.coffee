@@ -30,6 +30,7 @@ class ChartsEdit extends Spine.Controller
   elements:
     "form.edit": "editForm"
   events:
+    "change form input, form textarea": "onInputChange"
     "submit form.edit": "onEditFormSubmit"
   logPrefix: "(controllers.charts.edit.ChartsEdit)"
   tag: "article"
@@ -68,10 +69,23 @@ class ChartsEdit extends Spine.Controller
     newAttributes = @getChartAttributes($(event.currentTarget).serializeArray())
     @chart.updateAttributes(newAttributes)
 
+  onInputChange: (event) =>
+    return if window.onbeforeunload
+    window.onbeforeunload = (e) ->
+      e = e || window.event
+      message = "There are unsaved changes!"
+      # For IE and Firefox
+      if e
+        e.returnValue = message
+      # For Safari
+      message
+
   render: =>
     chart = @chart.attributes()
     @html(require("views/charts/edit")(
       chart: chart
+      routes:
+        chart: "/charts/#{@chart.slug}"
     ))
     document.title = "Edit #{@chart.title} – OpenChordCharts.org"
 
