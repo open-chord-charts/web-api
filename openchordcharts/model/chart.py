@@ -53,15 +53,6 @@ class Chart(Mapper, Wrapper):
             keywords.extend(slugify(' '.join(self.composers)).split('-'))
         return keywords
 
-    def equals(self, other_dict):
-        ignored_attributes = ['_id', 'created_at', 'keywords', 'modified_at', 'slug', 'user']
-        return dict((key, value) for key, value in other_dict.iteritems() if key not in ignored_attributes) == \
-            dict(
-                (key, value)
-                for key, value in check(object_to_clean_dict(self)).iteritems()
-                if key not in ignored_attributes
-                )
-
     def generate_unique_slug(self):
         title_slug = slugify(self.title)
         slug = title_slug
@@ -77,6 +68,20 @@ class Chart(Mapper, Wrapper):
     def get_search_by_keywords_spec(cls, keywords):
         keywords_regexps = [re.compile(u'^{0}'.format(re.escape(keyword))) for keyword in keywords]
         return {'$all': keywords_regexps}
+
+    def has_same_data_than(self, other_dict):
+        ignored_attributes = ['_id', 'created_at', 'keywords', 'modified_at', 'slug', 'user']
+        clean_dict = dict(
+                (key, value)
+                for key, value in check(object_to_clean_dict(self)).iteritems()
+                if key not in ignored_attributes
+                )
+        clean_other_dict = dict(
+            (key, value)
+            for key, value in other_dict.iteritems()
+            if key not in ignored_attributes
+            )
+        return clean_dict == clean_other_dict
 
     def save(self, *args, **kwargs):
         if self.created_at is None:

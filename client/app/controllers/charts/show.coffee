@@ -31,16 +31,18 @@ class ChartsShow extends Spine.Controller
     ".actions": "actionsDiv"
     ".chords": "chordsDiv"
     ".actions .btn.edit": "editButton"
+    ".btn.fetch": "fetchButton"
     ".actions .btn.json": "jsonButton"
     ".properties .key select": "keySelect"
     ".actions .btn.local": "localButton"
-    ".btn.update": "updateButton"
+    ".btn.send": "sendButton"
   events:
+    "click .btn.fetch": "onFetchButtonClick"
     "change .properties .key select": "onKeySelectChange"
     "click .actions .btn.local": "onLocalButtonClick"
     "click .actions .btn.edit": "onNavigateLinkClick"
     "click a.user": "onNavigateLinkClick"
-    "click .btn.update": "onUpdateButtonClick"
+    "click .btn.send": "onSendButtonClick"
   logPrefix: "(controllers.charts.show.ChartsShow)"
   tag: "article"
 
@@ -51,40 +53,57 @@ class ChartsShow extends Spine.Controller
   attachChart: =>
     @chart = Chart.findByAttribute("slug", @slug)
     if @chart
-      @chart.bind "change", @render
+      @chart.bind("change", @onChartChange)
       @render()
+    else
+      @html("Not found")
 
   onActive: (params) =>
-    Chart.bind "refresh", @onChartRefresh
+    Chart.bind("refresh", @onChartRefresh)
     @slug = params.slug
     @attachChart()
 
+  onChartChange: (chart) =>
+    if @chart and chart.slug is @chart.slug
+      @render()
+    else
+      @attachChart()
+
   onChartRefresh: (charts) =>
     @attachChart()
+
+  onFetchButtonClick: (event) =>
+    @fetchButton.button("fetching")
+    @chart.ajax().reload(
+      error: (record) =>
+        @fetchButton.button("error")
+    )
 
   onKeySelectChange: (event) =>
     @transposedKey = @keySelect.val()
     @render()
 
   onLocalButtonClick: (event) =>
-    @localButton.data("popover").tip().remove()
-    newLocalValue = not @chart.local
-    if newLocalValue
-      @log "Chart is now stored in localStorage"
-    else
-      @log "Chart is no more stored in localStorage"
-    @chart.updateAttribute "local", newLocalValue
+    event.preventDefault()
+    isLocal = not @chart.local
+    return if @chart.local_dirty and not confirm("Forget your changes for this chart?")
+    @chart.updateAttribute("local", isLocal)
+    if not isLocal
+      @chart.local = false
+      @chart.local_dirty = false
+      @chart.ajax().reload()
 
   onNavigateLinkClick: (event) =>
     event.preventDefault()
     @navigate getLinkPathname(event.currentTarget)
 
-  onUpdateButtonClick: (event) =>
-    @updateButton.button("loading")
-    Chart.ajax().fetch(
-      data:
-        slug: @chart.slug
-      processData: true
+  onSendButtonClick: (event) =>
+    @sendButton.button("sending")
+    @chart.ajax().update(
+      error: (record) =>
+        @sendButton.button("error")
+      success: (record) =>
+        @chart.updateAttribute("local_dirty", false)
     )
 
   render: =>
@@ -104,22 +123,10 @@ class ChartsShow extends Spine.Controller
         login: $(".navbar a.login").attr("href")
       user: User.first()
     ))
-    if @transposedKey
-      @keySelect.val(@transposedKey)
-    @editButton.popover placement: "bottom"
     @jsonButton.attr "target", "_blank"
+    @keySelect.val(@transposedKey) if @transposedKey
     @localButton.button "toggle" if @chart.local
-    if @chart.local
-      localButtonPopoverOptions =
-        content: "You won't be able to access this page while being offline."
-        title: "Forget local data"
-    else
-      localButtonPopoverOptions =
-        content: "You will be able to access this page while being offline."
-        title: "Keep local data"
-    @localButton.popover $.extend({}, {placement: "bottom"}, localButtonPopoverOptions)
-    if @chart.local_dirty
-      @localButton.addClass "btn-warning"
+    @sendButton.addClass "btn-warning" if @chart.local_dirty
 
 
 module?.exports.ChartsShow = ChartsShow

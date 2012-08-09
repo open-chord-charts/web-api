@@ -1,10 +1,14 @@
 <div class="actions">
-  <button class="btn local" data-toggle="button">Local</button>
+  <button class="btn local">Local</button>
 <% if @chart.local: %>
-  <button class="btn update" data-loading-text="Loading...">Update</button>
-<% end %>
-<% if not @revision: %>
+  <% if @chart.local_dirty: %>
+  <button class="btn send" data-error-text="Send - error!" data-sending-text="Sending...">Send</button>
+  <% else: %>
+  <button class="btn fetch" data-error-text="Fetch - error!" data-fetching-text="Fetching...">Fetch</button>
+  <% end %>
+  <% if not @revision: %>
   <a class="btn edit" href="<%= @routes['chart.edit'] %>">Edit</a>
+  <% end %>
 <% end %>
   <a class="btn history" href="<%= @routes['chart.history'] %>">History</a>
   <a class="btn json" href="<%= @routes['chart.json'] %>" title="Get JSON version of this chart (for programmers)">

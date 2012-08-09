@@ -79,7 +79,11 @@ class ChartsEdit extends Spine.Controller
     if @chart.isValid()
       if @formModified
         @chart.updateAttribute("local_dirty", true)
-        @chart.ajax().update()
+        @chart.ajax().update(
+          success: (record) =>
+            @chart.updateAttribute("local_dirty", false)
+            @navigate("/charts/#{record.slug}") if record.slug isnt @chart.slug
+        )
       @navigate("/charts/#{@chart.slug}")
 
   render: =>

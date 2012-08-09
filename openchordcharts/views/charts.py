@@ -23,14 +23,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+import json
 import pkg_resources
 
 import eco
-from formencode.variabledecode import variable_decode
-from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPFound, HTTPNotFound
+from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPNotFound
 from pyramid.security import has_permission
 
-from openchordcharts.conv import (chart_to_json_dict, params_to_chart_data, params_to_chart_edit_data,
+from openchordcharts.conv import (chart_to_json_dict, json_to_chart_data, params_to_chart_data,
     params_to_charts_json_data, user_to_json_dict)
 from openchordcharts.helpers import get_login_url
 from openchordcharts.model.chart import Chart, HistoryChart
@@ -102,44 +102,54 @@ def charts(request):
 
 def charts_json(request):
     settings = request.registry.settings
-    data, errors = params_to_charts_json_data(dict(
-        q=request.params.get('q'),
-        slugs=request.params.getall('slug'),
-        user=request.params.get('user'),
-        ))
-    if errors is not None:
-        raise HTTPBadRequest(detail=errors)
-    spec = dict()
-    if data['slugs']:
-        spec['slug'] = data['slugs'][0] if len(data['slugs']) == 1 else {'$in': data['slugs']}
-    if data['user']:
-        user = data['user']
-        if user:
-            spec['user'] = user
-    return [chart_to_json_dict(chart) for chart in Chart.find(spec).sort('slug').limit(settings['charts.limit'])]
-
-
-def create(request):
-    if request.user is None or not has_permission('edit', request.root, request):
-        raise HTTPForbidden()
-    chart = Chart()
-    if request.method == 'POST':
-        params = variable_decode(request.POST)
-        chart_data, chart_errors = params_to_chart_edit_data(params)
-        if chart_errors is None:
+    fizzle = request.matchdict.get('fizzle')
+    if fizzle:
+        slug = fizzle[0]
+        if not slug:
+            raise HTTPNotFound()
+        if request.method == 'GET':
+            chart = Chart.find_one(dict(slug=slug))
+            if chart is None:
+                raise HTTPNotFound()
+            return chart_to_json_dict(chart)
+        elif request.method == 'PUT':
+            if request.user is None or not has_permission('edit', request.root, request):
+                raise HTTPForbidden()
+            chart = Chart.find_one(dict(slug=slug))
+            if chart is None:
+                raise HTTPNotFound()
+            chart_json = json.loads(request.body)
+            chart_data, chart_errors = json_to_chart_data(chart_json)
+            if chart_errors:
+                # TODO Put HTTP error code in response.
+                return dict(errors=chart_errors)
+            if chart.has_same_data_than(chart_data):
+                return chart_to_json_dict(chart)
+            history_chart = HistoryChart()
+            history_chart.update_from_dict(chart.__dict__)
+            history_chart.chart_id = chart._id
+            history_chart.save(safe=True)
             chart.update_from_dict(chart_data)
             chart.save(safe=True)
-            return HTTPFound(location=request.route_path('chart', slug=chart.slug))
+            return chart_to_json_dict(chart)
+        else:
+            raise HTTPBadRequest(explanation=u'Unsupported HTTP method')
     else:
-        chart_data = dict()
-        chart_errors = None
-    return dict(
-        cancel_url=request.route_path('charts'),
-        chart=chart,
-        chart_data=chart_data or {},
-        chart_errors=chart_errors or {},
-        form_action_url=request.route_path('chart.create'),
-        )
+        data, errors = params_to_charts_json_data(dict(
+            q=request.params.get('q'),
+            slugs=request.params.getall('slug'),
+            user=request.params.get('user'),
+            ))
+        if errors is not None:
+            raise HTTPBadRequest(detail=errors)
+        spec = dict()
+        if data['slugs']:
+            spec['slug'] = data['slugs'][0] if len(data['slugs']) == 1 else {'$in': data['slugs']}
+        if data['user']:
+            user = data['user']
+            if user:
+                spec['user'] = user
+        return [chart_to_json_dict(chart) for chart in Chart.find(spec).sort('slug').limit(settings['charts.limit'])]
 
 
 def edit(request):
@@ -151,28 +161,8 @@ def edit(request):
     chart = Chart.find_one(dict(slug=slug))
     if chart is None:
         raise HTTPNotFound()
-    if request.method == 'POST':
-        params = variable_decode(request.POST)
-        chart_data, chart_errors = params_to_chart_edit_data(params)
-        if chart_errors is None:
-            if not chart.equals(chart_data):
-                history_chart = HistoryChart()
-                history_chart.update_from_dict(chart.__dict__)
-                history_chart.chart_id = chart._id
-                history_chart.save(safe=True)
-                chart.update_from_dict(chart_data)
-                chart.save(safe=True)
-            return HTTPFound(location=request.route_path('chart', slug=chart.slug))
-    else:
-        chart_data = chart.to_bson()
-        chart_errors = None
     return dict(
-        cancel_url=request.route_path('chart', slug=chart.slug),
-        chart=chart,
-        chart_data=chart_data,
-        chart_errors=chart_errors or {},
-        common_chromatic_keys=common_chromatic_keys,
-        form_action_url=request.route_path('chart.edit', slug=chart.slug),
+        eco_template=u'',
         )
 
 

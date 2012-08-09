@@ -25,11 +25,11 @@ transpose = require "lib/transpose"
 
 
 class Chart extends Spine.Model
-  @configure "Chart", "composers", "created_at", "genre", "key", "local", "local_dirty", "modified_at", "parts",
-    "slug", "structure", "title", "user"
+  @configure "Chart", "composers", "created_at", "genre", "key", "local", "local_dirty", "modified_at", "parts", "slug",
+    "structure", "title", "user"
   @extend SelectedLocal
   @extend Spine.Model.Ajax.Methods
-  @url: "/charts.json"
+  @url: "/api/charts"
 
   @findByKeywords: (keywords) =>
     @select (chart) ->
@@ -43,28 +43,31 @@ class Chart extends Spine.Model
     @
 
   @fromJSON: (records) =>
+    records = [records] if not Spine.isArray(records)
+    for record in records
+      record.id or= record.slug
     objects = super
     return objects if @count() is 0
+    objects = [objects] if not Spine.isArray(objects)
     dedupedObjects = []
     for object in objects
-      originalObject = @findByAttribute "slug", object.slug
+      originalObject = @findByAttribute("slug", object.id)
       if originalObject
         objectDate = new Date(object.modified_at).getTime()
         originalObjectDate = new Date(originalObject.modified_at).getTime()
         if originalObjectDate <= objectDate
           attributes = {}
           for key, value of object.attributes()
-            if not originalObject[key]
-              attributes[key] = value
+            attributes[key] = value
           originalObject.updateAttributes(attributes)
         else
           for key, value of object.attributes()
             if not originalObject[key]?
               originalObject[key] = value
-        dedupedObjects.push originalObject
+        dedupedObjects.push(originalObject)
       else
-        dedupedObjects.push object
-    dedupedObjects
+        dedupedObjects.push(object)
+    if dedupedObjects.length is 1 then dedupedObjects[0] else dedupedObjects
 
   getTransposedParts: (toKey) =>
     transposedParts = {}
@@ -90,7 +93,7 @@ class Chart extends Spine.Model
   validate: =>
     errors = {}
     errors.title = "Empty" if not @title
-    if $.isEmptyObject(errors) then false else errors
+    if Spine.isBlank(errors) then false else errors
 
 
 module?.exports.Chart = Chart

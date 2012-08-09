@@ -55,11 +55,6 @@ chart_to_json_dict = check(
         )
     )
 
-csv_input_to_list = pipe(
-    function(lambda value: value.split(',')),
-    uniform_sequence(cleanup_line),
-    )
-
 params_to_charts_json_data = struct(
     dict(
         q=cleanup_line,
@@ -130,32 +125,31 @@ validate_settings = check(
         )
 
 
-def params_to_chart_edit_data(params, state=default_state):
+def json_to_chart_data(params, state=default_state):
     all_errors = {}
     value, error = struct(
         dict(
-            composers=csv_input_to_list,
+            composers=uniform_sequence(
+                cleanup_line,
+                ),
             genre=cleanup_line,
             key=cleanup_line,
             parts=uniform_mapping(
                 cleanup_line,
-                pipe(
-                    function(lambda value: value.split()),
-                    uniform_sequence(cleanup_line),
-                    ),
+                uniform_sequence(cleanup_line),
                 ),
-            structure=pipe(
-                csv_input_to_list,
-                uniform_sequence(
+            structure=uniform_sequence(
+                pipe(
+                    cleanup_line,
                     function(lambda value: value.upper()),
-                    ),
+                    )
                 ),
             title=pipe(
                 cleanup_line,
                 not_none,
                 ),
             ),
-        default=noop,
+        default='drop',
         keep_none_values=True,
         )(params)
     if error is not None:

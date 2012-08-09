@@ -82,17 +82,16 @@ def main(global_config, **settings):
 
     config.add_route('chart.json', '/charts/{slug}.json')
     config.add_view(openchordcharts.views.charts.chart, renderer='jsonp', route_name='chart.json')
-    config.add_route('charts.json', '/charts.json')
+    config.add_route('charts.json', '/api/charts*fizzle')
     config.add_view(openchordcharts.views.charts.charts_json, renderer='jsonp', route_name='charts.json')
 
     config.add_route('index', '/')
     config.add_view(openchordcharts.views.index, renderer='/site.mako', route_name='index')
 
     config.add_route('chart.create', '/charts/create')
-    config.add_view(openchordcharts.views.charts.create, permission='edit', renderer='/chart_edit.mako',
-        route_name='chart.create')
+    config.add_view(openchordcharts.views.empty, permission='edit', renderer='/site.mako', route_name='chart.create')
     config.add_route('chart.edit', '/charts/{slug}/edit')
-    config.add_view(openchordcharts.views.charts.edit, permission='edit', renderer='/chart_edit.mako',
+    config.add_view(openchordcharts.views.charts.edit, permission='edit', renderer='/site.mako',
         route_name='chart.edit')
     config.add_route('chart.history', '/charts/{slug}/history')
     config.add_view(openchordcharts.views.charts.history, renderer='/chart_history.mako', route_name='chart.history')
