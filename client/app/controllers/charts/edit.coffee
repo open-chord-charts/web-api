@@ -28,56 +28,56 @@ chartHelpers = require "lib/helpers/chart"
 
 class ChartsEdit extends Spine.Controller
   elements:
-    "form.edit": "editForm"
+    "form": "form"
   events:
-    "change form input, form textarea": "onInputChange"
-    "submit form.edit": "onEditFormSubmit"
+    "change form input, form textarea": "onFormControlChange"
+    "submit form": "onFormSubmit"
   logPrefix: "(controllers.charts.edit.ChartsEdit)"
   tag: "article"
 
   constructor: ->
     super
+    @formModified = false
     @active @onActive
 
-  getChartAttributes: (inputs) =>
-    newAttributes = {}
-    for input in inputs
-      value = input.value
-      if input.name is "composers"
-        value = (value.trim() for value in value.split(","))
-      newAttributes[input.name] = value
-    newAttributes
+  decorateFormControl: ($element, helpMessage, className) =>
+    $element
+      .parents(".control-group").removeClass("error warning").addClass(className).end()
+      .next(".help-inline").text(helpMessage).end()
 
   onActive: (params) =>
-    Chart.bind "refresh", @onChartRefresh
+    Chart.bind("refresh", @onChartRefresh)
     @slug = params.slug
     @chart = Chart.findByAttribute "slug", @slug
     if @chart
+      @chart.bind("error", @onChartError)
       @render()
     else
       @log "Chart not found, waiting"
 
+  onChartError: (chart, errors) =>
+    for name, text of errors
+      @decorateFormControl(@form.find("*[name='#{name}']"), text, "error")
+
   onChartRefresh: (charts) =>
     @chart = Chart.findByAttribute "slug", @slug
     if @chart
+      @chart.bind("error", @onChartError)
       @render()
     else
       @log "Chart not found from refresh event (404)"
 
-  onEditFormSubmit: (event) =>
-    event.preventDefault()
-    newAttributes = @getChartAttributes($(event.currentTarget).serializeArray())
-    newAttributes.local_modified_at = new Date()
-    @chart.updateAttributes(newAttributes)
-    if @modified
-      window.onbeforeunload = null
-      @chart.ajax().update()
-    @navigate("/charts/#{@chart.slug}")
-
-  onInputChange: (event) =>
-    @modified = true
-    return if window.onbeforeunload
-    window.onbeforeunload = (e) ->
+  onFormControlChange: (event) =>
+    @formModified = true
+    @chart.fromForm(@form)
+    errors = @chart.validate()
+    $formControl = $(event.currentTarget)
+    formControlName = $formControl.attr("name")
+    if errors and formControlName of errors
+      @decorateFormControl($formControl, errors[formControlName], "error")
+    else
+      @decorateFormControl($formControl, "Modified", "warning")
+    window.onbeforeunload or= (e) ->
       e = e || window.event
       message = "There are unsaved changes!"
       # For IE and Firefox
@@ -85,6 +85,15 @@ class ChartsEdit extends Spine.Controller
         e.returnValue = message
       # For Safari
       message
+
+  onFormSubmit: (event) =>
+    event.preventDefault()
+    @chart.fromForm(@form).save()
+    if @chart.isValid()
+      if @formModified
+        window.onbeforeunload = null
+        @chart.ajax().update()
+      @navigate("/charts/#{@chart.slug}")
 
   render: =>
     chart = @chart.attributes()

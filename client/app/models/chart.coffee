@@ -36,6 +36,12 @@ class Chart extends Spine.Model
       chartKeywords = chart.keywords()
       keywords.every (item) -> item in chartKeywords
 
+  fromForm: (form) =>
+    super
+    @composers = (value.trim() for value in @composers.trim().split(","))
+    @structure = (value.trim() for value in @structure.split(""))
+    @
+
   @fromJSON: (records) =>
     objects = super
     return objects if @count() is 0
@@ -80,6 +86,11 @@ class Chart extends Spine.Model
       processData: true
       traditional: true
     )
+
+  validate: =>
+    errors = {}
+    errors.title = "Empty" if not @title
+    if $.isEmptyObject(errors) then false else errors
 
 
 module?.exports.Chart = Chart

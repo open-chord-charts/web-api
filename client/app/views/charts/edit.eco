@@ -10,6 +10,7 @@
       <label class="control-label" for="title">Title</label>
       <div class="controls">
         <input class="input-xlarge" id="title" name="title" type="text" value="<%= @chart.title %>">
+        <span class="help-inline"></span>
       </div>
     </div>
     <div class="control-group">
@@ -17,19 +18,22 @@
       <div class="controls">
         <input class="input-xlarge" id="composers" name="composers" type="text"
           value="<%= if @chart.composers then @chart.composers.join ", " else "" %>">
+        <span class="help-inline"></span>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="genre">Genre</label>
       <div class="controls">
         <input class="input-xlarge" id="genre" name="genre" type="text" value="<%= @chart.genre %>">
+        <span class="help-inline"></span>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="structure">Structure</label>
       <div class="controls">
-        <input class="input-xlarge" id="structure" type="text"
+        <input class="input-xlarge" id="structure" name="structure" type="text"
           value="<%= if @chart.structure then @chart.structure.join "" else "" %>">
+        <span class="help-inline"></span>
       </div>
     </div>
 <% for partName, chords of @chart.parts: %>
@@ -38,6 +42,7 @@
       <div class="controls">
         <div class="textarea">
           <textarea class="input-xlarge"><%= if chords then chords.join " " else "" %></textarea>
+          <span class="help-inline"></span>
         </div>
       </div>
     </div>
