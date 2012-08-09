@@ -22,7 +22,6 @@
 
 {Chart} = require "models/chart"
 chartHelpers = require "lib/helpers/chart"
-{getLinkPathname} = require "lib/javascript"
 {User} = require "models/user"
 
 
@@ -30,6 +29,7 @@ class ChartsEdit extends Spine.Controller
   elements:
     "form": "form"
   events:
+    "click form a.btn.cancel": "onCancelButtonClick"
     "change form input, form textarea": "onFormControlChange"
     "submit form": "onFormSubmit"
   logPrefix: "(controllers.charts.edit.ChartsEdit)"
@@ -37,8 +37,14 @@ class ChartsEdit extends Spine.Controller
 
   constructor: ->
     super
-    @formModified = false
     @active @onActive
+
+  attachChart: =>
+    @chart = Chart.findByAttribute("slug", @slug)
+    if @chart
+      @chart.updateAttribute("local", true)
+      @chart.bind("error", @onChartError)
+      @render()
 
   decorateFormControl: ($element, helpMessage, className) =>
     $element
@@ -47,62 +53,43 @@ class ChartsEdit extends Spine.Controller
 
   onActive: (params) =>
     Chart.bind("refresh", @onChartRefresh)
+    @formModified = false
     @slug = params.slug
-    @chart = Chart.findByAttribute "slug", @slug
-    if @chart
-      @chart.bind("error", @onChartError)
-      @render()
-    else
-      @log "Chart not found, waiting"
+    @attachChart()
+
+  onCancelButtonClick: (event) =>
+    event.preventDefault()
+    if not @formModified or confirm("Forget changes?")
+      @navigate("/charts/#{@chart.slug}")
 
   onChartError: (chart, errors) =>
     for name, text of errors
       @decorateFormControl(@form.find("*[name='#{name}']"), text, "error")
 
   onChartRefresh: (charts) =>
-    @chart = Chart.findByAttribute "slug", @slug
-    if @chart
-      @chart.bind("error", @onChartError)
-      @render()
-    else
-      @log "Chart not found from refresh event (404)"
+    @attachChart()
 
   onFormControlChange: (event) =>
     @formModified = true
-    @chart.fromForm(@form)
-    errors = @chart.validate()
-    $formControl = $(event.currentTarget)
-    formControlName = $formControl.attr("name")
-    if errors and formControlName of errors
-      @decorateFormControl($formControl, errors[formControlName], "error")
-    else
-      @decorateFormControl($formControl, "Modified", "warning")
-    window.onbeforeunload or= (e) ->
-      e = e || window.event
-      message = "There are unsaved changes!"
-      # For IE and Firefox
-      if e
-        e.returnValue = message
-      # For Safari
-      message
+    @decorateFormControl($(event.currentTarget), "Modified", "warning")
 
   onFormSubmit: (event) =>
     event.preventDefault()
     @chart.fromForm(@form).save()
     if @chart.isValid()
       if @formModified
-        window.onbeforeunload = null
+        @chart.updateAttribute("local_dirty", true)
         @chart.ajax().update()
       @navigate("/charts/#{@chart.slug}")
 
   render: =>
+    document.title = "Edit #{@chart.title} – OpenChordCharts.org"
     chart = @chart.attributes()
     @html(require("views/charts/edit")(
       chart: chart
       routes:
         chart: "/charts/#{@chart.slug}"
     ))
-    document.title = "Edit #{@chart.title} – OpenChordCharts.org"
 
 
 module?.exports.ChartsEdit = ChartsEdit

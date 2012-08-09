@@ -11,6 +11,7 @@ Array.prototype.every ?= (f) ->
 
 
 getLinkPathname = (element) ->
+  # Some browsers do not put starting "/".
   element.pathname.toString().replace(/(^[^/])/, "/$1")
 
 

@@ -48,22 +48,19 @@ class ChartsShow extends Spine.Controller
     super
     @active @onActive
 
-  onActive: (params) =>
-    Chart.bind "refresh", @onChartRefresh
-    @slug = params.slug
-    @chart = Chart.findByAttribute "slug", @slug
-    if @chart
-      @render()
-    else
-      @log "Chart not found, waiting"
-
-  onChartRefresh: (charts) =>
-    @chart = Chart.findByAttribute "slug", @slug
+  attachChart: =>
+    @chart = Chart.findByAttribute("slug", @slug)
     if @chart
       @chart.bind "change", @render
       @render()
-    else
-      @log "Chart not found from refresh event (404)"
+
+  onActive: (params) =>
+    Chart.bind "refresh", @onChartRefresh
+    @slug = params.slug
+    @attachChart()
+
+  onChartRefresh: (charts) =>
+    @attachChart()
 
   onKeySelectChange: (event) =>
     @transposedKey = @keySelect.val()
@@ -91,6 +88,7 @@ class ChartsShow extends Spine.Controller
     )
 
   render: =>
+    document.title = "#{@chart.title} (#{@chart.key}) – OpenChordCharts.org"
     chart = @chart.attributes()
     if @transposedKey
       chart.parts = @chart.getTransposedParts(@transposedKey)
@@ -120,9 +118,8 @@ class ChartsShow extends Spine.Controller
         content: "You will be able to access this page while being offline."
         title: "Keep local data"
     @localButton.popover $.extend({}, {placement: "bottom"}, localButtonPopoverOptions)
-    if @chart.local_modified_at and new Date(@chart.local_modified_at).getTime() > new Date(@chart.modified_at).getTime()
-      @localButton.addClass "obsolete"
-    document.title = "#{@chart.title} (#{@chart.key}) – OpenChordCharts.org"
+    if @chart.local_dirty
+      @localButton.addClass "btn-warning"
 
 
 module?.exports.ChartsShow = ChartsShow

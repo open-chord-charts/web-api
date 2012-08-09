@@ -25,7 +25,7 @@ transpose = require "lib/transpose"
 
 
 class Chart extends Spine.Model
-  @configure "Chart", "composers", "created_at", "genre", "key", "local", "local_modified_at", "modified_at", "parts",
+  @configure "Chart", "composers", "created_at", "genre", "key", "local", "local_dirty", "modified_at", "parts",
     "slug", "structure", "title", "user"
   @extend SelectedLocal
   @extend Spine.Model.Ajax.Methods

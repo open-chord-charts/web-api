@@ -49,7 +49,7 @@
 <% end %>
     <div class="form-actions">
       <button class="btn btn-primary">Save</button>
-      <a class="btn" href="<%= @routes.chart %>">Cancel</a>
+      <a class="btn cancel" href="<%= @routes.chart %>">Cancel</a>
     </div>
   </fieldset>
 </form>
