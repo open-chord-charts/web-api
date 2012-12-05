@@ -1,9 +1,5 @@
 <!DOCTYPE html>
-% if request.matched_route.name == 'index' and not request.registry.settings['development_mode']:
-<html manifest="${request.route_path('cache.manifest')}">
-% else:
 <html>
-% endif
 
 ## Open Chord Charts -- Database of free chord charts
 ## By: Christophe Benz <christophe.benz@gmail.com>

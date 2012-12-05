@@ -28,34 +28,42 @@ import os
 
 from setuptools import setup, find_packages
 
+
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
 
-requires = ['babel', 'biryani', 'eco', 'pymongo', 'pyramid', 'requests', 'suq-monpyjama']
-
-setup(name='open-chord-charts',
-      version='0.0',
-      description='open-chord-charts',
-      long_description=README,
-      classifiers=[
+setup(
+    author=u'Christophe Benz',
+    author_email=u'christophe.benz@gmail.com',
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Environment :: Web Environment',
+        'License :: OSI Approved :: GNU Affero General Public License v3',
         "Programming Language :: Python",
-        "Framework :: Pylons",
-        "Topic :: Internet :: WWW/HTTP",
-        "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
         ],
-      author='Christophe Benz',
-      author_email='christophe.benz@gmail.com',
-      url='http://www.openchordcharts.org/',
-      keywords='web pyramid pylons',
-      packages=find_packages(),
-      include_package_data=True,
-      zip_safe=False,
-      install_requires=requires,
-      tests_require=requires,
-      test_suite="openchordcharts",
-      entry_points="""\
-      [paste.app_factory]
-      main = openchordcharts:main
-      """,
-      paster_plugins=['pyramid'],
-      )
+    description=u'open-chord-charts',
+    entry_points="""
+        [paste.app_factory]
+        main = openchordcharts.application:make_app
+        """,
+    include_package_data=True,
+    install_requires=[
+        'Babel >= 0.9.6',
+        'Biryani >= 0.9dev',
+        'pymongo >= 2.4',
+        'requests >= 0.14.2',
+        'suq-monpyjama >= 0.8',
+        'WebError >= 0.10',
+        'WebOb >= 1.1',
+        ],
+    keywords=u'web chord charts music',
+    license=u'http://www.fsf.org/licensing/licenses/agpl-3.0.html',
+    long_description=README,
+    name=u'open-chord-charts',
+    packages=find_packages(),
+    paster_plugins=['PasteScript'],
+    setup_requires=["PasteScript >= 1.6.3"],
+    url=u'http://www.openchordcharts.org/',
+    version='0.1',
+    zip_safe=False,
+    )
