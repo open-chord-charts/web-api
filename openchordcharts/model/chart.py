@@ -26,10 +26,13 @@
 import datetime
 import re
 
-from biryani.baseconv import check
-from biryani.objectconv import object_to_clean_dict
-from biryani.strings import slugify
+from biryani1.baseconv import check
+from biryani1.objectconv import object_to_clean_dict
+from biryani1.strings import slugify
 from suq.monpyjama import Mapper, Wrapper
+
+
+common_chromatic_keys = ['Ab', 'A', 'Bb', 'B', 'C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G']
 
 
 class Chart(Mapper, Wrapper):
@@ -44,7 +47,7 @@ class Chart(Mapper, Wrapper):
     slug = None
     structure = None
     title = None
-    user = None
+    user_slug = None
 
     def compute_keywords(self):
         keywords = []
@@ -70,12 +73,12 @@ class Chart(Mapper, Wrapper):
         return {'$all': keywords_regexps}
 
     def has_same_data_than(self, other_dict):
-        ignored_attributes = ['_id', 'created_at', 'keywords', 'modified_at', 'slug', 'user']
+        ignored_attributes = ['_id', 'created_at', 'keywords', 'modified_at', 'slug', 'user_slug']
         clean_dict = dict(
-                (key, value)
-                for key, value in check(object_to_clean_dict(self)).iteritems()
-                if key not in ignored_attributes
-                )
+            (key, value)
+            for key, value in check(object_to_clean_dict(self)).iteritems()
+            if key not in ignored_attributes
+            )
         clean_other_dict = dict(
             (key, value)
             for key, value in other_dict.iteritems()
@@ -98,16 +101,3 @@ class Chart(Mapper, Wrapper):
     def update_from_dict(self, data):
         for k, v in data.iteritems():
             setattr(self, k, v)
-
-
-class HistoryChart(Chart):
-    chart_id = None
-    collection_name = 'history_charts'
-
-    def save(self, *args, **kwargs):
-        self.keywords = None
-        self.slug = None
-        return super(Chart, self).save(*args, **kwargs)
-
-    def to_bson(self):
-        return check(object_to_clean_dict(self))

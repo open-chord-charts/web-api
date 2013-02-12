@@ -1,3 +1,5 @@
+## -*- coding: utf-8 -*-
+
 ## Open Chord Charts -- Database of free chord charts
 ## By: Christophe Benz <christophe.benz@gmail.com>
 ##
@@ -20,11 +22,6 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-<%!
-from openchordcharts.helpers import get_login_url
-%>
-
-
 <nav class="navbar navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container">
@@ -33,36 +30,35 @@ from openchordcharts.helpers import get_login_url
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </a>
-      <a class="brand" href="${request.route_path('index')}">Open Chord Charts (dev)</a>
+      <a class="brand" href="/">Open Chord Charts (beta)</a>
       <div class="nav-collapse">
         <ul class="nav">
-          <li>
-            <a class="charts" href="${request.route_path('charts')}">Charts</a>
+          <li${u' class="active"' if req.path.startswith('/charts') else '' | n}>
+            <a class="charts" href="/charts/">Charts</a>
           </li>
         </ul>
         <div class="navbar-search">
           <input class="search-query" placeholder="Search (ex: All of me)" type="search">
         </div>
-% if request.user:
+## % if req.user:
         <div class="btn-group pull-right">
           <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-            <i class="icon-user"></i> ${request.user.email}
+##            <i class="icon-user"></i> ${req.user.email}
             <span class="caret"></span>
           </a>
           <ul class="dropdown-menu">
-            <li><a class="my-charts" href="${request.route_path('user', slug=request.user.slug)}">My charts</a></li>
+##            <li><a class="my-charts" href="/users/${req.user.slug}">My charts</a></li>
             <li class="divider"></li>
-            <li><a href="${request.route_path('logout', _query=dict(state=request.current_route_path()))}" \
-rel="nofollow">Logout</a></li>
+            <li><a href="/logout?state=${req.path}" rel="nofollow">Logout</a></li>
           </ul>
         </div>
-% else:
+## % else:
         <ul class="nav pull-right">
           <li>
-            <a class="login" href="${get_login_url(request)}" rel="nofollow">Login</a>
+            <a class="login" href="/login" rel="nofollow">Login</a>
           </li>
         </ul>
-% endif
+## % endif
       </div>
     </div>
   </div>

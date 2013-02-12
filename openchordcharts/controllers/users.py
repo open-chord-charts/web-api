@@ -23,29 +23,24 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import datetime
+from webob.dec import wsgify
 
-from biryani1.strings import slugify
-from biryani1.baseconv import check
-from biryani1.objectconv import object_to_clean_dict
-from suq.monpyjama import Mapper, Wrapper
+from ..model.chart import Chart
+from ..model.user import User
+from .. import templates, wsgi_helpers
 
 
-class User(Mapper, Wrapper):
-    collection_name = 'users'
-
-    created_at = None
-    email = None
-    modified_at = None
-    slug = None
-
-    def save(self, *args, **kwargs):
-        if self.created_at is None:
-            self.created_at = datetime.datetime.utcnow()
-        self.modified_at = datetime.datetime.utcnow()
-        return super(User, self).save(*args, **kwargs)
-
-    def to_bson(self):
-        if self.slug is None:
-            self.slug = slugify(self.email)
-        return check(object_to_clean_dict(self))
+@wsgify
+def view(req):
+    slug = req.urlvars.get('slug')
+    if slug is None:
+        return wsgi_helpers.forbidden()
+    user = User.find_one({'slug': slug})
+    if user is None:
+        return wsgi_helpers.not_found()
+    charts_cursor = Chart.find({'user': slug}).limit(req.ctx.conf['charts.limit'])
+    return templates.render(
+        req.ctx,
+        '/users/view.mako',
+        charts_cursor=charts_cursor,
+        )

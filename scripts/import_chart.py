@@ -26,27 +26,21 @@
 
 import argparse
 import json
+import logging
+import os
 import sys
 
-from pyramid.paster import bootstrap
+from paste.deploy import loadapp
 
 from openchordcharts.model.chart import Chart
 from openchordcharts.model.user import User
 
 
-def main(args=None):
-    if args is None:
-        args = sys.argv[1:]
-    parser = argparse.ArgumentParser(description=u'Import chords chart.')
-    parser.add_argument('ini_file', help=u'Paster INI configuration file')
-    parser.add_argument('json_file', help=u'JSON file name. File can contain an object or a list of objects.')
-    parser.add_argument('-c', '--create', action='store_true', help=u'Create user if it does not exist')
-    parser.add_argument('-u', '--user', help=u'Set user name chart')
-    arguments = parser.parse_args(args)
+log = logging.getLogger(os.path.basename(__file__))
 
-    bootstrap(arguments.ini_file)
 
-    with open(arguments.json_file) as f:
+def import_chart(json_filename, user_slug, create=False):
+    with open(json_filename) as f:
         json_str = f.read()
     json_charts = json.loads(json_str)
     if isinstance(json_charts, dict):
@@ -59,20 +53,38 @@ def main(args=None):
             for key, value in json_chart.iteritems()
             if key not in ['_id', 'created_at', 'keywords', 'modified_at', 'slug']
             ))
-        if arguments.user:
-            chart.user = arguments.user
-        user = User.find_one(dict(slug=chart.user))
-        if user:
+        if user_slug:
+            chart.user_slug = user_slug
+        user = User.find_one(dict(slug=chart.user_slug))
+        if user_slug:
             chart_id = chart.save(safe=True)
-            print unicode(chart_id).encode('utf-8')
+            log.debug(chart_id)
         else:
-            if arguments.create:
+            if create:
                 user = User()
-                user.slug = chart.user
+                user.slug = chart.user_slug
                 user.save(safe=True)
             else:
-                print u'Chart user does not exist (title={0}).'.format(chart.title).encode('utf-8')
+                log.error(u'Chart user does not exist (title={0}).'.format(chart.title))
 
+
+def main(args=None):
+    if args is None:
+        args = sys.argv[1:]
+    parser = argparse.ArgumentParser(description=u'Import chords chart.')
+    parser.add_argument('ini_filename', help=u'Paster INI configuration file')
+    parser.add_argument('json_filename', help=u'JSON file name. File can contain an object or a list of objects.')
+    parser.add_argument('-c', '--create', action='store_true', help=u'Create user if it does not exist')
+    parser.add_argument('-u', '--user-slug', help=u'Set chart user slug')
+    parser.add_argument('-v', '--verbose', action='store_true', default=False, help=u'Display info messages')
+    arguments = parser.parse_args(args)
+    logging.basicConfig(level=logging.DEBUG if arguments.verbose else logging.WARNING)
+    loadapp(u'config:{0}#main'.format(os.path.abspath(arguments.ini_filename)))
+    import_chart(
+        create=arguments.create,
+        json_filename=arguments.json_filename,
+        user_slug=arguments.user_slug,
+        )
     return 0
 
 

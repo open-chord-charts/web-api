@@ -23,17 +23,17 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from biryani.baseconv import (check, cleanup_line, function, guess_bool, input_to_email, input_to_int,
-    make_input_to_url, noop, not_none, pipe, set_value, struct, test, uniform_mapping, uniform_sequence)
-from biryani.bsonconv import input_to_object_id
-from biryani.datetimeconv import datetime_to_iso8601_str
-from biryani.objectconv import object_to_clean_dict
-import biryani.states
+from biryani1.baseconv import (check, cleanup_line, function, noop, not_none, pipe, set_value, struct, test,
+                               uniform_mapping, uniform_sequence)
+from biryani1.bsonconv import input_to_object_id
+from biryani1.datetimeconv import datetime_to_iso8601_str
+from biryani1.objectconv import object_to_clean_dict
+import biryani1.states
 
 
 # State
 
-default_state = biryani.states.default_state
+default_state = biryani1.states.default_state
 
 
 # Converters
@@ -42,115 +42,74 @@ chart_to_json_dict = check(
     pipe(
         object_to_clean_dict,
         struct(
-            dict(
-                _id=set_value(None),
-                # Only for HistoryChart objects.
-                chart_id=set_value(None),
-                created_at=datetime_to_iso8601_str,
-                keywords=set_value(None),
-                modified_at=datetime_to_iso8601_str,
-                ),
+            {
+                '_id': set_value(None),
+                'created_at': datetime_to_iso8601_str,
+                'keywords': set_value(None),
+                'modified_at': datetime_to_iso8601_str,
+                },
             default=noop,
             ),
         )
     )
 
 params_to_charts_json_data = struct(
-    dict(
-        q=cleanup_line,
-        slugs=uniform_sequence(cleanup_line),
-        user=cleanup_line,
-        ),
+    {
+        'q': cleanup_line,
+        'slugs': uniform_sequence(cleanup_line),
+        'user': cleanup_line,
+        },
     default=noop,
-    keep_none_values=True,
+    drop_none_values=False,
     )
 
 params_to_chart_data = struct(
-    dict(
-        revision=pipe(cleanup_line, input_to_object_id),
-        ),
+    {
+        'revision': pipe(cleanup_line, input_to_object_id),
+        },
     default=noop,
-    keep_none_values=True,
+    drop_none_values=False,
     )
 
 user_to_json_dict = check(
     pipe(
         object_to_clean_dict,
         struct(
-            dict(
-                _id=set_value(None),
-                created_at=datetime_to_iso8601_str,
-                modified_at=datetime_to_iso8601_str,
-                ),
+            {
+                '_id': set_value(None),
+                'created_at': datetime_to_iso8601_str,
+                'modified_at': datetime_to_iso8601_str,
+                },
             default=noop,
             ),
         )
     )
 
-validate_settings = check(
-        pipe(
-            struct(
-                {
-                    'authentication.fake_login': pipe(cleanup_line, input_to_email),
-                    'authentication.openid.api_key': cleanup_line,
-                    'authentication.openid.api_url': pipe(
-                        make_input_to_url(add_prefix=None, error_if_fragment=True, error_if_path=True,
-                            error_if_query=True, full=True),
-                        not_none,
-                        ),
-                    'authentication.openid.client_id': cleanup_line,
-                    'authentication.openid.client_secret': cleanup_line,
-                    'authentication.secret': pipe(cleanup_line, not_none),
-                    'charts.limit': input_to_int,
-                    'css.bootstrap': cleanup_line,
-                    'css.bootstrap_responsive': cleanup_line,
-                    'database.uri': pipe(cleanup_line, not_none),
-                    'development_mode': guess_bool,
-                    'google.analytics.key': cleanup_line,
-                    'javascript.bootstrap': cleanup_line,
-                    'javascript.jquery': cleanup_line,
-                    'javascript.spinejs_dir': cleanup_line,
-                    },
-                default=noop,
-                keep_none_values=True,
-                ),
-            test(lambda values: len(filter(None, [value for key, value in values.iteritems() if key in [
-                    'authentication.openid.api_key',
-                    'authentication.openid.api_url',
-                    'authentication.openid.client_id',
-                    'authentication.openid.client_secret',
-                    ]])) in [0, 4], default_state._(u'Not all authentication.openid keys are set')
-                ),
-            )
-        )
-
 
 def json_to_chart_data(params, state=default_state):
     all_errors = {}
     value, error = struct(
-        dict(
-            composers=uniform_sequence(
-                cleanup_line,
-                ),
-            genre=cleanup_line,
-            key=cleanup_line,
-            parts=uniform_mapping(
+        {
+            'composers': uniform_sequence(cleanup_line),
+            'genre': cleanup_line,
+            'key': cleanup_line,
+            'parts': uniform_mapping(
                 cleanup_line,
                 uniform_sequence(cleanup_line),
                 ),
-            structure=uniform_sequence(
+            'structure': uniform_sequence(
                 pipe(
                     cleanup_line,
                     function(lambda value: value.upper()),
                     )
                 ),
-            title=pipe(
+            'title': pipe(
                 cleanup_line,
                 not_none,
                 ),
-            ),
+            },
         default='drop',
-        keep_none_values=True,
+        drop_none_values=False,
         )(params)
     if error is not None:
         all_errors.update(error)
@@ -158,11 +117,12 @@ def json_to_chart_data(params, state=default_state):
         return None, all_errors or None
     if value['structure'] is not None:
         if value['parts'] is None:
-            value['parts'] = dict()
+            value['parts'] = {}
         for part_name in value['structure']:
             value['parts'].setdefault(part_name, [])
-            part_value, error = test(lambda value: len(value) > 0, error=state._(u'Missing value'))(
-                value['parts'][part_name])
+            part_value, error = test(
+                lambda value: len(value) > 0, error=state._(u'Missing value')
+                )(value['parts'][part_name])
             if error is not None:
                 all_errors.update({'parts.{0}'.format(part_name): error})
     return value, all_errors or None
