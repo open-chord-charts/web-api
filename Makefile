@@ -7,4 +7,4 @@ clean:
 	rm -rf cache/*
 
 flake8:
-	flake8 --ignore=E123,E501 openchordcharts scripts
+	flake8 --ignore=E123 --max-line-length=120 openchordcharts scripts
