@@ -30,8 +30,10 @@ setup(
     include_package_data=True,
     install_requires=[
         'Babel >= 0.9.6',
+        'Beaker >= 1.6.4',
         'Biryani1 >= 0.9dev',
         'pymongo',
+        'requests >= 0.11.2',
         'suq-monpyjama >= 0.8',
         'WebError >= 0.10',
         'WebOb >= 1.1',

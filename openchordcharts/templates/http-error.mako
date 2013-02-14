@@ -35,6 +35,13 @@
 % if message:
   <p>${message}</p>
 % endif
+% if dump:
+    % if isinstance(dump, basestring):
+  <pre class="break-word">${dump}</pre>
+    % else:
+  <pre class="break-word">${pprint.pformat(dump).decode('utf-8')}</pre>
+    % endif
+% endif
 </div>
 </%block>
 

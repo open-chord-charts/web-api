@@ -20,6 +20,8 @@ def make_add_context_to_request(app, app_ctx):
 
 class Context(object):
     _ = lambda self, message: message
+    req = None
+    session = None
 
     @classmethod
     def from_ctx(cls, ctx):
@@ -27,3 +29,7 @@ class Context(object):
         for key, value in ctx.__dict__.iteritems():
             new_ctx.__dict__[key] = value
         return new_ctx
+
+    @property
+    def session(self):
+        return self.req.environ.get('beaker.session') if self.req is not None else None

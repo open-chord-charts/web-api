@@ -40,25 +40,31 @@
         <div class="navbar-search">
           <input class="search-query" placeholder="Search (ex: All of me)" type="search">
         </div>
-## % if req.user:
+<%
+user = ctx.db.accounts.find_one({
+    'provider_url': ctx.session['provider_url'],
+    'user_id': ctx.session['user_id'],
+  }) if 'provider_url' in ctx.session else None
+%>
+% if user:
         <div class="btn-group pull-right">
           <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-##            <i class="icon-user"></i> ${req.user.email}
+           <i class="icon-user"></i> ${user['email']}
             <span class="caret"></span>
           </a>
           <ul class="dropdown-menu">
-##            <li><a class="my-charts" href="/users/${req.user.slug}">My charts</a></li>
+##           <li><a class="my-charts" href="/users/${req.user.slug}">My charts</a></li>
             <li class="divider"></li>
             <li><a href="/logout?state=${req.path}" rel="nofollow">Logout</a></li>
           </ul>
         </div>
-## % else:
+% else:
         <ul class="nav pull-right">
           <li>
             <a class="login" href="/login" rel="nofollow">Login</a>
           </li>
         </ul>
-## % endif
+% endif
       </div>
     </div>
   </div>

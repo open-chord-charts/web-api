@@ -89,6 +89,10 @@ def forbidden(ctx, **kw):
     return error(ctx, 403, **kw)
 
 
+def internal_error(ctx, **kw):
+    return error(ctx, 500, **kw)
+
+
 def method_not_allowed(ctx, **kw):
     return error(ctx, 405, **kw)
 

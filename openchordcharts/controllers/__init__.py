@@ -3,7 +3,7 @@
 
 from webob.dec import wsgify
 
-from . import charts, users
+from . import accounts, charts, users
 from .. import router, templates
 
 
@@ -20,4 +20,7 @@ def make_router():
         ('GET', '^/charts/(?P<slug>.+).json$', charts.view),
         ('GET', '^/charts/(?P<slug>.+)$', charts.view),
         ('GET', '^/charts/create$', charts.edit),
+        ('GET', '^/login/?$', accounts.login),
+        ('GET', '^/login-callback/?$', accounts.login_callback),
+        ('GET', '^/logout/?$', accounts.logout),
         ('GET', '^/users/(?P<slug>.+)$', users.view))

@@ -7,6 +7,7 @@
 import logging
 import sys
 
+from beaker.middleware import SessionMiddleware
 from weberror.errormiddleware import ErrorMiddleware
 from paste.cascade import Cascade
 from paste.urlparser import StaticURLParser
@@ -33,6 +34,7 @@ def make_app(global_conf, **app_conf):
     app_ctx.templates = templates.load_templates(app_ctx)
     database.ensure_indexes(app_ctx)
     app = controllers.make_router()
+    app = SessionMiddleware(app, app_ctx.conf)
     app = context.make_add_context_to_request(app, app_ctx)
     if not app_ctx.conf['debug']:
         app = ErrorMiddleware(
