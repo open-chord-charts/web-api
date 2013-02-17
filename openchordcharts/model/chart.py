@@ -97,7 +97,3 @@ class Chart(Mapper, Wrapper):
             self.slug = self.generate_unique_slug()
         self.keywords = self.compute_keywords()
         return check(object_to_clean_dict(self))
-
-    def update_from_dict(self, data):
-        for k, v in data.iteritems():
-            setattr(self, k, v)
