@@ -30,7 +30,7 @@ setup(
     include_package_data=True,
     install_requires=[
         'Babel >= 0.9.6',
-        'Beaker >= 1.6.4',
+        'Beaker >= 1.6.3',
         'Biryani1 >= 0.9dev',
         'pymongo',
         'requests >= 0.11.2',
