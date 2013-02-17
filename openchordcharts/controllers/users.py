@@ -26,7 +26,6 @@
 from webob.dec import wsgify
 
 from ..model.chart import Chart
-from ..model.user import User
 from .. import templates, wsgi_helpers
 
 
@@ -35,7 +34,7 @@ def view(req):
     slug = req.urlvars.get('slug')
     if slug is None:
         return wsgi_helpers.forbidden()
-    user = User.find_one({'slug': slug})
+    user = req.ctx.db.users.find_one({'slug': slug})
     if user is None:
         return wsgi_helpers.not_found()
     charts_cursor = Chart.find({'user': slug}).limit(req.ctx.conf['charts.limit'])

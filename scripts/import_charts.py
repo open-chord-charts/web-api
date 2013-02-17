@@ -33,13 +33,12 @@ import sys
 from paste.deploy import loadapp
 
 from openchordcharts.model.chart import Chart
-from openchordcharts.model.user import User
 
 
 log = logging.getLogger(os.path.basename(__file__))
 
 
-def import_chart(json_filename, user_slug, create=False):
+def import_charts(ctx, json_filename, user_slug, create=False):
     with open(json_filename) as f:
         json_str = f.read()
     json_charts = json.loads(json_str)
@@ -48,22 +47,15 @@ def import_chart(json_filename, user_slug, create=False):
 
     for json_chart in json_charts:
         chart = Chart()
-        chart.update_from_dict(dict(
-            (key, value)
-            for key, value in json_chart.iteritems()
-            if key not in ['_id', 'created_at', 'keywords', 'modified_at', 'slug']
-            ))
+        for key in ['composers', 'genre', 'key', 'parts', 'structure', 'title', 'user_slug']:
+            setattr(chart, key, json_chart.get(key))
         if user_slug:
             chart.user_slug = user_slug
-        user = User.find_one(dict(slug=chart.user_slug))
-        if user_slug:
             chart_id = chart.save(safe=True)
             log.debug(chart_id)
         else:
             if create:
-                user = User()
-                user.slug = chart.user_slug
-                user.save(safe=True)
+                ctx.db.users.save({'slug': chart.user_slug}, safe=True)
             else:
                 log.error(u'Chart user does not exist (title={0}).'.format(chart.title))
 
@@ -79,9 +71,10 @@ def main(args=None):
     parser.add_argument('-v', '--verbose', action='store_true', default=False, help=u'Display info messages')
     arguments = parser.parse_args(args)
     logging.basicConfig(level=logging.DEBUG if arguments.verbose else logging.WARNING)
-    loadapp(u'config:{0}#main'.format(os.path.abspath(arguments.ini_filename)))
-    import_chart(
+    app = loadapp(u'config:{0}#main'.format(os.path.abspath(arguments.ini_filename)))
+    import_charts(
         create=arguments.create,
+        ctx=app.ctx,
         json_filename=arguments.json_filename,
         user_slug=arguments.user_slug,
         )
