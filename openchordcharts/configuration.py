@@ -9,8 +9,8 @@ import os
 import urlparse
 
 from biryani1 import strings
-from biryani1.baseconv import (check, cleanup_line, default, empty_to_none, function, guess_bool, input_to_int,
-    noop, make_input_to_url, not_none, pipe, struct)
+from biryani1.baseconv import (check, default, empty_to_none, function, guess_bool, input_to_int,
+    noop, make_input_to_url, pipe, struct)
 
 
 def load_configuration(global_conf, app_conf):
@@ -23,8 +23,8 @@ def load_configuration(global_conf, app_conf):
         {
             'app_conf': default(app_conf),
             'app_dir': default(app_dir),
-            'beaker.session.data_dir': cleanup_line,
-            'beaker.session.lock_dir': cleanup_line,
+            'beaker.session.data_dir': empty_to_none,
+            'beaker.session.lock_dir': empty_to_none,
             'cache_dir': default(os.path.join(os.path.dirname(app_dir), 'cache')),
             'cdn.url': default('http://localhost:7000'),
             'charts.limit': pipe(input_to_int, default(1000)),
@@ -33,19 +33,13 @@ def load_configuration(global_conf, app_conf):
             'database.port': pipe(input_to_int, default(27017)),
             'debug': pipe(guess_bool, default(False)),
             'global_conf': default(global_conf),
-            'google_analytics_key': cleanup_line,
+            'google_analytics_key': empty_to_none,
             'log_level': pipe(
                 default('WARNING'),
                 function(lambda log_level: getattr(logging, log_level.upper())),
                 ),
-            'openid.api_key': pipe(
-                empty_to_none,
-                not_none,
-                ),
-            'openid.api_url': pipe(
-                make_input_to_url(error_if_fragment=True, full=True),
-                not_none,
-                ),
+            'openid.api_key': empty_to_none,
+            'openid.api_url': make_input_to_url(error_if_fragment=True, full=True),
             'package_name': default('openchordcharts'),
             'static_files': pipe(guess_bool, default(False)),
             'static_files_dir': default(os.path.join(app_dir, 'static')),
