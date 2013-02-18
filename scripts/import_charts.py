@@ -55,7 +55,7 @@ def import_charts(ctx, json_filename, user_slug, create=False):
             log.debug(chart_id)
         else:
             if create:
-                ctx.db.users.save({'slug': chart.user_slug}, safe=True)
+                ctx.db.accounts.save({'slug': chart.user_slug}, safe=True)
             else:
                 log.error(u'Chart user does not exist (title={0}).'.format(chart.title))
 

@@ -9,12 +9,12 @@ import suq.monpyjama
 
 
 def ensure_indexes(ctx):
+    ctx.db.accounts.ensure_index([('email', pymongo.ASCENDING)])
+    ctx.db.accounts.ensure_index([('user_id', pymongo.ASCENDING)])
     ctx.db.charts.ensure_index([('keywords', pymongo.ASCENDING)])
     ctx.db.charts.ensure_index([('slug', pymongo.ASCENDING)])
     ctx.db.charts.ensure_index([('title', pymongo.ASCENDING)])
     ctx.db.charts.ensure_index([('user', pymongo.ASCENDING)])
-    ctx.db.users.ensure_index([('email', pymongo.ASCENDING)])
-    ctx.db.users.ensure_index([('slug', pymongo.ASCENDING)])
 
 
 def load_database(ctx):
