@@ -32,6 +32,7 @@ def load_configuration(global_conf, app_conf):
             'database.name': default('openchordcharts'),
             'database.port': pipe(input_to_int, default(27017)),
             'debug': pipe(guess_bool, default(False)),
+            'dummy_login.user_id': empty_to_none,
             'global_conf': default(global_conf),
             'google_analytics_key': empty_to_none,
             'log_level': pipe(

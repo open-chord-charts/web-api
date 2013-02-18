@@ -40,20 +40,14 @@
         <div class="navbar-search">
           <input class="search-query" placeholder="Search (ex: All of me)" type="search">
         </div>
-<%
-user = ctx.db.accounts.find_one({
-    'provider_url': ctx.session['provider_url'],
-    'user_id': ctx.session['user_id'],
-  }) if 'provider_url' in ctx.session else None
-%>
-% if user:
+% if req.ctx.user:
         <div class="btn-group pull-right">
           <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-           <i class="icon-user"></i> ${user['email']}
+           <i class="icon-user"></i> ${req.ctx.user['user_id']}
             <span class="caret"></span>
           </a>
           <ul class="dropdown-menu">
-##           <li><a class="my-charts" href="/users/${req.user.slug}">My charts</a></li>
+           <li><a class="my-charts" href="/users/${req.ctx.user['user_id']}">My charts</a></li>
             <li class="divider"></li>
             <li><a href="/logout?state=${req.path}" rel="nofollow">Logout</a></li>
           </ul>

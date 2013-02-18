@@ -3,7 +3,7 @@
 
 from webob.dec import wsgify
 
-from . import accounts, charts, users
+from . import accounts, charts, dummy_accounts, users
 from .. import router, templates
 
 
@@ -12,15 +12,24 @@ def index(req):
     return templates.render(req.ctx, '/index.mako')
 
 
-def make_router():
-    return router.make_router(
+def make_router(ctx):
+    routings = [
         ('GET', '^/?$', index),
         ('GET', '^/charts/?$', charts.index),
         ('GET', '^/charts/(?P<slug>.+)/edit$', charts.edit),
         ('GET', '^/charts/(?P<slug>.+).json$', charts.view),
         ('GET', '^/charts/(?P<slug>.+)$', charts.view),
         ('GET', '^/charts/create$', charts.edit),
-        ('GET', '^/login/?$', accounts.login),
-        ('GET', '^/login-callback/?$', accounts.login_callback),
+        ('GET', '^/users/(?P<slug>.+)$', users.view),
         ('GET', '^/logout/?$', accounts.logout),
-        ('GET', '^/users/(?P<slug>.+)$', users.view))
+        ]
+    if ctx.conf['dummy_login.user_id'] is not None:
+        routings.extend([
+            ('GET', '^/login/?$', dummy_accounts.login),
+            ])
+    else:
+        routings.extend([
+            ('GET', '^/login/?$', accounts.login),
+            ('GET', '^/login-callback/?$', accounts.login_callback),
+            ])
+    return router.make_router(*routings)
