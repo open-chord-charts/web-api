@@ -118,6 +118,7 @@ def login_dummy(req):
         user = Account()
         user.dummy = True
         user.user_id = req.ctx.conf['dummy_login.user_id']
+        user.username = req.ctx.conf['dummy_login.user_id']
         user.save(safe=True)
     req.ctx.session['user_id'] = req.ctx.conf['dummy_login.user_id']
     req.ctx.session.save()
