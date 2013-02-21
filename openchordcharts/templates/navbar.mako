@@ -49,7 +49,6 @@ value="${req.GET.get('q') or ''}">
           </a>
           <ul class="dropdown-menu">
             <li><a class="my-charts" href="/users/${req.ctx.user.slug}">My charts</a></li>
-            <li class="divider"></li>
             <li><a href="/logout?callback=${req.path}" rel="nofollow">Logout</a></li>
           </ul>
         </div>
