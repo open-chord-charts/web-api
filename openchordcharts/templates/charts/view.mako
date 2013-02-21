@@ -89,7 +89,12 @@ from openchordcharts.model.chart import common_chromatic_keys
 % endif
 
 <div class="btn-toolbar">
+<%
+user = req.ctx.user
+%>
+% if user is not None and user._id == chart.account_id:
   <a class="btn edit" href="/charts/${chart.slug}/edit">Edit</a>
+% endif
 </div>
 
 % if chart.modified_at != chart.created_at:
