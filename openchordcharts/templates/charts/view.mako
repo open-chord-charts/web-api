@@ -54,7 +54,7 @@ from openchordcharts.helpers import chart_render, music_theory
   </div>
 
   <div class="key pull-right">
-    <form method="get">
+    <form class="form-inline" method="get">
       <select class="input-mini" name="key" title="Transpose chart into another key">
 % for key in music_theory.common_chromatic_keys:
         <option${' selected' if data['key'] is None and key == chart.key or key == data['key'] else ''} value="${key}">
@@ -65,6 +65,7 @@ from openchordcharts.helpers import chart_render, music_theory
         <option selected value="${chart.key}">${chart.key}</option>
 % endif
       </select>
+      <input class="btn btn-mini" type="submit" value="Transpose">
     </form>
   </div>
 </div>
