@@ -90,7 +90,6 @@ from openchordcharts.model.chart import common_chromatic_keys
 
 <div class="btn-toolbar">
   <a class="btn edit" href="/charts/${chart.slug}/edit">Edit</a>
-  <a class="btn json" href="/charts/${chart.slug}.json" title="For programmers">Raw data</a>
 </div>
 
 % if chart.modified_at != chart.created_at:
