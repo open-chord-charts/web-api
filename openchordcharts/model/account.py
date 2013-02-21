@@ -31,49 +31,32 @@ from biryani1.strings import slugify
 from suq.monpyjama import Mapper, Wrapper
 
 
-common_chromatic_keys = ['Ab', 'A', 'Bb', 'B', 'C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G']
-
-
-class Chart(Mapper, Wrapper):
-    account_id = None
-    collection_name = 'charts'
-    composers = None
+class Account(Mapper, Wrapper):
+    collection_name = 'accounts'
     created_at = None
-    genre = None
-    keywords = None
+    email = None
     modified_at = None
-    key = None
-    parts = None
     slug = None
-    structure = None
-    title = None
-
-    def compute_keywords(self):
-        keywords = []
-        keywords.extend(self.slug.split('-'))
-        if self.composers:
-            keywords.extend(slugify(' '.join(self.composers)).split('-'))
-        return keywords
+    user_id = None
 
     def generate_unique_slug(self):
-        title_slug = slugify(self.title)
-        slug = title_slug
+        user_id_slug = slugify(self.user_id)
+        slug = user_id_slug
         slug_index = 1
         while True:
-            if Chart.find_one(dict(slug=slug)) is None:
+            if Account.find_one({'slug': slug}) is None:
                 return slug
             else:
-                slug = u'{0}-{1}'.format(title_slug, slug_index)
+                slug = u'{0}-{1}'.format(user_id_slug, slug_index)
                 slug_index += 1
 
     def save(self, *args, **kwargs):
         if self.created_at is None:
             self.created_at = datetime.datetime.utcnow()
         self.modified_at = datetime.datetime.utcnow()
-        return super(Chart, self).save(*args, **kwargs)
+        return super(Account, self).save(*args, **kwargs)
 
     def to_bson(self):
-        if self.slug is None or self.slug != slugify(self.title):
+        if self.slug is None or self.slug != slugify(self.user_id):
             self.slug = self.generate_unique_slug()
-        self.keywords = self.compute_keywords()
         return check(object_to_clean_dict(self))

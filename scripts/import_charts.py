@@ -33,31 +33,36 @@ import sys
 from paste.deploy import loadapp
 
 from openchordcharts.model.chart import Chart
+from openchordcharts.model.account import Account
 
 
 log = logging.getLogger(os.path.basename(__file__))
 
 
-def import_charts(ctx, json_filename, user_slug, create=False):
-    with open(json_filename) as f:
-        json_str = f.read()
+def import_charts(ctx, json_filename, user_id=None):
+    account = None
+    if user_id is not None:
+        accounts_cursor = Account.find({
+            'user_id': user_id,
+            })
+        if accounts_cursor.count() > 0:
+            log.error(u'user_id "{0}" corresponds to many accounts'.format(user_id))
+            return None
+        account = accounts_cursor.next()
+    with open(json_filename) as _file:
+        json_str = _file.read()
     json_charts = json.loads(json_str)
     if isinstance(json_charts, dict):
         json_charts = [json_charts]
-
     for json_chart in json_charts:
         chart = Chart()
-        for key in ['composers', 'genre', 'key', 'parts', 'structure', 'title', 'user_slug']:
+        for key in ['composers', 'genre', 'key', 'parts', 'structure', 'title']:
             setattr(chart, key, json_chart.get(key))
-        if user_slug:
-            chart.user_slug = user_slug
-            chart_id = chart.save(safe=True)
-            log.debug(chart_id)
-        else:
-            if create:
-                ctx.db.accounts.save({'slug': chart.user_slug}, safe=True)
-            else:
-                log.error(u'Chart user does not exist (title={0}).'.format(chart.title))
+        if account is not None:
+            chart.account_id = account._id
+        chart_id = chart.save(safe=True)
+        log.debug(chart_id)
+    return None
 
 
 def main(args=None):
@@ -66,17 +71,15 @@ def main(args=None):
     parser = argparse.ArgumentParser(description=u'Import chords chart.')
     parser.add_argument('ini_filename', help=u'Paster INI configuration file')
     parser.add_argument('json_filename', help=u'JSON file name. File can contain an object or a list of objects.')
-    parser.add_argument('-c', '--create', action='store_true', help=u'Create user if it does not exist')
-    parser.add_argument('-u', '--user-slug', help=u'Set chart user slug')
+    parser.add_argument('-u', '--user-id', help=u'Set chart owner user ID')
     parser.add_argument('-v', '--verbose', action='store_true', default=False, help=u'Display info messages')
     arguments = parser.parse_args(args)
     logging.basicConfig(level=logging.DEBUG if arguments.verbose else logging.WARNING)
     app = loadapp(u'config:{0}#main'.format(os.path.abspath(arguments.ini_filename)))
     import_charts(
-        create=arguments.create,
         ctx=app.ctx,
         json_filename=arguments.json_filename,
-        user_slug=arguments.user_slug,
+        user_id=arguments.user_id,
         )
     return 0
 

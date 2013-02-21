@@ -25,6 +25,7 @@
 
 from webob.dec import wsgify
 
+from ..model.account import Account
 from ..model.chart import Chart
 from .. import templates, wsgi_helpers
 
@@ -34,10 +35,10 @@ def view(req):
     slug = req.urlvars.get('slug')
     if slug is None:
         return wsgi_helpers.forbidden()
-    user = req.ctx.db.accounts.find_one({'slug': slug})
+    user = Account.find_one({'slug': slug})
     if user is None:
-        return wsgi_helpers.not_found()
-    charts_cursor = Chart.find({'user': slug}).limit(req.ctx.conf['charts.limit'])
+        return wsgi_helpers.not_found(req.ctx)
+    charts_cursor = Chart.find({'user_slug': user.slug}).sort('slug').limit(req.ctx.conf['charts.limit'])
     return templates.render(
         req.ctx,
         '/users/view.mako',

@@ -3,7 +3,7 @@
 
 from webob.dec import wsgify
 
-from . import accounts, charts, dummy_accounts, users
+from . import accounts, charts, users
 from .. import router, templates
 
 
@@ -25,7 +25,7 @@ def make_router(ctx):
         ]
     if ctx.conf['dummy_login.user_id'] is not None:
         routings.extend([
-            ('GET', '^/login/?$', dummy_accounts.login),
+            ('GET', '^/login/?$', accounts.login_dummy),
             ])
     else:
         routings.extend([

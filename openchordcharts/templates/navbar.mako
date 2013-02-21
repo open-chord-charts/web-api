@@ -37,25 +37,26 @@
             <a class="charts" href="/charts/">Charts</a>
           </li>
         </ul>
-        <div class="navbar-search">
-          <input class="search-query" placeholder="Search (ex: All of me)" type="search">
-        </div>
+        <form action="/charts" class="navbar-search" method="get">
+          <input class="search-query" name="q" placeholder="Example: All of me" type="search" \
+value="${req.GET.get('q') or ''}">
+        </form>
 % if req.ctx.user:
         <div class="btn-group pull-right">
           <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-           <i class="icon-user"></i> ${req.ctx.user['user_id']}
+           <i class="icon-user"></i> ${req.ctx.user.user_id}
             <span class="caret"></span>
           </a>
           <ul class="dropdown-menu">
-           <li><a class="my-charts" href="/users/${req.ctx.user['user_id']}">My charts</a></li>
+           <li><a class="my-charts" href="/users/${req.ctx.user.slug}">My charts</a></li>
             <li class="divider"></li>
-            <li><a href="/logout?state=${req.path}" rel="nofollow">Logout</a></li>
+            <li><a href="/logout?callback=${req.path}" rel="nofollow">Logout</a></li>
           </ul>
         </div>
 % else:
         <ul class="nav pull-right">
           <li>
-            <a class="login" href="/login" rel="nofollow">Login</a>
+            <a class="login" href="/login?callback=${req.path}" rel="nofollow">Login</a>
           </li>
         </ul>
 % endif

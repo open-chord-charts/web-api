@@ -6,6 +6,8 @@
 
 from webob.dec import wsgify
 
+from .model.account import Account
+
 
 def make_add_context_to_request(app, app_ctx):
     """Return a WSGI middleware that adds context to requests."""
@@ -19,6 +21,7 @@ def make_add_context_to_request(app, app_ctx):
 
 class Context(object):
     _ = lambda self, message: message
+    conf = None
     db = None
     req = None
     session = None
@@ -29,9 +32,14 @@ class Context(object):
 
     @property
     def user(self):
-        if 'user_id' not in self.session:
-            return None
-        return self.db.accounts.find_one({
-#            'provider_url': self.session['provider_url'],
-            'user_id': self.session['user_id'],
-            })
+        if 'user_id' in self.session:
+            if self.conf['dummy_login.user_id'] is not None:
+                return Account.find_one({
+                    'user_id': self.conf['dummy_login.user_id'],
+                    })
+            else:
+                return Account.find_one({
+                    'provider_url': self.session['provider_url'],
+                    'user_id': self.session['user_id'],
+                    })
+        return None

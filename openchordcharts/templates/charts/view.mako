@@ -23,6 +23,8 @@
 
 
 <%!
+from babel.dates import format_datetime
+
 from openchordcharts.model.chart import common_chromatic_keys
 %>
 
@@ -92,11 +94,17 @@ from openchordcharts.model.chart import common_chromatic_keys
 
 % if chart.modified_at != chart.created_at:
 <p>
-  Last modified by <a class="user" href="/users/${chart.user_slug}">${chart.user_slug}</a> on ${chart.modified_at}.
+  Last modified on ${format_datetime(chart.modified_at)}
+  % if chart_account_slug is not None:
+  by <a class="user" href="/users/${chart_account_slug}">${chart_account_slug}</a>
+  % endif
 </p>
 % endif
 
 <p>
-  Created by <a class="user" href="/users/${chart.user_slug}">${chart.user_slug}</a> on ${chart.created_at}.
+  Created on ${format_datetime(chart.created_at)}
+% if chart_account_slug is not None:
+  by <a class="user" href="/users/${chart_account_slug}">${chart_account_slug}</a>
+% endif
 </p>
 </%block>

@@ -27,7 +27,13 @@
 
 <%block name="container_content">
 <div class="page-header">
-  <h1>${u'Results for {0}'.format(data['q']) if data['q'] else u'Charts'}</h1>
+  <h1>
+% if data['q'] is None:
+    Charts
+% else:
+    Results for "${data['q']}"
+% endif
+</h1>
 </div>
 
 % if charts_cursor.count():
