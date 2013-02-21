@@ -29,6 +29,12 @@
     <meta name="author" content="Christophe Benz">
     <title><%block name="title">Open Chord Charts</%block></title>
     <link rel="stylesheet" href="${ctx.conf['cdn.bootstrap.css']}">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+    </style>
     <link rel="stylesheet" href="${ctx.conf['cdn.bootstrap-responsive.css']}">
     <link href="/css/lilyjazzchord.css" rel="stylesheet">
     <link href="/style.css" rel="stylesheet">

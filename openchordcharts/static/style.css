@@ -22,9 +22,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
-body {
-    padding-top: 60px;
-}
 @media (max-width: 767px) {
   .chords {
     margin-left: -10px;
