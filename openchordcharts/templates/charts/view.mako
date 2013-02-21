@@ -53,7 +53,7 @@ from openchordcharts.model.chart import common_chromatic_keys
 % endif
   </div>
 
-  <div class="key right">
+  <div class="key pull-right">
     <select class="input-mini" name="key" title="Transpose chart into another key">
 % for key in common_chromatic_keys:
       <option${' selected' if key == chart.key else ''} value="${key}">${key}</option>
