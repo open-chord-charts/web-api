@@ -41,14 +41,14 @@ class Account(Mapper, Wrapper):
     username = None
 
     def generate_unique_slug(self):
-        user_id_slug = slugify(self.user_id)
-        slug = user_id_slug
+        username_slug = slugify(self.username)
+        slug = username_slug
         slug_index = 1
         while True:
             if Account.find_one({'slug': slug}) is None:
                 return slug
             else:
-                slug = u'{0}-{1}'.format(user_id_slug, slug_index)
+                slug = u'{0}-{1}'.format(username_slug, slug_index)
                 slug_index += 1
 
     def save(self, *args, **kwargs):
