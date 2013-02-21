@@ -32,10 +32,11 @@ src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" />
       </a>
     </p>
     <p>
-      This means that everyone can view, modify, reuse data and contribute to the projet freely (as in free software).
+      Everyone can view, modify, reuse data and contribute to the projet freely (as in free software).
     </p>
     <p>
-      Also webservices and data exports are available for communication with external applications (for programmers!).
+      Webservices and raw data exports are available for communication with external applications
+      (for programmers!).
     </p>
     <p>
       Data is published under the contributors resposibility.
