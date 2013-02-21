@@ -24,10 +24,12 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Open Chord Charts project">
     <meta name="author" content="Christophe Benz">
     <title><%block name="title">Open Chord Charts</%block></title>
     <link rel="stylesheet" href="${ctx.conf['cdn.bootstrap.css']}">
+    <link rel="stylesheet" href="${ctx.conf['cdn.bootstrap-responsive.css']}">
     <link href="/css/lilyjazzchord.css" rel="stylesheet">
     <link href="/style.css" rel="stylesheet">
    </head>

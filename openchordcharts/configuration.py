@@ -54,6 +54,9 @@ def load_configuration(global_conf, app_conf):
     conf.update(check(struct(
         {
             'cdn.bootstrap.css': default(urlparse.urljoin(conf['cdn.url'], '/bootstrap/2.2.2/css/bootstrap.min.css')),
+            'cdn.bootstrap-responsive.css': default(
+                urlparse.urljoin(conf['cdn.url'], '/bootstrap/2.2.2/css/bootstrap-responsive.min.css')
+                ),
             'cdn.bootstrap.js': default(urlparse.urljoin(conf['cdn.url'], '/bootstrap/2.2.2/js/bootstrap.js')),
             'cdn.jquery.js': default(urlparse.urljoin(conf['cdn.url'], '/jquery/jquery-1.9.0.min.js')),
             },
