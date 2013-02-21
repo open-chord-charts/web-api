@@ -22,6 +22,11 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+<%!
+from webhelpers.html.tools import highlight
+%>
+
+
 <%inherit file="/site.mako"/>
 
 
@@ -40,8 +45,11 @@
 <ul>
     % for chart in charts_cursor:
   <li>
-    <a href="/charts/${chart.slug}">${chart.title}</a>
+    <a href="/charts/${chart.slug}">
+      ${highlight(chart.title, data['q'].strip().split()) if data['q'] else chart.title}
+    </a>
   </li>
+
   % endfor
 </ul>
 % else:
