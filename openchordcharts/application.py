@@ -36,7 +36,7 @@ def make_app(global_conf, **app_conf):
     app = controllers.make_router(app_ctx)
     app = SessionMiddleware(app, app_ctx.conf)
     app = context.make_add_context_to_request(app, app_ctx)
-    if not app_ctx.conf['debug']:
+    if not app_ctx.conf['debug'] and app_ctx.conf['email_to']:
         app = ErrorMiddleware(
             app,
             error_email=app_ctx.conf['email_to'],

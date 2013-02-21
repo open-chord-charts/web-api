@@ -9,7 +9,7 @@ import os
 import urlparse
 
 from biryani1 import strings
-from biryani1.baseconv import (check, default, empty_to_none, function, guess_bool, input_to_int,
+from biryani1.baseconv import (check, cleanup_line, default, empty_to_none, function, guess_bool, input_to_int,
     noop, make_input_to_url, pipe, struct)
 
 
@@ -33,6 +33,7 @@ def load_configuration(global_conf, app_conf):
             'database.port': pipe(input_to_int, default(27017)),
             'debug': pipe(guess_bool, default(False)),
             'dummy_login.user_id': empty_to_none,
+            'email_to': cleanup_line,
             'global_conf': default(global_conf),
             'google_analytics_key': empty_to_none,
             'log_level': pipe(
