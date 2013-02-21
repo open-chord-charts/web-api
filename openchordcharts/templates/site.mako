@@ -44,6 +44,8 @@
       <p>Copyright © The Open Chord Charts contributors, 2012-2013</p>
     </div>
 
+    <script src="${ctx.conf['cdn.jquery.js']}"></script>
+    <script src="${ctx.conf['cdn.bootstrap.js']}"></script>
 % if ctx.conf['google_analytics_key'] is not None:
     <script>
 var _gaq = _gaq || [];

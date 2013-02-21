@@ -118,3 +118,15 @@ user = req.ctx.user
 % endif
 </p>
 </%block>
+
+
+<%block name="scripts">
+<%parent:scripts/>
+<script>
+$(function() {
+  $('.key select').on('change', function(evt) {
+    $(evt.currentTarget).parent('form').submit();
+  });
+});
+</script>
+</%block>
