@@ -25,6 +25,7 @@
 <%!
 from babel.dates import format_datetime
 
+from openchordcharts import chord_helpers
 from openchordcharts.model.chart import common_chromatic_keys
 %>
 
@@ -68,7 +69,7 @@ from openchordcharts.model.chart import common_chromatic_keys
 <div class="chords">
   <table class="table table-bordered table-striped">
     <tbody>
-    % for part in part_rows:
+    % for part in chord_helpers.render_parts(chart):
         % for row_index, row in enumerate(part['rows']):
       <tr>
             % if row_index == 0:
@@ -76,8 +77,8 @@ from openchordcharts.model.chart import common_chromatic_keys
           ${part['name']}
         </td>
             % endif
-            % for chord in row:
-        <td class="bar">${chord}</td>
+            % for cell in row:
+        <td class="bar">${cell}</td>
             % endfor
       </tr>
         % endfor

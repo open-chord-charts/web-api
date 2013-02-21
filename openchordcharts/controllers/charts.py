@@ -83,23 +83,10 @@ def view(req):
     if req.path.endswith('.json'):
         return wsgi_helpers.respond_json(req.ctx, chart_json)
     else:
-        part_rows = []
-        for part_name in chart.structure:
-            rows = []
-            chords = chart.parts[part_name]
-            i = 0
-            while i < len(chart.parts[part_name]):
-                rows.append(chords[i:i + 8])
-                i += 8
-            part_rows.append(dict(
-                name=part_name,
-                rows=rows,
-                ))
         chart_account_slug = Account.find_one({'_id': chart.account_id}) if chart.account_id is not None else None
         return templates.render(
             req.ctx,
             '/charts/view.mako',
             chart_account_slug=chart_account_slug,
             chart=chart,
-            part_rows=part_rows,
             )
