@@ -45,7 +45,10 @@ def import_charts(ctx, json_filename, user_id=None):
         accounts_cursor = Account.find({
             'user_id': user_id,
             })
-        if accounts_cursor.count() > 0:
+        if accounts_cursor.count() == 0:
+            log.error(u'user_id "{0}" not found in accounts collection'.format(user_id))
+            return None
+        elif accounts_cursor.count() > 1:
             log.error(u'user_id "{0}" corresponds to many accounts'.format(user_id))
             return None
         account = accounts_cursor.next()
