@@ -33,7 +33,7 @@ setup(
         'Beaker >= 1.6.3',
         'Biryani1 >= 0.9dev',
         'MarkupSafe >= 0.15',
-        'pymongo',
+        'pymongo >= 2.2',
         'requests >= 0.11.2',
         'suq-monpyjama >= 0.8',
         'WebError >= 0.10',
