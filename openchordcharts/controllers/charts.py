@@ -89,4 +89,5 @@ def view(req):
             '/charts/view.mako',
             chart_account_slug=chart_account_slug,
             chart=chart,
+            data=data,
             )

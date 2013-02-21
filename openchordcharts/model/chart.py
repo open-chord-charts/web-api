@@ -31,9 +31,6 @@ from biryani1.strings import slugify
 from suq.monpyjama import Mapper, Wrapper
 
 
-common_chromatic_keys = ['Ab', 'A', 'Bb', 'B', 'C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G']
-
-
 class Chart(Mapper, Wrapper):
     account_id = None
     collection_name = 'charts'

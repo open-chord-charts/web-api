@@ -46,8 +46,8 @@
 
     <script src="${ctx.conf['cdn.jquery.js']}"></script>
     <script src="${ctx.conf['cdn.bootstrap.js']}"></script>
-    <script>
 % if ctx.conf['google_analytics_key'] is not None:
+    <script>
 var _gaq = _gaq || [];
 _gaq.push(['_setAccount', '${ctx.conf['google_analytics_key']}']);
 _gaq.push(['_trackPageview']);
@@ -56,7 +56,8 @@ _gaq.push(['_trackPageview']);
   ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
-% endif
     </script>
+% endif
+    <%block name="scripts" />
   </body>
 </html>

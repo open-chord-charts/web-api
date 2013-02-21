@@ -24,9 +24,9 @@
 
 <%!
 from babel.dates import format_datetime
+from markupsafe import Markup
 
-from openchordcharts import chord_helpers
-from openchordcharts.model.chart import common_chromatic_keys
+from openchordcharts.helpers import chart_render, music_theory
 %>
 
 
@@ -54,14 +54,18 @@ from openchordcharts.model.chart import common_chromatic_keys
   </div>
 
   <div class="key pull-right">
-    <select class="input-mini" name="key" title="Transpose chart into another key">
-% for key in common_chromatic_keys:
-      <option${' selected' if key == chart.key else ''} value="${key}">${key}</option>
+    <form method="get">
+      <select class="input-mini" name="key" title="Transpose chart into another key">
+% for key in music_theory.common_chromatic_keys:
+        <option${' selected' if data['key'] is None and key == chart.key or key == data['key'] else ''} value="${key}">
+          ${u'> {0}'.format(key) if key == chart.key and data['key'] is not None and chart.key != data['key'] else key}
+        </option>
 % endfor
-% if chart.key not in common_chromatic_keys:
-      <option selected value="${chart.key}">${chart.key}</option>
+% if chart.key not in music_theory.common_chromatic_keys:
+        <option selected value="${chart.key}">${chart.key}</option>
 % endif
-    </select>
+      </select>
+    </form>
   </div>
 </div>
 
@@ -69,7 +73,7 @@ from openchordcharts.model.chart import common_chromatic_keys
 <div class="chords">
   <table class="table table-bordered table-striped">
     <tbody>
-    % for part in chord_helpers.render_parts(chart):
+    % for part in chart_render.render_parts(chart, chords_per_row=8, from_key=chart.key, to_key=data['key']):
         % for row_index, row in enumerate(part['rows']):
       <tr>
             % if row_index == 0:
@@ -112,4 +116,16 @@ user = req.ctx.user
   by <a class="user" href="/users/${chart_account_slug}">${chart_account_slug}</a>
 % endif
 </p>
+</%block>
+
+
+<%block name="scripts">
+<%parent:scripts/>
+<script>
+$(function() {
+  $('.key select').on('change', function(evt) {
+    $(evt.currentTarget).parent('form').submit();
+  });
+});
+</script>
 </%block>
