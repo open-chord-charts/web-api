@@ -45,7 +45,7 @@ def login(req):
             },
         }
     response_text = requests.post(
-        urlparse.urljoin(req.req.ctx.conf['openid.api_url'], '/api/v1/authorize-url'),
+        urlparse.urljoin(req.ctx.conf['openid.api_url'], '/api/v1/authorize-url'),
         data=json.dumps(request_object, encoding='utf-8', ensure_ascii=False, indent=2, sort_keys=True),
         headers={'Content-Type': 'application/json; charset=utf-8'},
         ).text
