@@ -38,6 +38,7 @@ class Account(Mapper, Wrapper):
     modified_at = None
     slug = None
     user_id = None
+    username = None
 
     def generate_unique_slug(self):
         user_id_slug = slugify(self.user_id)

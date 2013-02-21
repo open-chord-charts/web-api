@@ -44,7 +44,7 @@ value="${req.GET.get('q') or ''}">
 % if req.ctx.user:
         <div class="btn-group pull-right">
           <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-           <i class="icon-user"></i> ${req.ctx.user.user_id}
+           <i class="icon-user"></i> ${req.ctx.user.username}
             <span class="caret"></span>
           </a>
           <ul class="dropdown-menu">
