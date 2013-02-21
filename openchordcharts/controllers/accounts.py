@@ -53,7 +53,8 @@ def login(req):
     if 'error' in response_json:
         return wsgi_helpers.internal_error(
             req.ctx,
-            dump=response_text,
+            comment=[error['error_description'] for error in response_json['error']['errors']],
+            dump=response_text if req.ctx.conf['debug'] else None,
             explanation=req.ctx._(u'Error while generating authorize URL'),
             )
     return wsgi_helpers.redirect(req.ctx, location=response_json['data']['authorize_url'])
@@ -70,7 +71,8 @@ def login_callback(req):
     response_json = json.loads(response_text)
     if 'error' in response_json:
         return wsgi_helpers.internal_error(req.ctx,
-            dump=response_text,
+            comment=[error['error_description'] for error in response_json['error']['errors']],
+            dump=response_text if req.ctx.conf['debug'] else None,
             explanation=req.ctx._(u'Error while retrieving user infos'),
             )
     authentication = response_json['data']
