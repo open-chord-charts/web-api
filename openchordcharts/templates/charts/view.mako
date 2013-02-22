@@ -105,16 +105,16 @@ user = req.ctx.user
 % if chart.modified_at != chart.created_at:
 <p>
   Last modified on ${format_datetime(chart.modified_at)}
-  % if chart_account_slug is not None:
-  by <a class="user" href="/users/${chart_account_slug}">${chart_account_slug}</a>
+  % if chart_owner is not None:
+  by <a class="user" href="/users/${chart_owner.slug}">${chart_owner.username}</a>
   % endif
 </p>
 % endif
 
 <p>
   Created on ${format_datetime(chart.created_at)}
-% if chart_account_slug is not None:
-  by <a class="user" href="/users/${chart_account_slug}">${chart_account_slug}</a>
+% if chart_owner is not None:
+  by <a class="user" href="/users/${chart_owner.slug}">${chart_owner.username}</a>
 % endif
 </p>
 </%block>

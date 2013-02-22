@@ -83,11 +83,11 @@ def view(req):
     if req.path.endswith('.json'):
         return wsgi_helpers.respond_json(req.ctx, chart_json)
     else:
-        chart_account_slug = Account.find_one({'_id': chart.account_id}) if chart.account_id is not None else None
+        chart_owner = Account.find_one({'_id': chart.account_id}) if chart.account_id is not None else None
         return templates.render(
             req.ctx,
             '/charts/view.mako',
-            chart_account_slug=chart_account_slug,
             chart=chart,
+            chart_owner=chart_owner,
             data=data,
             )
