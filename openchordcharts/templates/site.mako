@@ -78,7 +78,7 @@ $(function() {
     });
   }
   var $ul = $('ul.charts');
-  if ($ul && document.width <= 979) {
+  if ($ul && document.body.clientWidth <= 979) {
     transformListLinksIntoBlockButtons({$el: $ul});
   }
 });
