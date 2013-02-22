@@ -49,7 +49,7 @@ class Chart(Mapper, Wrapper):
     def compute_keywords(self):
         keywords = []
         keywords.extend(self.slug.split('-'))
-        if self.composers:
+        if self.composers is not None:
             keywords.extend(slugify(' '.join(self.composers)).split('-'))
         return keywords
 

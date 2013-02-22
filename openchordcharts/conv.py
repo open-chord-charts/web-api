@@ -23,7 +23,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from biryani1.baseconv import check, cleanup_line, function, noop, pipe, set_value, struct, test_in
+import re
+
+from biryani1.baseconv import (check, cleanup_line, function, noop, not_none, pipe, set_value, struct, test_in,
+    uniform_mapping, uniform_sequence)
 from biryani1.datetimeconv import datetime_to_iso8601_str
 from biryani1.objectconv import object_to_clean_dict
 import biryani1.states
@@ -54,6 +57,11 @@ chart_to_json_dict = check(
         )
     )
 
+csv_input_to_list = pipe(
+    function(lambda value: value.split(',')),
+    uniform_sequence(cleanup_line),
+    )
+
 input_to_chart_key = pipe(
     cleanup_line,
     function(lambda value: value.lower()),
@@ -70,7 +78,55 @@ params_to_chart_index_data = struct(
     )
 
 
+def str_to_chord(value, state=None):
+    if value is None:
+        return None, None
+    value = value.strip()
+    value = value[0].upper() + value[1:]
+    match = re.match(music_theory.chord_regex, value)
+    if match is None:
+        return value, u'Invalid value'
+    value = match.groupdict()
+    value['key'] = value['key'].strip()
+    value['quality'] = value['quality'].strip()
+    if value['quality'] not in music_theory.chord_qualities:
+        return u'{0}{1}'.format(value['key'], value['quality']), u'Invalid value'
+    return value, None
+
+
 # Level 2 converters
+
+inputs_to_chart_edit_data = struct(
+    {
+        'composers': pipe(cleanup_line, csv_input_to_list),
+        'genre': cleanup_line,
+        'parts': uniform_mapping(
+            cleanup_line,
+            pipe(
+                function(lambda value: value.split()),
+                uniform_sequence(
+                    pipe(
+                        cleanup_line,
+                        str_to_chord,
+                        ),
+                    ),
+                ),
+            ),
+        'structure': pipe(
+            cleanup_line,
+            csv_input_to_list,
+            uniform_sequence(
+                function(lambda value: value.upper()),
+                ),
+            ),
+        'title': pipe(
+            cleanup_line,
+            not_none,
+            ),
+        },
+    default=noop,
+    drop_none_values=False,
+    )
 
 params_to_chart_view_data = struct(
     {

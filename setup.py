@@ -32,6 +32,7 @@ setup(
         'Babel >= 0.9.6',
         'Beaker >= 1.5.4',
         'Biryani1 >= 0.9dev',
+        'FormEncode >= 1.2.4',
         'MarkupSafe >= 0.15',
         'pymongo >= 2.2',
         'requests >= 0.11.2',

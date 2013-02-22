@@ -11,19 +11,25 @@ from markupsafe import Markup
 from . import music_theory
 
 
+# From http://docs.python.org/dev/library/itertools.html#itertools-recipes
+def grouper(n, iterable, fillvalue=None):
+    "Collect data into fixed-length chunks or blocks"
+    # grouper(3, 'ABCDEFG', 'x') --> ABC DEF Gxx"
+    args = [iter(iterable)] * n
+    return itertools.izip_longest(*args, fillvalue=fillvalue)
+
+
 def render_parts(chart, chords_per_row, from_key=None, to_key=None):
     parts = []
     for part_name, part_occurence in iter_parts_with_occurences(chart):
         part_rows = []
         part_chords = chart.parts[part_name]
-        part_idx = 0
-        while part_idx < len(chart.parts[part_name]):
-            row_chords = part_chords[part_idx:part_idx + chords_per_row]
-            rendered_row_chords = iter_rendered_chords(row_chords, from_key, to_key) \
+        part_rows_chords = grouper(chords_per_row, part_chords)
+        for part_row_chords in part_rows_chords:
+            rendered_row_chords = iter_rendered_chords(part_row_chords, from_key, to_key) \
                 if part_occurence == 0 \
                 else list(itertools.repeat(u'—', chords_per_row))
             part_rows.append(rendered_row_chords)
-            part_idx += chords_per_row
         parts.append({
             'name': part_name,
             'occurence': part_occurence,

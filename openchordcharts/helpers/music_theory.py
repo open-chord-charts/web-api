@@ -26,6 +26,7 @@
 import re
 
 
+chord_qualities = ['+', '7', '9', 'aug', 'dim', 'm', 'M', 'm7b5']
 chord_regex = re.compile('(?P<key>[A-G][b#]?)(?P<quality>.*)')
 chromatic_keys = [
     ['G#', 'Ab'],

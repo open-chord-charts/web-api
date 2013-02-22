@@ -27,50 +27,28 @@
 
 <%block name="container_content">
 <div class="page-header">
-  <h1>
-    Edit <span class="title">${chart.title}</span>
-  </h1>
+  <h1>Edit "${chart.title}"</h1>
 </div>
 
 <form class="edit form-horizontal" method="post">
   <fieldset>
-    <div class="control-group">
-      <label class="control-label" for="title">Title</label>
-      <div class="controls">
-        <input class="input-xlarge" id="title" name="title" type="text" value="${chart.title}">
-        <span class="help-inline"></span>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="composers">Composers</label>
-      <div class="controls">
-        <input class="input-xlarge" id="composers" name="composers" type="text"
-          value="${u', '.join(chart.composers) if chart.composers else ''}">
-        <span class="help-inline"></span>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="genre">Genre</label>
-      <div class="controls">
-        <input class="input-xlarge" id="genre" name="genre" type="text" value="${chart.genre}">
-        <span class="help-inline"></span>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="structure">Structure</label>
-      <div class="controls">
-        <input class="input-xlarge" id="structure" name="structure" type="text"
-          value="${u', '.join(chart.structure) if chart.structure else ''}">
-        <span class="help-inline"></span>
-      </div>
-    </div>
+    <%self:control_group key="title" label="Title" value="${chart.title}" />
+    <%self:control_group key="composers" label="Composers"
+        value="${u', '.join(chart.composers) if chart.composers else ''}" />
+    <%self:control_group key="genre" label="Genre" value="${chart.genre}" />
+    <%self:control_group key="structure" label="Structure"
+        value="${u', '.join(chart.structure) if chart.structure else ''}" />
 % for part_name, chords in chart.parts.iteritems():
     <div class="control-group">
-      <label class="control-label">Chords of part ${part_name}</label>
+      <label class="control-label" for="part-${part_name}">Chords of part ${part_name}</label>
       <div class="controls">
         <div class="textarea">
-          <textarea class="input-xlarge">${u' '.join(chords) if chords else ''}</textarea>
-          <span class="help-inline"></span>
+          <textarea class="input-xxlarge" id="part-${part_name}" name="part.${part_name}">\
+${u' '.join(chords) if chords else ''}\
+</textarea>
+% if errors.get('part_{0}'.format(part_name)):
+          <span class="help-inline"><span class="label label-important">Erreur</span> ${errors[key]}</span>
+% endif
         </div>
       </div>
     </div>
@@ -82,3 +60,16 @@
   </fieldset>
 </form>
 </%block>
+
+
+<%def name="control_group(key, label, value)">
+<div class="control-group${' error' if errors.get(key) else ''}">
+  <label class="control-label" for="${key}">${label}</label>
+  <div class="controls">
+    <input class="input-xxlarge" id="${key}" name="${key}" type="text" value="${value}">
+% if errors.get(key):
+        <span class="help-inline"><span class="label label-important">Erreur</span> ${errors[key]}</span>
+% endif
+  </div>
+</div>
+</%def>

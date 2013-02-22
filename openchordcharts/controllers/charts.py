@@ -25,6 +25,8 @@
 
 import re
 
+from formencode import variabledecode
+from biryani1.strings import slugify
 from webob.dec import wsgify
 
 from ..model.account import Account
@@ -58,19 +60,48 @@ def edit(req):
     if user is None:
         return wsgi_helpers.forbidden(req.ctx)
     slug = req.urlvars.get('slug')
-    spec = {
-        'is_deleted': {'$exists': False},
-        'slug': slug,
-        }
-    chart = Chart.find_one(spec)
-    if chart is None:
-        return wsgi_helpers.not_found(req.ctx)
-    if chart.account_id != user._id:
-        return wsgi_helpers.forbidden(req.ctx)
+    data = errors = inputs = None
+    if req.path.endswith('/create'):
+        chart = Chart()
+    else:
+        spec = {
+            'is_deleted': {'$exists': False},
+            'slug': slug,
+            }
+        chart = Chart.find_one(spec)
+        if chart is None:
+            return wsgi_helpers.not_found(req.ctx)
+        if chart.account_id != user._id:
+            return wsgi_helpers.forbidden(req.ctx)
+        if req.method == 'GET':
+            inputs = chart.to_bson()
+    if req.method == 'POST':
+        inputs = variabledecode.variable_decode(req.POST)
+        inputs['parts'] = inputs['part']
+        del inputs['part']
+        data, errors = conv.inputs_to_chart_edit_data(inputs)
+        print data
+        print errors
+        if req.path.endswith('/create'):
+            spec = {
+                'is_deleted': {'$exists': False},
+                'slug': slugify(data['title']),
+                }
+            if Chart.find_one(spec):
+                if errors is None:
+                    errors = {}
+                errors['title'] = u'Fiche déjà existante'
+        if errors is None:
+            for key, value in data.iteritems():
+                setattr(chart, key, value)
+            chart.save(safe=True)
+            return wsgi_helpers.redirect(req.ctx, location='/charts/{0}'.format(chart.slug))
     return templates.render(
         req.ctx,
         '/charts/edit.mako',
         chart=chart,
+        errors=errors or {},
+        inputs=inputs or {},
         )
 
 
