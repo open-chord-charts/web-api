@@ -21,7 +21,15 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
+@media (max-width: 979px) {
+  .mobile-list-item {
+    padding: 1.5em 1em;
+    text-align: left;
+  }
+  .mobile-list-item i {
+    margin-right: 1em;
+  }
+}
 @media (max-width: 767px) {
   .chords {
     margin-left: -10px;
