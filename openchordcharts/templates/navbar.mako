@@ -44,23 +44,14 @@ value="${req.GET.get('q') or ''}">
 <%
 user = req.ctx.find_user()
 %>
-% if user is None:
         <ul class="nav pull-right">
+% if user is None:
           <li>
             <a class="login" href="/login?callback=${req.path}" rel="nofollow">Login</a>
           </li>
-        </ul>
 % else:
-        <div class="btn-group pull-right">
-          <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-           <i class="icon-user"></i> ${user.username}
-            <span class="caret"></span>
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="my-charts" href="/users/${user.slug}">My charts</a></li>
-            <li><a href="/logout?callback=${req.path}" rel="nofollow">Logout</a></li>
-          </ul>
-        </div>
+          <li><a class="my-charts" href="/users/${user.slug}"><i class="icon-user"></i> ${user.username}</a></li>
+          <li><a href="/logout?callback=${req.path}" rel="nofollow">Logout</a></li>
 % endif
       </div>
     </div>
