@@ -55,6 +55,12 @@
     <%block name="scripts">
     <script src="${ctx.conf['cdn.jquery.js']}"></script>
     <script src="${ctx.conf['cdn.bootstrap.js']}"></script>
+    <script src="/main.js"></script>
+    <script>
+$(function() {
+  initOpenChordCharts();
+});
+    </script>
 % if ctx.conf['google_analytics_key'] is not None:
     <script>
 var _gaq = _gaq || [];
@@ -67,22 +73,6 @@ _gaq.push(['_trackPageview']);
 })();
     </script>
 % endif
-    <script>
-$(function() {
-  function transformListLinksIntoBlockButtons(options) {
-    options.$el.addClass('unstyled');
-    $('li a', options.$el).each(function(idx, item) {
-      $(item)
-        .addClass('btn btn-block btn-large mobile-list-item')
-        .append($('<i>', {'class': 'icon-chevron-right pull-right'}));
-    });
-  }
-  var $ul = $('ul.charts');
-  if ($ul && document.body.clientWidth <= 979) {
-    transformListLinksIntoBlockButtons({$el: $ul});
-  }
-});
-    </script>
     </%block>
   </body>
 </html>
