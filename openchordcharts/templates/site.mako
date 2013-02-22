@@ -52,6 +52,7 @@
       <p>Copyright © The Open Chord Charts contributors, 2012-2013</p>
     </div>
 
+    <%block name="scripts">
     <script src="${ctx.conf['cdn.jquery.js']}"></script>
     <script src="${ctx.conf['cdn.bootstrap.js']}"></script>
 % if ctx.conf['google_analytics_key'] is not None:
@@ -66,6 +67,22 @@ _gaq.push(['_trackPageview']);
 })();
     </script>
 % endif
-    <%block name="scripts" />
+    <script>
+$(function() {
+  function transformListLinksIntoBlockButtons(options) {
+    options.$el.addClass('unstyled');
+    $('li a', options.$el).each(function(idx, item) {
+      $(item)
+        .addClass('btn btn-block')
+        .wrapInner($('<strong>'));
+    });
+  }
+  var $ul = $('ul.charts');
+  if ($ul && document.width <= 979) {
+    transformListLinksIntoBlockButtons({$el: $ul});
+  }
+});
+    </script>
+    </%block>
   </body>
 </html>

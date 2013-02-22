@@ -42,7 +42,7 @@ from webhelpers.html.tools import highlight
 </div>
 
 % if charts_cursor.count():
-<ul>
+<ul class="charts">
     % for chart in charts_cursor:
   <li>
     <a href="/charts/${chart.slug}">
