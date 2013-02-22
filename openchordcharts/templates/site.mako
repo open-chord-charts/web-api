@@ -72,9 +72,7 @@ $(function() {
   function transformListLinksIntoBlockButtons(options) {
     options.$el.addClass('unstyled');
     $('li a', options.$el).each(function(idx, item) {
-      $(item)
-        .addClass('btn btn-block')
-        .wrapInner($('<strong>'));
+      $(item).addClass('btn btn-block btn-large');
     });
   }
   var $ul = $('ul.charts');
