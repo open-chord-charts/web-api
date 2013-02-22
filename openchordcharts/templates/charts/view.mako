@@ -99,6 +99,7 @@ user = req.ctx.find_user()
 %>
 % if user is not None and user._id == chart.account_id:
   <a class="btn edit" href="/charts/${chart.slug}/edit">Edit</a>
+  <a class="btn delete" href="/charts/${chart.slug}/delete">Delete</a>
 % endif
 </div>
 
@@ -117,4 +118,18 @@ user = req.ctx.find_user()
   by <a class="user" href="/users/${chart_owner.slug}">${chart_owner.slug}</a>
 % endif
 </p>
+</%block>
+
+
+<%block name="scripts">
+<%parent:scripts/>
+<script>
+$(function() {
+  $('a.delete').on('click', function(evt) {
+    if ( ! confirm('Delete this chart?')) {
+      evt.preventDefault();
+    }
+  });
+});
+</script>
 </%block>

@@ -57,8 +57,8 @@ from webhelpers.html.tools import highlight
 % endif
 
 % if data['q'] is None:
-<p>
-  <a class="btn create" href="/charts/create">Create</a>
-</p>
+<div class="form-actions">
+  <a class="btn btn-primary create" href="/charts/create">Create</a>
+</div>
 % endif
 </%block>

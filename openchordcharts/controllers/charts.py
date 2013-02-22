@@ -33,12 +33,36 @@ from .. import conv, templates, wsgi_helpers
 
 
 @wsgify
+def delete(req):
+    user = req.ctx.find_user()
+    if user is None:
+        return wsgi_helpers.forbidden(req.ctx)
+    slug = req.urlvars.get('slug')
+    spec = {
+        'is_deleted': {'$exists': False},
+        'slug': slug,
+        }
+    chart = Chart.find_one(spec)
+    if chart is None:
+        return wsgi_helpers.not_found(req.ctx)
+    if chart.account_id != user._id:
+        return wsgi_helpers.forbidden(req.ctx)
+    chart.is_deleted = True
+    chart.save(safe=True)
+    return wsgi_helpers.redirect(req.ctx, location='/charts/')
+
+
+@wsgify
 def edit(req):
     user = req.ctx.find_user()
     if user is None:
         return wsgi_helpers.forbidden(req.ctx)
     slug = req.urlvars.get('slug')
-    chart = Chart.find_one({'slug': slug})
+    spec = {
+        'is_deleted': {'$exists': False},
+        'slug': slug,
+        }
+    chart = Chart.find_one(spec)
     if chart is None:
         return wsgi_helpers.not_found(req.ctx)
     if chart.account_id != user._id:
@@ -55,12 +79,14 @@ def index(req):
     data, errors = conv.params_to_chart_index_data(req.params, state=conv.default_state)
     if errors is not None:
         return wsgi_helpers.bad_request(req.ctx, comment=errors)
-    spec = {}
+    spec = {
+        'is_deleted': {'$exists': False},
+        }
     keywords = None
     if data['q'] is not None:
         keywords = data['q'].strip().split()
         spec['keywords'] = {'$all': [re.compile(u'^{0}'.format(re.escape(keyword))) for keyword in keywords]}
-    charts_cursor = Chart.find(spec).sort('title').limit(req.ctx.conf['charts.limit'])
+    charts_cursor = Chart.find(spec).sort('slug').limit(req.ctx.conf['charts.limit'])
     return templates.render(
         req.ctx,
         '/charts/index.mako',
@@ -77,8 +103,12 @@ def view(req):
     data, errors = conv.params_to_chart_view_data(req.params, state=conv.default_state)
     if errors is not None:
         return wsgi_helpers.bad_request(req.ctx, comment=errors)
-    chart = Chart.find_one(dict(slug=slug))
-    if chart is None:
+    spec = {
+        'is_deleted': {'$exists': False},
+        'slug': slug,
+        }
+    chart = Chart.find_one(spec)
+    if chart is None or chart.is_deleted:
         return wsgi_helpers.not_found(req.ctx)
     chart_json = conv.chart_to_json_dict(chart, state=conv.default_state)
     if req.path.endswith('.json'):

@@ -16,6 +16,7 @@ def make_router(ctx):
     routings = [
         ('GET', '^/?$', index),
         ('GET', '^/charts/?$', charts.index),
+        ('GET', '^/charts/(?P<slug>.+)/delete$', charts.delete),
         (('GET', 'POST'), '^/charts/(?P<slug>.+)/edit$', charts.edit),
         ('GET', '^/charts/(?P<slug>.+).json$', charts.view),
         ('GET', '^/charts/(?P<slug>.+)$', charts.view),

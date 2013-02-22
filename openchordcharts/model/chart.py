@@ -37,6 +37,7 @@ class Chart(Mapper, Wrapper):
     composers = None
     created_at = None
     genre = None
+    is_deleted = None
     keywords = None
     modified_at = None
     key = None
@@ -56,8 +57,12 @@ class Chart(Mapper, Wrapper):
         title_slug = slugify(self.title)
         slug = title_slug
         slug_index = 1
+        spec = {
+            'is_deleted': {'$exists': False},
+            'slug': slug,
+            }
         while True:
-            if Chart.find_one(dict(slug=slug)) is None:
+            if Chart.find_one(spec) is None:
                 return slug
             else:
                 slug = u'{0}-{1}'.format(title_slug, slug_index)
