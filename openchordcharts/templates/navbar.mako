@@ -41,23 +41,26 @@
           <input class="search-query" name="q" placeholder="Example: All of me" type="search" \
 value="${req.GET.get('q') or ''}">
         </form>
-% if req.ctx.user:
-        <div class="btn-group pull-right">
-          <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-           <i class="icon-user"></i> ${req.ctx.user.username}
-            <span class="caret"></span>
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="my-charts" href="/users/${req.ctx.user.slug}">My charts</a></li>
-            <li><a href="/logout?callback=${req.path}" rel="nofollow">Logout</a></li>
-          </ul>
-        </div>
-% else:
+<%
+user = req.ctx.find_user()
+%>
+% if user is None:
         <ul class="nav pull-right">
           <li>
             <a class="login" href="/login?callback=${req.path}" rel="nofollow">Login</a>
           </li>
         </ul>
+% else:
+        <div class="btn-group pull-right">
+          <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+           <i class="icon-user"></i> ${user.username}
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="my-charts" href="/users/${user.slug}">My charts</a></li>
+            <li><a href="/logout?callback=${req.path}" rel="nofollow">Logout</a></li>
+          </ul>
+        </div>
 % endif
       </div>
     </div>

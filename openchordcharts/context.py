@@ -24,14 +24,8 @@ class Context(object):
     conf = None
     db = None
     req = None
-    session = None
 
-    @property
-    def session(self):
-        return self.req.environ.get('beaker.session') if self.req is not None else None
-
-    @property
-    def user(self):
+    def find_user(self):
         if 'user_id' in self.session:
             if self.conf['dummy_login.user_id'] is not None:
                 return Account.find_one({
@@ -43,3 +37,7 @@ class Context(object):
                     'user_id': self.session['user_id'],
                     })
         return None
+
+    @property
+    def session(self):
+        return self.req.environ.get('beaker.session') if self.req is not None else None

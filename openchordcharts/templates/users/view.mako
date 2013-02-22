@@ -25,24 +25,28 @@
 <%inherit file="/site.mako"/>
 
 
+<%block name="container_content">
+<%
+user = req.ctx.find_user()
+%>
 <div class="page-header">
-% if user and user.slug == slug:
+% if user is not None and user.slug == req.urlvars.get('slug'):
   <h1>My charts</h1>
 % else:
-  <h1>Charts of user "${slug}"</h1>
+  <h1>Charts owned by "${req.urlvars.get('slug')}"</h1>
 % endif
 </div>
 
-% if charts:
+% if charts_cursor.count():
 <ul class="charts">
-    % for chart in charts:
+    % for chart in charts_cursor:
   <li><a href="/charts/${chart.slug}">${chart.title}</a></li>
     % endfor
 </ul>
 % else:
 <p>
-    % if user and user.slug == slug:
-  You have not created any chart. You can browse <a href="/charts/">all the charts</a> from the project,
+    % if user is not None and user.slug == req.urlvars.get('slug'):
+  You don't have created any chart yet. You can browse <a href="/charts/">all the charts</a> from the project,
   search for an existing chart using the top search bar, or
   <a href="/charts/create">create a new chart</a>.
     % else:
@@ -50,3 +54,4 @@
     % endif
 </p>
 % endif
+</%block>

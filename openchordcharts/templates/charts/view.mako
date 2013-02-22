@@ -95,7 +95,7 @@ from openchordcharts.helpers import chart_render, music_theory
 
 <div class="btn-toolbar">
 <%
-user = req.ctx.user
+user = req.ctx.find_user()
 %>
 % if user is not None and user._id == chart.account_id:
   <a class="btn edit" href="/charts/${chart.slug}/edit">Edit</a>
@@ -106,7 +106,7 @@ user = req.ctx.user
 <p>
   Last modified on ${format_datetime(chart.modified_at)}
   % if chart_owner is not None:
-  by <a class="user" href="/users/${chart_owner.slug}">${chart_owner.username}</a>
+  by <a class="user" href="/users/${chart_owner.slug}">${chart_owner.slug}</a>
   % endif
 </p>
 % endif
@@ -114,7 +114,7 @@ user = req.ctx.user
 <p>
   Created on ${format_datetime(chart.created_at)}
 % if chart_owner is not None:
-  by <a class="user" href="/users/${chart_owner.slug}">${chart_owner.username}</a>
+  by <a class="user" href="/users/${chart_owner.slug}">${chart_owner.slug}</a>
 % endif
 </p>
 </%block>

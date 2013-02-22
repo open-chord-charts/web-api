@@ -34,11 +34,11 @@ from .. import templates, wsgi_helpers
 def view(req):
     slug = req.urlvars.get('slug')
     if slug is None:
-        return wsgi_helpers.forbidden()
-    user = Account.find_one({'slug': slug})
-    if user is None:
+        return wsgi_helpers.forbidden(req.ctx)
+    account = Account.find_one({'slug': slug})
+    if account is None:
         return wsgi_helpers.not_found(req.ctx)
-    charts_cursor = Chart.find({'user_slug': user.slug}).sort('slug').limit(req.ctx.conf['charts.limit'])
+    charts_cursor = Chart.find({'account_id': account._id}).sort('slug').limit(req.ctx.conf['charts.limit'])
     return templates.render(
         req.ctx,
         '/users/view.mako',

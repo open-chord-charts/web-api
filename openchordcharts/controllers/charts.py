@@ -34,14 +34,15 @@ from .. import conv, templates, wsgi_helpers
 
 @wsgify
 def edit(req):
-    if req.ctx.user is None:
+    user = req.ctx.find_user()
+    if user is None:
         return wsgi_helpers.forbidden(req.ctx)
     slug = req.urlvars.get('slug')
-    if slug is None:
-        return wsgi_helpers.forbidden(req.ctx)
     chart = Chart.find_one({'slug': slug})
     if chart is None:
         return wsgi_helpers.not_found(req.ctx)
+    if chart.account_id != user._id:
+        return wsgi_helpers.forbidden(req.ctx)
     return templates.render(
         req.ctx,
         '/charts/edit.mako',
