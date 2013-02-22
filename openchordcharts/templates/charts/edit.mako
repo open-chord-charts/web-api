@@ -32,7 +32,7 @@
   </h1>
 </div>
 
-<form class="edit form-horizontal">
+<form class="edit form-horizontal" method="post">
   <fieldset>
     <div class="control-group">
       <label class="control-label" for="title">Title</label>
@@ -76,33 +76,9 @@
     </div>
 % endfor
     <div class="form-actions">
-      <button class="btn btn-primary">Save</button>
       <a class="btn cancel" href="/charts/${chart.slug}">Cancel</a>
+      <input class="btn btn-primary" type="submit" value="Save">
     </div>
   </fieldset>
 </form>
-
-
-% if chart.structure:
-<div class="chords">
-  <table class="table table-bordered table-striped">
-    <tbody>
-    % for part in chart.parts:
-        % for row_index, row in enumerate(part.rows):
-      <tr>
-            % if row_index == 0:
-        <td class="part-name"${u' rowspan="{0}"'.format(len(part.rows)) if len(part.rows) > 1 else '' | n}>
-          ${part.name}
-        </td>
-            % endif
-            % for chord in row:
-        <td class="bar">${chord}</td>
-            % endfor
-      </tr>
-        % endfor
-    % endfor
-    </tbody>
-  </table>
-</div>
-% endif
 </%block>
