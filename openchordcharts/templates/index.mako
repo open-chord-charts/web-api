@@ -62,7 +62,7 @@ title="HTML5 Powered with CSS3 / Styling, Semantics, and Offline &amp; Storage">
     <h2>Contact</h2>
     <p>
       Main developer: Christophe Benz
-      <a href="mailto:christophe.benz@gmail.com" rel="external">christophe.benz@gmail.com</a>
+      <a href="mailto:contact@openchordcharts.org" rel="external">contact@openchordcharts.org</a>
     </p>
   </div>
 </div>

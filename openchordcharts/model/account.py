@@ -2,7 +2,7 @@
 
 
 # Open Chord Charts -- Database of free chord charts
-# By: Christophe Benz <christophe.benz@gmail.com>
+# By: Christophe Benz <contact@openchordcharts.org>
 #
 # Copyright (C) 2012 Christophe Benz
 # https://gitorious.org/open-chord-charts/

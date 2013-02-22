@@ -13,7 +13,7 @@ doc_lines = __doc__.split('\n')
 
 setup(
     author=u'Christophe Benz',
-    author_email=u'christophe.benz@gmail.com',
+    author_email=u'contact@openchordcharts.org',
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Web Environment',
