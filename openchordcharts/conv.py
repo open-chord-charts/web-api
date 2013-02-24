@@ -31,7 +31,7 @@ from biryani1.datetimeconv import datetime_to_iso8601_str
 from biryani1.objectconv import object_to_clean_dict
 import biryani1.states
 
-from .helpers import music_theory
+from . import music_theory
 
 
 # State

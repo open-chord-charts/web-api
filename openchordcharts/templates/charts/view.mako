@@ -26,7 +26,7 @@
 from babel.dates import format_datetime
 from markupsafe import Markup
 
-from openchordcharts.helpers import chart_render, music_theory
+from openchordcharts import chart_render, music_theory
 %>
 
 
