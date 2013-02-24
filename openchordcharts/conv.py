@@ -46,6 +46,7 @@ chart_to_json_dict = pipe(
     struct(
         {
             '_id': set_value(None),
+            'account_id': set_value(None),
             'created_at': datetime_to_iso8601_str,
             'keywords': set_value(None),
             'modified_at': datetime_to_iso8601_str,
