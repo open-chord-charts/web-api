@@ -56,7 +56,10 @@ from webhelpers.html.tools import highlight
 <p>No charts found.</p>
 % endif
 
-% if data['q'] is None:
+<%
+user = req.ctx.find_user()
+%>
+% if data['q'] is None and user is not None:
 <div class="form-actions">
   <a class="btn create" href="/charts/create">Create</a>
 </div>
