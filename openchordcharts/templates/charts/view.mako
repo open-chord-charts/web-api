@@ -93,15 +93,15 @@ from openchordcharts import chart_render, music_theory
 </div>
 % endif
 
-<div class="btn-toolbar">
 <%
 user = req.ctx.find_user()
 %>
 % if user is not None and user._id == chart.account_id:
+<div class="btn-toolbar">
   <a class="btn edit" href="/charts/${chart.slug}/edit">Edit</a>
   <a class="btn delete" href="/charts/${chart.slug}/delete">Delete</a>
-% endif
 </div>
+% endif
 
 % if chart.modified_at != chart.created_at:
 <p>
