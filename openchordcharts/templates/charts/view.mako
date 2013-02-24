@@ -55,7 +55,7 @@ from openchordcharts import chart_render, music_theory
 
   <div class="key pull-right">
     <form class="form-inline" method="get">
-      <select class="input-mini" name="key" title="Transpose chart into another key">
+      <select class="input-mini" name="key">
 % for key in music_theory.common_chromatic_keys:
         <option${' selected' if data['key'] is None and key == chart.key or key == data['key'] else ''} value="${key}">
           ${u'> {0}'.format(key) if key == chart.key and data['key'] is not None and chart.key != data['key'] else key}
