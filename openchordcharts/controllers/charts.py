@@ -74,8 +74,6 @@ def edit(req):
             return wsgi_helpers.not_found(req.ctx)
         if chart.account_id != user._id:
             return wsgi_helpers.forbidden(req.ctx)
-        if req.method == 'GET':
-            inputs = chart.to_bson()
     if req.method == 'POST':
         inputs = variabledecode.variable_decode(req.POST)
         inputs['parts'] = inputs['part']
@@ -95,10 +93,13 @@ def edit(req):
                 setattr(chart, key, value)
             chart.save(safe=True)
             return wsgi_helpers.redirect(req.ctx, location='/charts/{0}'.format(chart.slug))
+    else:
+        inputs = check(conv.chart_to_inputs(chart))
     return templates.render(
         req.ctx,
         '/charts/edit.mako',
         chart=chart,
+        data=data,
         errors=errors or {},
         inputs=inputs or {},
         )
