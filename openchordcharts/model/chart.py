@@ -57,11 +57,8 @@ class Chart(Mapper, Wrapper):
         title_slug = slugify(self.title)
         slug = title_slug
         slug_index = 1
-        spec = {
-            'is_deleted': {'$exists': False},
-            'slug': slug,
-            }
         while True:
+            spec = {'slug': slug}
             if Chart.find_one(spec) is None:
                 return slug
             else:
@@ -75,7 +72,7 @@ class Chart(Mapper, Wrapper):
         return super(Chart, self).save(*args, **kwargs)
 
     def to_bson(self):
-        if self.slug is None or self.slug != slugify(self.title):
+        if self.slug is None:
             self.slug = self.generate_unique_slug()
         self.keywords = self.compute_keywords()
         return check(object_to_clean_dict(self))
