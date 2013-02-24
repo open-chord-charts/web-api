@@ -41,8 +41,11 @@ from webhelpers.html import tags
     <strong>Fix errors!</strong> Some fields contain invalid values.
   </div>
 % endif
+  <div class="alert alert-info">
+    Fields with an asterix (*) are mandatory.
+  </div>
   <fieldset>
-    <%self:control_group key="title" label="Title" value="${inputs.get('title')}" />
+    <%self:control_group key="title" label="Title (*)" value="${inputs.get('title')}" />
     <%self:control_group key="composers" label="Composers" value="${inputs.get('composers')}" />
     <%self:control_group key="genre" label="Genre" value="${inputs.get('genre')}" />
     <%self:control_group key="structure" label="Structure" value="${inputs.get('structure')}" />
