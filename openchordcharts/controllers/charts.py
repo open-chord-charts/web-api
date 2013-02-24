@@ -81,8 +81,6 @@ def edit(req):
         inputs['parts'] = inputs['part']
         del inputs['part']
         data, errors = conv.inputs_to_chart_edit_data(inputs)
-        print data
-        print errors
         if req.path.endswith('/create'):
             spec = {
                 'is_deleted': {'$exists': False},
