@@ -31,7 +31,7 @@ from biryani1.datetimeconv import datetime_to_iso8601_str
 from biryani1.objectconv import object_to_clean_dict
 import biryani1.states
 
-from . import music_theory
+from . import chart_render, music_theory
 
 
 # State
@@ -54,7 +54,7 @@ chart_to_inputs = pipe(
             'modified_at': datetime_to_iso8601_str,
             'parts': uniform_mapping(
                 noop,
-                function(lambda values: ' '.join(values)),
+                function(lambda values: '\n'.join(' '.join(row) for row in chart_render.grouper(8, values, ''))),
                 ),
             'slug': set_value(None),
             'structure': function(lambda value: ', '.join(value)),
