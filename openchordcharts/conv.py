@@ -23,6 +23,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+import itertools
 import re
 
 from biryani1.baseconv import (cleanup_line, function, noop, not_none, pipe, set_value, struct, test_in,
@@ -80,13 +81,6 @@ chart_to_json_dict = pipe(
         ),
     )
 
-input_to_chart_key = pipe(
-    cleanup_line,
-    function(lambda value: value.lower()),
-    test_in([key.lower() for key in music_theory.iter_chromatic_keys()]),
-    function(lambda value: value.capitalize()),
-    )
-
 params_to_chart_index_data = struct(
     {
         'q': cleanup_line,
@@ -101,13 +95,17 @@ str_csv_to_list = pipe(
     function(lambda values: [value for value in values if value is not None]),
     )
 
+str_to_chart_key = pipe(
+    function(lambda value: value.capitalize()),
+    test_in(list(itertools.chain.from_iterable(music_theory.chromatic_keys))),
+    )
+
 
 def str_to_chord_dict(value, state=None):
     if value is None:
         return None, None
     original_value = value
-    value = value.strip()
-    value = value[0].upper() + value[1:]
+    value = value.strip().capitalize()
     match = re.match(music_theory.chord_regex, value)
     if match is None:
         return original_value, u'Invalid value'
@@ -125,6 +123,7 @@ inputs_to_chart_edit_data = struct(
     {
         'composers': pipe(cleanup_line, str_csv_to_list),
         'genre': cleanup_line,
+        'key': pipe(cleanup_line, str_to_chart_key, not_none),
         'parts': uniform_mapping(
             cleanup_line,
             pipe(
@@ -156,7 +155,7 @@ inputs_to_chart_edit_data = struct(
 
 params_to_chart_view_data = struct(
     {
-        'key': pipe(cleanup_line, input_to_chart_key),
+        'key': pipe(cleanup_line, str_to_chart_key),
         },
     default=noop,
     drop_none_values=False,

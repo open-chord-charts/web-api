@@ -24,6 +24,8 @@
 
 <%!
 from webhelpers.html import tags
+
+from openchordcharts import music_theory
 %>
 
 
@@ -32,42 +34,64 @@ from webhelpers.html import tags
 
 <%block name="container_content">
 <div class="page-header">
+% if req.path.endswith('/create'):
+  <h1>Create a new chart</h1>
+% else:
   <h1>Edit "${chart.title}"</h1>
+% endif
 </div>
 
 <form class="edit form-horizontal" method="post">
+  <div class="alert alert-info">
+    Fields with an asterix (*) are mandatory.
+  </div>
 % if errors:
   <div class="alert alert-error">
     <strong>Fix errors!</strong> Some fields contain invalid values.
   </div>
 % endif
-  <div class="alert alert-info">
-    Fields with an asterix (*) are mandatory.
-  </div>
   <fieldset>
-    <%self:control_group key="title" label="Title (*)" value="${inputs.get('title')}" />
-    <%self:control_group key="composers" label="Composers" value="${inputs.get('composers')}" />
-    <%self:control_group key="genre" label="Genre" value="${inputs.get('genre')}" />
-    <%self:control_group key="structure" label="Structure" value="${inputs.get('structure')}" />
-% for part_name, chords in inputs.get('parts').iteritems():
+    <%self:control_group label="Title (*)" name="title" value="${inputs.get('title')}" />
+    <div class="control-group${' error' if errors.get('key') else ''}">
+      <label class="control-label" for="key">Key (*)</label>
+      <div class="controls">
+        <select class="input-mini" name="key">
+          <option value="">--</option>
+% for key in music_theory.common_chromatic_keys:
+          <option${' selected' if inputs.get('key') is not None and inputs['key'] == key else ''} value="${key}">
+            ${key}
+          </option>
+% endfor
+        </select>
+% if errors.get('key'):
+        <span class="help-inline"><span class="label label-important">Error</span> ${errors['key']}</span>
+% endif
+      </div>
+    </div>
+    <%self:control_group label="Composers" name="composers" value="${inputs.get('composers')}" />
+    <%self:control_group label="Genre" name="genre" value="${inputs.get('genre')}" />
+    <%self:control_group label="Structure" name="structure" value="${inputs.get('structure')}" />
+% if inputs.get('parts'):
+  % for part_name, chords in inputs['parts'].iteritems():
     <div class="control-group${' error' if errors.get('parts', {}).get(part_name) else ''}">
       <label class="control-label" for="part-${part_name}">Chords of part ${part_name}</label>
       <div class="controls">
         <div class="textarea">
           <textarea class="input-xxlarge" id="part-${part_name}" name="part.${part_name}">${chords}</textarea>
-% if errors.get('parts', {}).get(part_name):
+    % if errors.get('parts', {}).get(part_name):
           <span class="help-block">
             <span class="label label-important">Error${u's' if len(errors['parts'][part_name]) > 1 else ''}</span>
               ${tags.ul(u'#{0} ({1}): {2}'.format(idx, data['parts'][part_name][idx], message)
                 for idx, message in errors['parts'][part_name].iteritems())}
           </span>
-% endif
+    % endif
         </div>
       </div>
     </div>
-% endfor
+  % endfor
+% endif
     <div class="form-actions">
-      <a class="btn cancel" href="/charts/${chart.slug}">Cancel</a>
+      <a class="btn cancel" href="/charts/${'' if req.path.endswith('/create') else chart.slug}">Cancel</a>
       <input class="btn btn-primary" type="submit" value="Save">
     </div>
   </fieldset>
@@ -75,13 +99,13 @@ from webhelpers.html import tags
 </%block>
 
 
-<%def name="control_group(key, label, value)">
-<div class="control-group${' error' if errors.get(key) else ''}">
-  <label class="control-label" for="${key}">${label}</label>
+<%def name="control_group(label, name, value)">
+<div class="control-group${' error' if errors.get(name) else ''}">
+  <label class="control-label" for="${name}">${label}</label>
   <div class="controls">
-    <input class="input-xxlarge" id="${key}" name="${key}" type="text" value="${value}">
-% if errors.get(key):
-    <span class="help-inline"><span class="label label-important">Error</span> ${errors[key]}</span>
+    <input class="input-xxlarge" id="${name}" name="${name}" type="text" value="${value or ''}">
+% if errors.get(name):
+    <span class="help-inline"><span class="label label-important">Error</span> ${errors[name]}</span>
 % endif
   </div>
 </div>

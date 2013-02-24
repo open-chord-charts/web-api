@@ -80,9 +80,3 @@ def compute_transposed_key(key, from_key, to_key):
             if transposed_key_chromatic[0] == transposed_key_diatonic:
                 return transposed_key_chromatic
     return None
-
-
-def iter_chromatic_keys():
-    for keys in chromatic_keys:
-        for key in keys:
-            yield key
