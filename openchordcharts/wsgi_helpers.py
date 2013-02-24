@@ -64,7 +64,7 @@ def error(ctx, code, **kw):
                     message = ctx._(message)
             comment = kw.pop('comment', None)
             if isinstance(comment, dict):
-                comment = tags.ul(u'{0} : {1}'.format(key, value) for key, value in comment.iteritems())
+                comment = tags.ul(u'{0}: {1}'.format(key, value) for key, value in comment.iteritems())
             elif isinstance(comment, list):
                 comment = tags.ul(comment)
             title = kw.pop('title', None)
