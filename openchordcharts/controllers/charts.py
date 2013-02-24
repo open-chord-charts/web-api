@@ -26,6 +26,7 @@
 import re
 
 from formencode import variabledecode
+from biryani1.baseconv import check
 from biryani1.strings import slugify
 from webob.dec import wsgify
 
@@ -141,7 +142,7 @@ def view(req):
     chart = Chart.find_one(spec)
     if chart is None or chart.is_deleted:
         return wsgi_helpers.not_found(req.ctx)
-    chart_json = conv.chart_to_json_dict(chart, state=conv.default_state)
+    chart_json = check(conv.chart_to_json_dict(chart, state=conv.default_state))
     if req.path.endswith('.json'):
         return wsgi_helpers.respond_json(req.ctx, chart_json)
     else:

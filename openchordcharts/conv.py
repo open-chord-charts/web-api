@@ -25,7 +25,7 @@
 
 import re
 
-from biryani1.baseconv import (check, cleanup_line, function, noop, not_none, pipe, set_value, struct, test_in,
+from biryani1.baseconv import (cleanup_line, function, noop, not_none, pipe, set_value, struct, test_in,
     uniform_mapping, uniform_sequence)
 from biryani1.datetimeconv import datetime_to_iso8601_str
 from biryani1.objectconv import object_to_clean_dict
@@ -41,20 +41,18 @@ default_state = biryani1.states.default_state
 
 # Level 1 converters
 
-chart_to_json_dict = check(
-    pipe(
-        object_to_clean_dict,
-        struct(
-            {
-                '_id': set_value(None),
-                'created_at': datetime_to_iso8601_str,
-                'keywords': set_value(None),
-                'modified_at': datetime_to_iso8601_str,
-                },
-            default=noop,
-            drop_none_values=True,
-            ),
-        )
+chart_to_json_dict = pipe(
+    object_to_clean_dict,
+    struct(
+        {
+            '_id': set_value(None),
+            'created_at': datetime_to_iso8601_str,
+            'keywords': set_value(None),
+            'modified_at': datetime_to_iso8601_str,
+            },
+        default=noop,
+        drop_none_values=True,
+        ),
     )
 
 csv_input_to_list = pipe(
