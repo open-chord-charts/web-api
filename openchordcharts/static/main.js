@@ -8,10 +8,12 @@ function initOpenChordCharts() {
 
 
 function transformListLinksIntoBlockButtons(options) {
-  options.$el.addClass('unstyled');
+  var $buttonGroup = $('<div>', {'class': 'btn-group btn-group-vertical mobile-list'});
   $('li a', options.$el).each(function(idx, item) {
     $(item)
-      .addClass('btn btn-block btn-large mobile-list-item')
-      .append($('<i>', {'class': 'icon-chevron-right pull-right'}));
+      .addClass('btn btn-block btn-large')
+      .append($('<i>', {'class': 'icon-chevron-right pull-right'}))
+      .appendTo($buttonGroup);
   });
+  options.$el.replaceWith($buttonGroup)
 }
