@@ -58,7 +58,7 @@ chart_to_edit_inputs = pipe(
             'modified_at': datetime_to_iso8601_str,
             'parts': uniform_mapping(
                 noop,
-                function(lambda values: '\n'.join(' '.join(row) for row in chart_render.grouper(8, values, ''))),
+                function(lambda values: chords_to_textarea_value(values)),
                 ),
             'slug': set_value(None),
             'structure': function(lambda value: ', '.join(value)),
@@ -84,6 +84,15 @@ chart_to_json_dict = pipe(
         drop_none_values=True,
         ),
     )
+
+
+def chords_to_textarea_value(chords):
+    return '\n'.join(
+        ' '.join(
+            chord for chord in row if chord is not None
+            ) for row in chart_render.grouper(8, chords)
+        )
+
 
 params_to_chart_index_data = struct(
     {
