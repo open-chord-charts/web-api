@@ -23,6 +23,7 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+<%def name="navbar()">
 <div class="navbar navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container">
@@ -58,3 +59,4 @@ user = req.ctx.find_user()
     </div>
   </div>
 </div>
+</%def>

@@ -23,6 +23,9 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+<%namespace file="navbar.mako" name="navbar" />
+
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -44,7 +47,7 @@
    </head>
   <body>
 
-    <%include file="navbar.mako"/>
+    <%navbar:navbar />
 
     <div class="container">
       <%block name="container_content" />
