@@ -40,7 +40,7 @@ def build_missing_parts(chart_data):
     parts = chart_data['parts']
     if parts is None:
         return structure
-    return [part_name for part_name in structure if part_name not in parts]
+    return [part_name for part_name in structure if not parts.get(part_name)]
 
 
 def build_parts(chart, chords_per_row, from_key=None, to_key=None):
