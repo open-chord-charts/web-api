@@ -80,7 +80,7 @@ def edit(req):
         data, errors = conv.inputs_to_chart_edit_data(inputs)
         missing_parts = chart_render.build_missing_parts(data)
         if missing_parts:
-            inputs['parts'].update({part_name: '' for part_name in missing_parts})
+            inputs.setdefault('parts', {}).update({part_name: '' for part_name in missing_parts})
         if errors is None:
             if req.path.endswith('/create'):
                 chart = Chart()
