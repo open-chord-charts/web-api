@@ -33,15 +33,18 @@ from markupsafe import Markup
 from . import music_theory
 
 
-# From http://docs.python.org/dev/library/itertools.html#itertools-recipes
-def grouper(n, iterable, fillvalue=None):
-    "Collect data into fixed-length chunks or blocks"
-    # grouper(3, 'ABCDEFG', 'x') --> ABC DEF Gxx"
-    args = [iter(iterable)] * n
-    return itertools.izip_longest(*args, fillvalue=fillvalue)
+def build_missing_parts(chart_data):
+    structure = chart_data['structure']
+    if structure is None:
+        return None
+    parts = chart_data['parts']
+    if parts is None:
+        return structure
+    return [part_name for part_name in structure if part_name not in parts]
 
 
-def render_parts(chart, chords_per_row, from_key=None, to_key=None):
+def build_parts(chart, chords_per_row, from_key=None, to_key=None):
+    "Return chronologically-ordered parts from chart parts data, with rendered chords and cut rows."
     parts = []
     for part_name, part_occurence in iter_parts_with_occurences(chart):
         part_rows = []
@@ -58,6 +61,14 @@ def render_parts(chart, chords_per_row, from_key=None, to_key=None):
             'rows': part_rows,
             })
     return parts
+
+
+# From http://docs.python.org/dev/library/itertools.html#itertools-recipes
+def grouper(n, iterable, fillvalue=None):
+    "Collect data into fixed-length chunks or blocks."
+    # grouper(3, 'ABCDEFG', 'x') --> ABC DEF Gxx"
+    args = [iter(iterable)] * n
+    return itertools.izip_longest(*args, fillvalue=fillvalue)
 
 
 def iter_parts_with_occurences(chart):
@@ -78,7 +89,9 @@ def iter_rendered_chords(chords, from_key=None, to_key=None):
         else previous_chord
         )
     for chord in chords[1:]:
-        if chord == previous_chord:
+        if chord is None:
+            yield u''
+        elif chord == previous_chord:
             yield u'—'
         else:
             yield render_chord(

@@ -45,7 +45,7 @@ default_state = biryani1.states.default_state
 
 # Level 1 converters
 
-chart_to_inputs = pipe(
+chart_to_edit_inputs = pipe(
     object_to_clean_dict,
     struct(
         {
@@ -120,40 +120,54 @@ def str_to_chord_dict(value, state=None):
     return value, None
 
 
+def validate_chart_data_parts_and_structure_coherency(values, state=None):
+    if values is None:
+        return None, None
+    missing_parts = chart_render.build_missing_parts(values)
+    errors = {}
+    if missing_parts:
+        for part_name in missing_parts:
+            errors.setdefault('structure', {})[part_name] = u'Missing part'
+    return values, errors or None
+
+
 # Level 2 converters
 
-inputs_to_chart_edit_data = struct(
-    {
-        'composers': pipe(cleanup_line, str_csv_to_list),
-        'genre': cleanup_line,
-        'key': pipe(cleanup_line, str_to_chart_key, not_none),
-        'parts': uniform_mapping(
-            cleanup_line,
-            pipe(
-                function(lambda value: value.split()),
-                uniform_sequence(
-                    pipe(
-                        cleanup_line,
-                        str_to_chord_dict,
-                        function(lambda value: u'{0}{1}'.format(value['key'], value['quality'] or '')),
+inputs_to_chart_edit_data = pipe(
+    struct(
+        {
+            'composers': pipe(cleanup_line, str_csv_to_list),
+            'genre': cleanup_line,
+            'key': pipe(cleanup_line, str_to_chart_key, not_none),
+            'parts': uniform_mapping(
+                cleanup_line,
+                pipe(
+                    function(lambda value: value.split()),
+                    uniform_sequence(
+                        pipe(
+                            cleanup_line,
+                            str_to_chord_dict,
+                            function(lambda value: u'{0}{1}'.format(value['key'], value['quality'] or '')),
+                            ),
                         ),
                     ),
                 ),
-            ),
-        'structure': pipe(
-            cleanup_line,
-            str_csv_to_list,
-            uniform_sequence(
-                function(lambda value: value.upper()),
+            'structure': pipe(
+                cleanup_line,
+                str_csv_to_list,
+                uniform_sequence(
+                    function(lambda value: value.upper()),
+                    ),
                 ),
-            ),
-        'title': pipe(
-            cleanup_line,
-            not_none,
-            ),
-        },
-    default=noop,
-    drop_none_values=False,
+            'title': pipe(
+                cleanup_line,
+                not_none,
+                ),
+            },
+        default=noop,
+        drop_none_values=False,
+        ),
+    validate_chart_data_parts_and_structure_coherency,
     )
 
 params_to_chart_view_data = struct(

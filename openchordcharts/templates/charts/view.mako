@@ -75,7 +75,7 @@ from openchordcharts import chart_render, music_theory
 <div class="chords">
   <table class="table table-bordered table-striped">
     <tbody>
-    % for part in chart_render.render_parts(chart, chords_per_row=8, from_key=chart.key, to_key=data['key']):
+    % for part in chart_render.build_parts(chart, chords_per_row=8, from_key=chart.key, to_key=data['key']):
         % for row_index, row in enumerate(part['rows']):
       <tr>
             % if row_index == 0:

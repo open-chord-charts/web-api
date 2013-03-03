@@ -24,6 +24,8 @@
 
 
 <%!
+import collections
+
 from webhelpers.html import tags
 
 from openchordcharts import music_theory
@@ -71,9 +73,31 @@ from openchordcharts import music_theory
     </div>
     <%self:control_group label="Composers" name="composers" value="${inputs.get('composers')}" />
     <%self:control_group label="Genre" name="genre" value="${inputs.get('genre')}" />
-    <%self:control_group label="Structure" name="structure" value="${inputs.get('structure')}" />
+
+  <div class="control-group${' error' if errors.get('structure') else ''}">
+    <label class="control-label" for="structure">Structure</label>
+    <div class="controls">
+      <input class="input-xxlarge" id="structure" name="structure" type="text" value="${inputs.get('structure') or ''}">
+% if errors.get('structure'):
+<%
+error_label = u'Error'
+if isinstance(errors['structure'], collections.Mapping):
+  if len(errors['structure']) > 1:
+    error_label = u'Errors'
+  error_message = u', '.join(
+    u'{0}: {1}'.format(part_name, errors['structure'][part_name].lower()) for part_name in sorted(errors['structure'])
+    )
+else:
+  error_message = errors['structure']
+%>
+      <span class="help-inline"><span class="label label-important">${error_label}</span> ${error_message}</span>
+% endif
+    </div>
+  </div>
+
 % if inputs.get('parts'):
-  % for part_name, chords in inputs['parts'].iteritems():
+  % for part_name in sorted(inputs['parts']):
+<% chords = inputs['parts'][part_name] %>
     <div class="control-group${' error' if errors.get('parts', {}).get(part_name) else ''}">
       <label class="control-label" for="part-${part_name}">Chords of part ${part_name}</label>
       <div class="controls">

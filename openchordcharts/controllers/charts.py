@@ -34,7 +34,7 @@ from webob.dec import wsgify
 
 from ..model.account import Account
 from ..model.chart import Chart
-from .. import conv, templates, wsgi_helpers
+from .. import chart_render, conv, templates, wsgi_helpers
 
 
 @wsgify
@@ -78,6 +78,9 @@ def edit(req):
         inputs = variabledecode.variable_decode(req.POST)
         inputs['parts'] = inputs.get('part')
         data, errors = conv.inputs_to_chart_edit_data(inputs)
+        missing_parts = chart_render.build_missing_parts(data)
+        if missing_parts:
+            inputs['parts'].update({part_name: '' for part_name in missing_parts})
         if errors is None:
             if req.path.endswith('/create'):
                 chart = Chart()
@@ -88,7 +91,7 @@ def edit(req):
             assert chart.slug is not None
             return wsgi_helpers.redirect(req.ctx, location='/charts/{0}'.format(chart.slug))
     else:
-        inputs = check(conv.chart_to_inputs(chart))
+        inputs = check(conv.chart_to_edit_inputs(chart))
     return templates.render(
         req.ctx,
         '/charts/edit.mako',
