@@ -1,5 +1,6 @@
 ## -*- coding: utf-8 -*-
 
+
 ## Open Chord Charts -- Database of free chord charts
 ## By: Christophe Benz <contact@openchordcharts.org>
 ##

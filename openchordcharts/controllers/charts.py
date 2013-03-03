@@ -23,6 +23,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+"""Charts controller functions."""
+
+
 import re
 
 from formencode import variabledecode

@@ -23,6 +23,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+"""Users controller functions."""
+
+
 from webob.dec import wsgify
 
 from ..model.account import Account

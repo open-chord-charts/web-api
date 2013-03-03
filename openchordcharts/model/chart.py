@@ -23,6 +23,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+"""Chart model class."""
+
+
 import datetime
 
 from biryani1.baseconv import check
