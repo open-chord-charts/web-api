@@ -68,6 +68,7 @@ chart_to_edit_inputs = pipe(
         ),
     )
 
+
 chart_to_json_dict = pipe(
     object_to_clean_dict,
     struct(
@@ -92,11 +93,13 @@ params_to_chart_index_data = struct(
     drop_none_values=False,
     )
 
+
 str_csv_to_list = pipe(
     function(lambda value: value.split(',')),
     uniform_sequence(cleanup_line),
     function(lambda values: [value for value in values if value is not None]),
     )
+
 
 str_to_chart_key = pipe(
     function(lambda value: value.capitalize()),
@@ -169,6 +172,7 @@ inputs_to_chart_edit_data = pipe(
         ),
     validate_chart_data_parts_and_structure_coherency,
     )
+
 
 params_to_chart_view_data = struct(
     {
