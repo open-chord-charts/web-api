@@ -69,10 +69,10 @@ user = req.ctx.find_user()
 
 
 <%block name="domready_content">
-initChartsIndex({$el: $('ul.charts')});
+initMobileList({$el: $('ul.charts')});
 </%block>
 
 
 <%block name="page_scripts">
-<script src="/charts/index.js"></script>
+<script src="/mobile_list.js"></script>
 </%block>

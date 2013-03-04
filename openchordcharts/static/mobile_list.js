@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
-function initChartsIndex(options) {
+function initMobileList(options) {
   if (options.$el && document.body.clientWidth <= 979) {
     transformListLinksIntoBlockButtons({$el: options.$el});
   }
