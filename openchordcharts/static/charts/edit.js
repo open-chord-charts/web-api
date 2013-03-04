@@ -54,6 +54,6 @@ function transformSelectIntoToolbar(options) {
   });
   $select.remove();
   options.$el
-    .append($btnGroup)
-    .append($hiddenInput);
+    .prepend($btnGroup)
+    .prepend($hiddenInput);
 }
