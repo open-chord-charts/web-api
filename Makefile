@@ -1,6 +1,6 @@
-.PHONY: clean flake8
+.PHONY: clean flake8 jshint
 
-all: clean flake8
+all: clean flake8 jshint
 
 clean:
 	find -name "*.pyc" | xargs rm -f
@@ -8,3 +8,6 @@ clean:
 
 flake8:
 	flake8 --ignore=E123,E128 --max-line-length=120 openchordcharts
+
+jshint:
+	jshint --show-non-errors openchordcharts/static
