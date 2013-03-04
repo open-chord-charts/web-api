@@ -34,6 +34,7 @@ function disableSubmitWhenEnterKeyPressed(options) {
 
 function transformSelectIntoToolbar(options) {
   var $select = $('select', options.$el);
+  $select.remove();
   var $btnGroup = $('<div>', {'class': 'btn-group', 'data-toggle': 'buttons-radio'});
   var $hiddenInput = $('<input>', {'name': options.name, 'type': 'hidden'});
   $('option', $select).each(function(idx, item) {
@@ -52,7 +53,6 @@ function transformSelectIntoToolbar(options) {
       }
     }
   });
-  $select.remove();
   options.$el
     .prepend($btnGroup)
     .prepend($hiddenInput);
