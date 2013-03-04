@@ -58,13 +58,13 @@
       <p>Copyright © The Open Chord Charts contributors, 2012-2013</p>
     </div>
 
-    <%block name="scripts">
     <script src="${ctx.conf['cdn.jquery.js']}"></script>
     <script src="${ctx.conf['cdn.bootstrap.js']}"></script>
-    <script src="/main.js"></script>
+    <%block name="page_scripts" />
     <script>
 $(function() {
-  initOpenChordCharts();
+  $('a[rel="external"]').attr('target', '_blank');
+<%block name="domready_content" />
 });
     </script>
 % if ctx.conf['google_analytics_key'] is not None:
@@ -79,6 +79,5 @@ _gaq.push(['_trackPageview']);
 })();
     </script>
 % endif
-    </%block>
   </body>
 </html>

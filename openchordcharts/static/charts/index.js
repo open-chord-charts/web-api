@@ -22,22 +22,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
-function initOpenChordCharts() {
-  var $ul = $('ul.charts');
-  if ($ul && document.body.clientWidth <= 979) {
-    transformListLinksIntoBlockButtons({$el: $ul});
+function initChartsIndex(options) {
+  if (options.$el && document.body.clientWidth <= 979) {
+    transformListLinksIntoBlockButtons({$el: options.$el});
   }
-  $('a[rel="external"]').attr('target', '_blank');
 }
 
 
 function transformListLinksIntoBlockButtons(options) {
-  var $buttonGroup = $('<div>', {'class': 'btn-group btn-group-vertical mobile-list'});
+  var $btnGroup = $('<div>', {'class': 'btn-group btn-group-vertical mobile-list'});
   $('li a', options.$el).each(function(idx, item) {
     $(item)
       .addClass('btn btn-block btn-large')
       .append($('<i>', {'class': 'icon-chevron-right pull-right'}))
-      .appendTo($buttonGroup);
+      .appendTo($btnGroup);
   });
-  options.$el.replaceWith($buttonGroup)
+  options.$el.replaceWith($btnGroup);
 }

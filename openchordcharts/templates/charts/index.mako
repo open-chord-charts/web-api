@@ -66,3 +66,13 @@ user = req.ctx.find_user()
 </div>
 % endif
 </%block>
+
+
+<%block name="domready_content">
+initChartsIndex({$el: $('ul.charts')});
+</%block>
+
+
+<%block name="page_scripts">
+<script src="/charts/index.js"></script>
+</%block>

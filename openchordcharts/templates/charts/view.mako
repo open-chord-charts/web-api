@@ -45,29 +45,40 @@ from openchordcharts import chart_render, music_theory
 </div>
 
 <div class="properties">
-  <div class="left">
-% if chart.structure:
-    <span class="structure">${u', '.join(chart.structure)}</span>
-% endif
-% if chart.genre:
-    <span class="genre">${chart.genre}</span>
-% endif
+% if chart.genre or chart.structure:
+  <div class="row">
+  % if chart.structure:
+    <div class="span2">
+      <span class="structure">${u', '.join(chart.structure)}</span>
+    </div>
+  % endif
+  % if chart.genre:
+    <div class="span10">
+      <span class="genre">${chart.genre}</span>
+    </div>
+  % endif
   </div>
-
-  <div class="key pull-right">
-    <form class="form-inline" method="get">
-      <select class="input-mini" name="key">
-% for key in music_theory.common_chromatic_keys:
-        <option${' selected' if data['key'] is None and key == chart.key or key == data['key'] else ''} value="${key}">
-          ${u'> {0}'.format(key) if key == chart.key and data['key'] is not None and chart.key != data['key'] else key}
-        </option>
-% endfor
-% if chart.key not in music_theory.common_chromatic_keys:
-        <option selected value="${chart.key}">${chart.key}</option>
 % endif
-      </select>
-      <input class="btn btn-mini" type="submit" value="Transpose">
-    </form>
+
+  <div class="key row">
+    <div class="span2">
+      Key: ${chart.key}
+    </div>
+    <div class="span10">
+      <div class="btn-toolbar">
+        <div class="btn-group" data-toggle="buttons-radio">
+% for key in music_theory.common_chromatic_keys:
+<%
+is_active_key = data['key'] is None and key == chart.key or key == data['key']
+%>
+          <a class="${'active ' if is_active_key else ''}btn${' original-key' if key == chart.key else ''}" \
+href="?key=${key}">
+            ${key}
+          </a>
+% endfor
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -122,15 +133,10 @@ user = req.ctx.find_user()
 </%block>
 
 
-<%block name="scripts">
-<%parent:scripts/>
-<script>
-$(function() {
-  $('a.delete').on('click', function(evt) {
-    if ( ! confirm('Delete this chart?')) {
-      evt.preventDefault();
-    }
-  });
+<%block name="domready_content">
+$('a.delete').on('click', function(evt) {
+  if ( ! confirm('Delete this chart?')) {
+    evt.preventDefault();
+  }
 });
-</script>
 </%block>

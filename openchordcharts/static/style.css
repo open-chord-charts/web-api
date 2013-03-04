@@ -62,9 +62,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 .chords table td.part-name {
   width: 1em;
 }
-.properties .left {
-  float: left;
-}
-.properties .left .genre {
-  margin-left: 2em;
+.properties .key a.original-key {
+  font-weight: bold;
 }

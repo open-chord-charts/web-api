@@ -57,7 +57,7 @@ from openchordcharts import music_theory
     <%self:control_group label="Title (*)" name="title" value="${inputs.get('title')}" />
     <div class="control-group${' error' if errors.get('key') else ''}">
       <label class="control-label" for="key">Key (*)</label>
-      <div class="controls">
+      <div class="controls key">
         <select class="input-mini" name="key">
           <option value="">--</option>
 % for key in music_theory.common_chromatic_keys:
@@ -135,3 +135,19 @@ else:
   </div>
 </div>
 </%def>
+
+
+<%block name="domready_content">
+transformSelectIntoToolbar({
+  $el: $('form.edit .controls.key'),
+  name: 'key'
+});
+disableSubmitWhenEnterKeyPressed({
+  $el: $('form.edit')
+});
+</%block>
+
+
+<%block name="page_scripts">
+<script src="/charts/edit.js"></script>
+</%block>
