@@ -86,9 +86,9 @@ def edit(req):
         if errors is None:
             if req.path.endswith('/create'):
                 chart = Chart()
+                chart.account_id = user._id
             for key, value in data.iteritems():
                 setattr(chart, key, value)
-            chart.account_id = user._id
             chart.save(safe=True)
             assert chart.slug is not None
             return wsgi_helpers.redirect(req.ctx, location='/charts/{0}'.format(chart.slug))
