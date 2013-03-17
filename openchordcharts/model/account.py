@@ -61,6 +61,6 @@ class Account(Mapper, Wrapper):
         return super(Account, self).save(*args, **kwargs)
 
     def to_bson(self):
-        if self.slug is None or self.slug != slugify(self.user_id):
+        if self.slug is None:
             self.slug = self.generate_unique_slug()
         return check(object_to_clean_dict(self))
