@@ -61,12 +61,6 @@
     <script src="${ctx.conf['cdn.jquery.js']}"></script>
     <script src="${ctx.conf['cdn.bootstrap.js']}"></script>
     <%block name="page_scripts" />
-    <script>
-$(function() {
-  $('a[rel="external"]').attr('target', '_blank');
-<%block name="domready_content" />
-});
-    </script>
 % if ctx.conf['google_analytics_key'] is not None:
     <script>
 var _gaq = _gaq || [];

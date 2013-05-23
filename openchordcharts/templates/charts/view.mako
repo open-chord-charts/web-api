@@ -72,9 +72,7 @@ from openchordcharts import chart_render, music_theory
 is_active_key = data['key'] is None and key == chart.key or key == data['key']
 %>
           <a class="${'active ' if is_active_key else ''}btn${' original-key' if key == chart.key else ''}" \
-href="?key=${key}">
-            ${key}
-          </a>
+href="?key=${key}">${key}</a>
 % endfor
         </div>
       </div>
@@ -133,10 +131,14 @@ user = req.ctx.find_user()
 </%block>
 
 
-<%block name="domready_content">
-$('a.delete').on('click', function(evt) {
-  if ( ! confirm('Delete this chart?')) {
-    evt.preventDefault();
-  }
+<%block name="page_scripts">
+<script>
+$(function() {
+  $('a.delete').on('click', function(evt) {
+    if ( ! confirm('Delete this chart?')) {
+      evt.preventDefault();
+    }
+  });
 });
+</script>
 </%block>

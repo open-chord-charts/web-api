@@ -137,17 +137,17 @@ else:
 </%def>
 
 
-<%block name="domready_content">
-transformSelectIntoToolbar({
-  $el: $('form.edit .controls.key'),
-  name: 'key'
-});
-disableSubmitWhenEnterKeyPressed({
-  $el: $('form.edit')
-});
-</%block>
-
-
 <%block name="page_scripts">
 <script src="/charts/edit.js"></script>
+<script>
+$(function() {
+  transformSelectIntoToolbar({
+    $el: $('form.edit .controls.key'),
+    name: 'key'
+  });
+  disableSubmitWhenEnterKeyPressed({
+    $el: $('form.edit')
+  });
+});
+</script>
 </%block>

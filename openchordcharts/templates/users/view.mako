@@ -58,11 +58,11 @@ user = req.ctx.find_user()
 </%block>
 
 
-<%block name="domready_content">
-initMobileList({$el: $('ul.charts')});
-</%block>
-
-
 <%block name="page_scripts">
 <script src="/mobile_list.js"></script>
+<script>
+$(function() {
+  initMobileList({$el: $('ul.charts')});
+});
+</script>
 </%block>
