@@ -81,25 +81,27 @@ href="?key=${key}">${key}</a>
 </div>
 
 % if chart.structure:
-<div class="chords">
-  <table class="table table-bordered table-striped">
-    <tbody>
+<div class="chords row">
+  <div class="span6">
+    <table class="table table-bordered table-striped">
+      <tbody>
     % for part in chart_render.build_parts(chart, chords_per_row=8, from_key=chart.key, to_key=data['key']):
         % for row_index, row in enumerate(part['rows']):
-      <tr>
+        <tr>
             % if row_index == 0:
-        <td class="part-name"${u' rowspan="{0}"'.format(len(part['rows'])) if len(part['rows']) > 1 else '' | n}>
-          ${part['name']}
-        </td>
+          <td class="part-name"${u' rowspan="{0}"'.format(len(part['rows'])) if len(part['rows']) > 1 else '' | n}>
+            ${part['name']}
+          </td>
             % endif
             % for cell in row:
-        <td class="bar">${cell}</td>
+          <td class="bar">${cell}</td>
             % endfor
-      </tr>
+        </tr>
         % endfor
     % endfor
-    </tbody>
-  </table>
+      </tbody>
+    </table>
+  </div>
 </div>
 % endif
 
