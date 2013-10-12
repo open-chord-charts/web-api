@@ -35,7 +35,6 @@ setup(
         'FormEncode >= 1.2.4',
         'MarkupSafe >= 0.15',
         'pymongo >= 2.2',
-        'requests >= 0.11.2',
         'suq-monpyjama >= 0.8',
         'WebError >= 0.10',
         'WebHelpers >= 1.3',

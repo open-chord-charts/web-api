@@ -32,7 +32,7 @@ import urlparse
 
 from biryani1 import strings
 from biryani1.baseconv import (check, cleanup_line, default, empty_to_none, function, guess_bool, input_to_int,
-    noop, make_input_to_url, pipe, struct)
+    noop, pipe, struct)
 
 
 def load_configuration(global_conf, app_conf):
@@ -62,8 +62,6 @@ def load_configuration(global_conf, app_conf):
                 default('WARNING'),
                 function(lambda log_level: getattr(logging, log_level.upper())),
                 ),
-            'openid.api_key': empty_to_none,
-            'openid.api_url': make_input_to_url(error_if_fragment=True, full=True),
             'package_name': default('openchordcharts'),
             'static_files': pipe(guess_bool, default(False)),
             'static_files_dir': default(os.path.join(app_dir, 'static')),
