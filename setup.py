@@ -46,8 +46,6 @@ setup(
     long_description='\n'.join(doc_lines[2:]),
     name=u'OpenChordCharts',
     packages=find_packages(),
-    paster_plugins=['PasteScript'],
-    setup_requires=['PasteScript >= 1.6.3'],
     url=u'http://www.openchordcharts.org/',
     version='0.1',
     zip_safe=False,
