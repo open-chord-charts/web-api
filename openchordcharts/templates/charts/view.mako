@@ -44,40 +44,37 @@ from openchordcharts import chart_render, music_theory
   </h1>
 </div>
 
-<div class="properties">
+<div class="properties row">
 % if chart.genre or chart.structure:
-  <div class="row">
   % if chart.structure:
     <div class="span2">
       <span class="structure">${u', '.join(chart.structure)}</span>
     </div>
   % endif
   % if chart.genre:
-    <div class="span10">
+    <div class="span2">
       <span class="genre">${chart.genre}</span>
     </div>
   % endif
-  </div>
 % endif
-
-  <div class="key row">
     <div class="span2">
-      Key: ${chart.key}
-    </div>
-    <div class="span10">
-      <div class="btn-toolbar">
-        <div class="btn-group" data-toggle="buttons-radio">
+      <form method="get">
+        <div class="input-append">
+          <select class="input-mini" name="key">
 % for key in music_theory.common_chromatic_keys:
 <%
-is_active_key = data['key'] is None and key == chart.key or key == data['key']
+key_option_text = key
+if data['key'] is not None and key == chart.key and data['key'] != chart.key:
+    key_option_text += u' (original)'
+is_selected_key = data['key'] is None and key == chart.key or key == data['key']
 %>
-          <a class="${'active ' if is_active_key else ''}btn${' original-key' if key == chart.key else ''}" \
-href="?key=${key}">${key}</a>
+            <option${u' selected' if is_selected_key else ''} value="${key}">${key_option_text}</option>
 % endfor
+          </select>
+          <input class="btn" type="submit" value="Transpose">
         </div>
-      </div>
+      </form>
     </div>
-  </div>
 </div>
 
 % if chart.structure:
