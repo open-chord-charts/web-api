@@ -44,7 +44,7 @@ setup(
     keywords='web chord charts music free collaborative',
     license=u'http://www.fsf.org/licensing/licenses/agpl-3.0.html',
     long_description='\n'.join(doc_lines[2:]),
-    name=u'openchordcharts',
+    name=u'OpenChordCharts',
     packages=find_packages(),
     paster_plugins=['PasteScript'],
     setup_requires=['PasteScript >= 1.6.3'],
