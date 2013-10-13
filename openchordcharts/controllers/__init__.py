@@ -53,9 +53,4 @@ def make_router(ctx):
         routings.extend([
             ('GET', '^/login/?$', accounts.login_dummy),
             ])
-    else:
-        routings.extend([
-            ('GET', '^/login/?$', accounts.login),
-            ('GET', '^/login-callback/?$', accounts.login_callback),
-            ])
     return router.make_router(*routings)
