@@ -30,9 +30,9 @@ import logging
 import sys
 
 from beaker.middleware import SessionMiddleware
-from weberror.errormiddleware import ErrorMiddleware
 from paste.cascade import Cascade
 from paste.urlparser import StaticURLParser
+from weberror.errormiddleware import ErrorMiddleware
 
 from . import configuration, context, controllers, database, templates
 

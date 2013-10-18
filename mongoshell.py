@@ -6,11 +6,11 @@ import os
 
 import bson
 from paste.deploy import loadapp
-import pymongo
+import pymongo  # noqa
 
 
-from openchordcharts.model.account import Account
-from openchordcharts.model.chart import Chart
+from openchordcharts.model.account import Account  # noqa
+from openchordcharts.model.chart import Chart  # noqa
 
 
 base_dir = os.path.abspath(os.path.dirname(__file__))

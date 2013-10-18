@@ -81,12 +81,10 @@ def error(ctx, code, **kw):
             explanation = kw.pop('explanation', None)
             if explanation is None:
                 explanation = errors_explanation.get(code)
-                explanation = ctx._(explanation) if explanation is not None else response.explanation
+                explanation = explanation if explanation is not None else response.explanation
             message = kw.pop('message', None)
             if message is None:
                 message = errors_message.get(code)
-                if message is not None:
-                    message = ctx._(message)
             comment = kw.pop('comment', None)
             if isinstance(comment, dict):
                 comment = tags.ul(u'{0}: {1}'.format(key, value) for key, value in comment.iteritems())
@@ -95,7 +93,7 @@ def error(ctx, code, **kw):
             title = kw.pop('title', None)
             if title is None:
                 title = errors_title.get(code)
-                title = ctx._(title) if title is not None else response.status
+                title = title if title is not None else response.status
             body = templates.render(
                 ctx,
                 template_path,
@@ -143,8 +141,6 @@ def redirect(ctx, code=302, location=None, **kw):
         message = kw.pop('message', None)
         if message is None:
             message = errors_message.get(code)
-            if message is not None:
-                message = ctx._(message)
         title = kw.pop('title', None)
         if title is None:
             title = ctx._("Redirection in progress...")
