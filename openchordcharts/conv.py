@@ -53,7 +53,6 @@ chart_to_edit_inputs = pipe(
             'account_id': set_value(None),
             'composers': function(lambda value: ', '.join(value)),
             'created_at': datetime_to_iso8601_str,
-            'is_deleted': set_value(None),
             'keywords': set_value(None),
             'modified_at': datetime_to_iso8601_str,
             'parts': uniform_mapping(
@@ -76,7 +75,6 @@ chart_to_json_dict = pipe(
             '_id': set_value(None),
             'account_id': set_value(None),
             'created_at': datetime_to_iso8601_str,
-            'is_deleted': set_value(None),
             'keywords': set_value(None),
             'modified_at': datetime_to_iso8601_str,
             },

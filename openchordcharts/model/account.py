@@ -30,29 +30,17 @@ import datetime
 
 from biryani1.baseconv import check
 from biryani1.objectconv import object_to_clean_dict
-from biryani1.strings import slugify
-from suq.monpyjama import Mapper, Wrapper
+from suq.monpyjama import Mapper
+
+from .. import database
 
 
-class Account(Mapper, Wrapper):
+class Account(Mapper, database.Wrapper):
     collection_name = 'accounts'
     created_at = None
     email = None
     modified_at = None
-    slug = None
-    user_id = None
     username = None
-
-    def generate_unique_slug(self):
-        username_slug = slugify(self.username)
-        slug = username_slug
-        slug_index = 1
-        while True:
-            if Account.find_one({'slug': slug}) is None:
-                return slug
-            else:
-                slug = u'{0}-{1}'.format(username_slug, slug_index)
-                slug_index += 1
 
     def save(self, *args, **kwargs):
         if self.created_at is None:
@@ -61,6 +49,4 @@ class Account(Mapper, Wrapper):
         return super(Account, self).save(*args, **kwargs)
 
     def to_bson(self):
-        if self.slug is None:
-            self.slug = self.generate_unique_slug()
         return check(object_to_clean_dict(self))

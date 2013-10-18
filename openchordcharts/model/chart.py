@@ -31,16 +31,18 @@ import datetime
 from biryani1.baseconv import check
 from biryani1.objectconv import object_to_clean_dict
 from biryani1.strings import slugify
-from suq.monpyjama import Mapper, Wrapper
+from suq.monpyjama import Mapper
+
+from .. import database
+from .account import Account
 
 
-class Chart(Mapper, Wrapper):
+class Chart(Mapper, database.Wrapper):
     account_id = None
     collection_name = 'charts'
     composers = None
     created_at = None
     genre = None
-    is_deleted = None
     keywords = None
     modified_at = None
     key = None
@@ -49,6 +51,11 @@ class Chart(Mapper, Wrapper):
     structure = None
     title = None
 
+    @property
+    def account(self):
+        assert self.account_id is not None
+        return Account.find_one({'_id': self.account_id})
+
     def compute_keywords(self):
         keywords = []
         keywords.extend(slugify(self.title).split('-'))
@@ -56,26 +63,15 @@ class Chart(Mapper, Wrapper):
             keywords.extend(slugify(' '.join(self.composers)).split('-'))
         return keywords
 
-    def generate_unique_slug(self):
-        title_slug = slugify(self.title)
-        slug = title_slug
-        slug_index = 1
-        while True:
-            spec = {'slug': slug}
-            if Chart.find_one(spec) is None:
-                return slug
-            else:
-                slug = u'{0}-{1}'.format(title_slug, slug_index)
-                slug_index += 1
-
     def save(self, *args, **kwargs):
         if self.created_at is None:
             self.created_at = datetime.datetime.utcnow()
         self.modified_at = datetime.datetime.utcnow()
+        assert self.account_id is not None
         return super(Chart, self).save(*args, **kwargs)
 
     def to_bson(self):
         if self.slug is None:
-            self.slug = self.generate_unique_slug()
+            self.slug = slugify(self.title)
         self.keywords = self.compute_keywords()
         return check(object_to_clean_dict(self))

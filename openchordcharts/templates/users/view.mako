@@ -27,26 +27,23 @@
 
 
 <%block name="container_content">
-<%
-user = req.ctx.find_user()
-%>
 <div class="page-header">
-% if user is not None and user.slug == req.urlvars.get('slug'):
+% if req.ctx.user is not None and req.ctx.user.username == req.urlvars['username']:
   <h1>My charts</h1>
 % else:
-  <h1>Charts owned by "${req.urlvars.get('slug')}"</h1>
+  <h1>Charts owned by "${req.urlvars['username']}"</h1>
 % endif
 </div>
 
 % if charts_cursor.count():
 <ul class="charts">
     % for chart in charts_cursor:
-  <li><a href="/charts/${chart.slug}">${chart.title}</a></li>
+  <li><a href="/users/${req.urlvars['username']}/charts/${chart.slug}">${chart.title}</a></li>
     % endfor
 </ul>
 % else:
 <p>
-    % if user is not None and user.slug == req.urlvars.get('slug'):
+    % if req.ctx.user is not None and req.ctx.user.username == req.urlvars.get('username'):
   You don't have created any chart yet. You can browse <a href="/charts/">all the charts</a> from the project,
   search for an existing chart using the top search bar, or
   <a href="/charts/create">create a new chart</a>.

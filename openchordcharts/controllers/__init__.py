@@ -42,14 +42,14 @@ def make_router(ctx):
         ('GET', '^/?$', index),
         ('GET', '^/charts/?$', charts.index),
         (('GET', 'POST'), '^/charts/create$', charts.edit),
-        ('GET', '^/charts/(?P<slug>.+)/delete$', charts.delete),
-        (('GET', 'POST'), '^/charts/(?P<slug>.+)/edit$', charts.edit),
-        ('GET', '^/charts/(?P<slug>.+).json$', charts.view),
-        ('GET', '^/charts/(?P<slug>.+)$', charts.view),
-        ('GET', '^/users/(?P<slug>.+)$', users.view),
+        ('GET', '^/users/(?P<username>[^/]+)/charts/(?P<chart_slug>[^/]+).json$', charts.view, {'is_json': True}),
+        ('GET', '^/users/(?P<username>[^/]+)/charts/(?P<chart_slug>[^/]+)$', charts.view, {'is_json': False}),
+        (('GET', 'POST'), '^/users/(?P<username>[^/]+)/charts/(?P<chart_slug>[^/]+)/edit$', charts.edit),
+        ('GET', '^/users/(?P<username>[^/]+)/charts/(?P<chart_slug>[^/]+)/delete$', charts.delete),
+        ('GET', '^/users/(?P<username>[^/]+)/charts/?$', users.view),
         ('GET', '^/logout/?$', accounts.logout),
         ]
-    if ctx.conf['dummy_login.user_id'] is not None:
+    if ctx.conf['dummy_login.username'] is not None:
         routings.extend([
             ('GET', '^/login/?$', accounts.login_dummy),
             ])

@@ -35,17 +35,12 @@ from .. import templates, wsgi_helpers
 
 @wsgify
 def view(req):
-    slug = req.urlvars.get('slug')
-    if slug is None:
-        return wsgi_helpers.forbidden(req.ctx)
-    account = Account.find_one({'slug': slug})
+    username = req.urlvars['username']
+    assert username is not None
+    account = Account.find_one({'username': username})
     if account is None:
         return wsgi_helpers.not_found(req.ctx)
-    spec = {
-        'account_id': account._id,
-        'is_deleted': {'$exists': False},
-        }
-    charts_cursor = Chart.find(spec).sort('slug').limit(req.ctx.conf['charts.limit'])
+    charts_cursor = Chart.find({'account_id': account._id}).sort('slug').limit(req.ctx.conf['charts.limit'])
     return templates.render(
         req.ctx,
         '/users/view.mako',

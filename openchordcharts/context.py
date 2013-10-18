@@ -43,23 +43,19 @@ def make_add_context_to_request(app, app_ctx):
 
 class Context(object):
     _ = lambda self, message: message
+    _user = None
     conf = None
     db = None
     req = None
 
-    def find_user(self):
-        if 'user_id' in self.session:
-            if self.conf['dummy_login.user_id'] is not None:
-                return Account.find_one({
-                    'user_id': self.conf['dummy_login.user_id'],
-                    })
-            else:
-                return Account.find_one({
-                    'provider_url': self.session['provider_url'],
-                    'user_id': self.session['user_id'],
-                    })
-        return None
-
     @property
     def session(self):
         return self.req.environ.get('beaker.session') if self.req is not None else None
+
+    @property
+    def user(self):
+        if 'username' not in self.session:
+            return None
+        if self._user is None:
+            self._user = Account.find_one({'username': self.session['username']})
+        return self._user

@@ -116,7 +116,8 @@ else:
   % endfor
 % endif
     <div class="form-actions">
-      <a class="btn cancel" href="/charts/${'' if req.path.endswith('/create') else chart.slug}">Cancel</a>
+      <a class="btn cancel" href="/users/${req.ctx.user.username}/charts/\
+${'' if req.path.endswith('/create') else chart.slug}">Cancel</a>
       <input class="btn btn-primary" type="submit" value="Save">
     </div>
   </fieldset>

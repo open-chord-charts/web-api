@@ -40,15 +40,15 @@ def make_router(*routings):
         methods, regex, app = routing[:3]
         if isinstance(methods, basestring):
             methods = (methods,)
-        vars = routing[3] if len(routing) >= 4 else {}
-        routes.append((methods, re.compile(regex), app, vars))
+        urlvars = routing[3] if len(routing) >= 4 else {}
+        routes.append((methods, re.compile(regex), app, urlvars))
 
     @wsgify
     def router(req):
         """Dispatch request to controllers."""
         split_path_info = req.path_info.split('/')
         assert not split_path_info[0], split_path_info
-        for methods, regex, app, vars in routes:
+        for methods, regex, app, urlvars in routes:
             if methods is None or req.method in methods:
                 match = regex.match(req.path_info)
                 if match is not None:
@@ -58,7 +58,7 @@ def make_router(*routings):
                         (name, value.decode('utf-8') if value is not None else None)
                         for name, value in match.groupdict().iteritems()
                         ))
-                    req.urlvars.update(vars)
+                    req.urlvars.update(urlvars)
                     req.script_name += req.path_info[:match.end()]
                     req.path_info = req.path_info[match.end():]
                     return req.get_response(app)

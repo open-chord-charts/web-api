@@ -102,29 +102,26 @@ is_selected_key = data['key'] is None and key == chart.key or key == data['key']
 </div>
 % endif
 
-<%
-user = req.ctx.find_user()
-%>
-% if user is not None and user._id == chart.account_id:
+% if req.ctx.user is not None and req.ctx.user._id == chart.account_id:
 <div class="btn-toolbar">
-  <a class="btn edit" href="/charts/${chart.slug}/edit">Edit</a>
-  <a class="btn delete" href="/charts/${chart.slug}/delete">Delete</a>
+  <a class="btn edit" href="/users/${req.ctx.user.username}/charts/${chart.slug}/edit">Edit</a>
+  <a class="btn delete" href="/users/${req.ctx.user.username}/charts/${chart.slug}/delete">Delete</a>
 </div>
 % endif
 
 % if chart.modified_at != chart.created_at:
 <p>
   Last modified on ${format_datetime(chart.modified_at)}
-  % if chart_owner is not None:
-  by <a class="user" href="/users/${chart_owner.slug}">${chart_owner.slug}</a>
+  % if req.ctx.user is not None:
+  by <a class="user" href="/users/${req.ctx.user.username}">${req.ctx.user.username}</a>
   % endif
 </p>
 % endif
 
 <p>
   Created on ${format_datetime(chart.created_at)}
-% if chart_owner is not None:
-  by <a class="user" href="/users/${chart_owner.slug}">${chart_owner.slug}</a>
+% if req.ctx.user is not None:
+  by <a class="user" href="/users/${req.ctx.user.username}">${req.ctx.user.username}</a>
 % endif
 </p>
 </%block>

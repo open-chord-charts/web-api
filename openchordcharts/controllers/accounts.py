@@ -37,16 +37,12 @@ from .. import conv, wsgi_helpers
 def login_dummy(req):
     assert req.method == 'GET'
     params = req.GET
-    user = Account.find_one({
-        'user_id': req.ctx.conf['dummy_login.user_id'],
-        })
-    if user is None:
-        user = Account()
-        user.dummy = True
-        user.user_id = req.ctx.conf['dummy_login.user_id']
-        user.username = req.ctx.conf['dummy_login.user_id']
-        user.save(safe=True)
-    req.ctx.session['user_id'] = req.ctx.conf['dummy_login.user_id']
+    account = Account.find_one({'username': req.ctx.conf['dummy_login.username']})
+    if account is None:
+        account = Account()
+        account.username = req.ctx.conf['dummy_login.username']
+        account.save(safe=True)
+    req.ctx.session['username'] = req.ctx.conf['dummy_login.username']
     req.ctx.session.save()
     return wsgi_helpers.redirect(req.ctx, location=params.get('callback') or '/')
 

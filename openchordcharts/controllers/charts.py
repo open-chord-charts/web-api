@@ -32,47 +32,35 @@ from biryani1.baseconv import check
 from formencode import variabledecode
 from webob.dec import wsgify
 
-from ..model.account import Account
 from ..model.chart import Chart
 from .. import chart_render, conv, templates, wsgi_helpers
 
 
 @wsgify
 def delete(req):
-    user = req.ctx.find_user()
-    if user is None:
+    if req.ctx.user is None:
         return wsgi_helpers.forbidden(req.ctx)
-    slug = req.urlvars.get('slug')
-    spec = {
-        'is_deleted': {'$exists': False},
-        'slug': slug,
-        }
-    chart = Chart.find_one(spec)
+    chart_slug = req.urlvars.get('chart_slug')
+    chart = Chart.find_one({'slug': chart_slug})
     if chart is None:
         return wsgi_helpers.not_found(req.ctx)
-    if chart.account_id != user._id:
+    if chart.account_id != req.ctx.user._id:
         return wsgi_helpers.forbidden(req.ctx)
-    chart.is_deleted = True
-    chart.save(safe=True)
-    return wsgi_helpers.redirect(req.ctx, location='/charts/')
+    chart.delete(safe=True)
+    return wsgi_helpers.redirect(req.ctx, location='/users/{}/charts/'.format(req.ctx.user.username))
 
 
 @wsgify
 def edit(req):
-    user = req.ctx.find_user()
-    if user is None:
+    if req.ctx.user is None:
         return wsgi_helpers.forbidden(req.ctx)
-    slug = req.urlvars.get('slug')
+    chart_slug = req.urlvars.get('chart_slug')
     chart = data = errors = inputs = None
     if not req.path.endswith('/create'):
-        spec = {
-            'is_deleted': {'$exists': False},
-            'slug': slug,
-            }
-        chart = Chart.find_one(spec)
+        chart = Chart.find_one({'slug': chart_slug})
         if chart is None:
             return wsgi_helpers.not_found(req.ctx)
-        if chart.account_id != user._id:
+        if chart.account_id != req.ctx.user._id:
             return wsgi_helpers.forbidden(req.ctx)
     if req.method == 'POST':
         inputs = variabledecode.variable_decode(req.POST)
@@ -86,12 +74,13 @@ def edit(req):
         if errors is None:
             if req.path.endswith('/create'):
                 chart = Chart()
-                chart.account_id = user._id
+                chart.account_id = req.ctx.user._id
             for key, value in data.iteritems():
                 setattr(chart, key, value)
             chart.save(safe=True)
             assert chart.slug is not None
-            return wsgi_helpers.redirect(req.ctx, location='/charts/{0}'.format(chart.slug))
+            return wsgi_helpers.redirect(req.ctx, location='/users/{}/charts/{}'.format(
+                req.ctx.user.username, chart.slug))
     else:
         inputs = check(conv.chart_to_edit_inputs(chart))
     return templates.render(
@@ -109,9 +98,7 @@ def index(req):
     data, errors = conv.params_to_chart_index_data(req.params, state=conv.default_state)
     if errors is not None:
         return wsgi_helpers.bad_request(req.ctx, comment=errors)
-    spec = {
-        'is_deleted': {'$exists': False},
-        }
+    spec = {}
     keywords = None
     if data['q'] is not None:
         keywords = data['q'].strip().split()
@@ -127,28 +114,21 @@ def index(req):
 
 @wsgify
 def view(req):
-    slug = req.urlvars.get('slug')
-    if not slug:
-        return wsgi_helpers.forbidden(req.ctx)
+    chart_slug = req.urlvars.get('chart_slug')
+    assert chart_slug is not None
     data, errors = conv.params_to_chart_view_data(req.params, state=conv.default_state)
     if errors is not None:
         return wsgi_helpers.bad_request(req.ctx, comment=errors)
-    spec = {
-        'is_deleted': {'$exists': False},
-        'slug': slug,
-        }
-    chart = Chart.find_one(spec)
-    if chart is None or chart.is_deleted:
+    chart = Chart.find_one({'slug': chart_slug})
+    if chart is None:
         return wsgi_helpers.not_found(req.ctx)
     chart_json = check(conv.chart_to_json_dict(chart, state=conv.default_state))
     if req.path.endswith('.json'):
         return wsgi_helpers.respond_json(req.ctx, chart_json)
     else:
-        chart_owner = Account.find_one({'_id': chart.account_id}) if chart.account_id is not None else None
         return templates.render(
             req.ctx,
             '/charts/view.mako',
             chart=chart,
-            chart_owner=chart_owner,
             data=data,
             )

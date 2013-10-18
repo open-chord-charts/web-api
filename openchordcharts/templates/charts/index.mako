@@ -46,7 +46,7 @@ from webhelpers.html.tools import highlight
 <ul class="charts">
     % for chart in charts_cursor:
   <li>
-    <a href="/charts/${chart.slug}">
+    <a href="/users/${chart.account.username}/charts/${chart.slug}">
       ${highlight(chart.title, data['q'].strip().split()) if data['q'] else chart.title}
     </a>
   </li>
@@ -57,10 +57,7 @@ from webhelpers.html.tools import highlight
 <p>No charts found.</p>
 % endif
 
-<%
-user = req.ctx.find_user()
-%>
-% if data['q'] is None and user is not None:
+% if data['q'] is None and req.ctx.user is not None:
 <div class="form-actions">
   <a class="btn create" href="/charts/create">Create</a>
 </div>

@@ -43,16 +43,16 @@
           <input class="search-query" name="q" placeholder="Example: All of me" type="search" \
 value="${req.GET.get('q') or ''}">
         </form>
-<%
-user = req.ctx.find_user()
-%>
         <ul class="nav pull-right">
-% if user is None:
+% if req.ctx.user is None:
           <li>
             <a class="login" href="/login?callback=${req.path}" rel="nofollow">Login</a>
           </li>
 % else:
-          <li><a class="my-charts" href="/users/${user.slug}"><i class="icon-user"></i> ${user.username}</a></li>
+          <li>
+            <a class="my-charts" href="/users/${req.ctx.user.username}/charts">\
+<i class="icon-user"></i> ${req.ctx.user.username}</a>
+          </li>
           <li><a href="/logout?callback=${req.path}" rel="nofollow">Logout</a></li>
 % endif
       </div>
