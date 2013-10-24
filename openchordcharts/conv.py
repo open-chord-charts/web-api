@@ -165,9 +165,6 @@ inputs_to_chart_edit_data = pipe(
             'structure': pipe(
                 cleanup_line,
                 str_csv_to_list,
-                uniform_sequence(
-                    function(lambda value: value.upper()),
-                    ),
                 ),
             'title': pipe(
                 cleanup_line,

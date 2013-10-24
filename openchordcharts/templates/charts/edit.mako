@@ -94,15 +94,14 @@ else:
 % endif
     </div>
   </div>
-
 % if inputs.get('parts'):
-  % for part_name in sorted(inputs['parts']):
-<% chords = inputs['parts'][part_name] %>
+  % for part_name in sorted(inputs['parts'], key=lambda item: inputs['structure'].index(item)):
     <div class="control-group${' error' if errors.get('parts', {}).get(part_name) else ''}">
       <label class="control-label" for="part-${part_name}">Chords of part ${part_name}</label>
       <div class="controls">
         <div class="textarea">
-          <textarea class="input-xxlarge" id="part-${part_name}" name="part.${part_name}">${chords}</textarea>
+          <textarea class="input-xxlarge" id="part-${part_name}" name="part.${part_name}">\
+${inputs['parts'][part_name]}</textarea>
     % if errors.get('parts', {}).get(part_name):
           <span class="help-block">
             <span class="label label-important">Error${u's' if len(errors['parts'][part_name]) > 1 else ''}</span>
