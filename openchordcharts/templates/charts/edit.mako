@@ -142,10 +142,6 @@ ${'' if req.path.endswith('/create') else chart.slug}">Cancel</a>
 <script src="/charts/edit.js"></script>
 <script>
 $(function() {
-  transformSelectIntoToolbar({
-    $el: $('form.edit .controls.key'),
-    name: 'key'
-  });
   disableSubmitWhenEnterKeyPressed({
     $el: $('form.edit')
   });

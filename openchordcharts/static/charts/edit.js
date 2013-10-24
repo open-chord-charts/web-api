@@ -30,30 +30,3 @@ function disableSubmitWhenEnterKeyPressed(options) {
     }
   });
 }
-
-
-function transformSelectIntoToolbar(options) {
-  var $select = $('select', options.$el);
-  $select.remove();
-  var $btnGroup = $('<div>', {'class': 'btn-group', 'data-toggle': 'buttons-radio'});
-  var $hiddenInput = $('<input>', {'name': options.name, 'type': 'hidden'});
-  $('option', $select).each(function(idx, item) {
-    var $option = $(item);
-    var optionVal = $option.val();
-    if (optionVal) {
-      var $button = $('<button>', {'class': 'btn', 'text': optionVal})
-        .on('click', function (evt) {
-          evt.preventDefault();
-          $hiddenInput.val($(evt.currentTarget).text());
-        })
-        .appendTo($btnGroup);
-      if ($option.is(':selected')) {
-        $button.addClass('active');
-        $hiddenInput.val(optionVal);
-      }
-    }
-  });
-  options.$el
-    .prepend($btnGroup)
-    .prepend($hiddenInput);
-}
