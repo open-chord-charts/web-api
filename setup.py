@@ -22,30 +22,28 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         ],
+    data_files=[
+        ('share/locale/fr/LC_MESSAGES', ['openchordcharts_api/i18n/fr/LC_MESSAGES/openchordcharts-api.mo']),
+        ],
     description=doc_lines[0],
-    entry_points="""
-        [paste.app_factory]
-        main = openchordcharts.application:make_app
-        """,
+    entry_points={
+        'paste.app_factory': 'main = openchordcharts_api.application:make_app',
+        },
     include_package_data=True,
     install_requires=[
-        'Babel >= 0.9.6',
-        'Beaker >= 1.5.4',
-        'Biryani1 >= 0.9dev',
-        'FormEncode >= 1.2.4',
-        'MarkupSafe >= 0.15',
-        'pymongo >= 2.2',
-        'suq-monpyjama >= 0.8',
-        'WebError >= 0.10',
-        'WebHelpers >= 1.3',
-        'WebOb >= 1.1',
+        'Babel',
+        'Beaker',
+        'Biryani >= 0.10.1',
+        'Paste',
+        'pymongo >= 2.2',  # Comment if installed from Debian because not exposed in pyshared.
+        'WebOb',
         ],
-    keywords='web chord charts music free collaborative',
+    keywords='web api chord chart music contributive',
     license=u'http://www.fsf.org/licensing/licenses/agpl-3.0.html',
     long_description='\n'.join(doc_lines[2:]),
-    name=u'OpenChordCharts',
+    name=u'OpenChordCharts-API',
     packages=find_packages(),
-    url=u'http://www.openchordcharts.org/',
-    version='0.1',
+    url=u'https://github.com/openchordcharts',
+    version='0.2dev',
     zip_safe=False,
     )

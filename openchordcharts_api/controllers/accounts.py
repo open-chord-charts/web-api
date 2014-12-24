@@ -4,7 +4,7 @@
 # Open Chord Charts -- Database of free chord charts
 # By: Christophe Benz <contact@openchordcharts.org>
 #
-# Copyright (C) 2012-2013 Christophe Benz
+# Copyright (C) 2012, 2013, 2014 Christophe Benz
 # https://gitorious.org/open-chord-charts/
 #
 # This file is part of Open Chord Charts.
@@ -23,39 +23,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-"""Context loaded and saved in WSGI requests"""
+"""Accounts controller functions."""
 
 
 from webob.dec import wsgify
 
-from .model.account import Account
+from .. import contexts, wsgihelpers
 
 
-def make_add_context_to_request(app, app_ctx):
-    """Return a WSGI middleware that adds context to requests."""
-    @wsgify
-    def add_context_to_request(req):
-        req.ctx = app_ctx
-        req.ctx.req = req
-        return req.get_response(app)
-    return add_context_to_request
-
-
-class Context(object):
-    _ = lambda self, message: message
-    _user = None
-    conf = None
-    db = None
-    req = None
-
-    @property
-    def session(self):
-        return self.req.environ.get('beaker.session') if self.req is not None else None
-
-    @property
-    def user(self):
-        if 'username' not in self.session:
-            return None
-        if self._user is None:
-            self._user = Account.find_one({'username': self.session['username']})
-        return self._user
+@wsgify
+def logout(req):
+    ctx = contexts.Ctx(req)
+    ctx.session.delete()
+    return wsgihelpers.respond_json(ctx, {'logout': 'ok'})

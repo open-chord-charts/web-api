@@ -4,7 +4,7 @@
 # Open Chord Charts -- Database of free chord charts
 # By: Christophe Benz <contact@openchordcharts.org>
 #
-# Copyright (C) 2012-2013 Christophe Benz
+# Copyright (C) 2012, 2013, 2014 Christophe Benz
 # https://gitorious.org/open-chord-charts/
 #
 # This file is part of Open Chord Charts.
@@ -23,28 +23,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-"""Database loading functions."""
+"""Index controller function, router declaration."""
 
 
-import pymongo
-import suq.monpyjama
+from . import accounts, charts
+from .. import urls
 
 
-class Wrapper(suq.monpyjama.Wrapper):
-    pass
-
-
-def ensure_indexes(ctx):
-    ctx.db.accounts.ensure_index([('slug', pymongo.ASCENDING)], unique=True)
-    ctx.db.charts.ensure_index([('account_id', pymongo.ASCENDING)])
-    ctx.db.charts.ensure_index([('keywords', pymongo.ASCENDING)])
-    ctx.db.charts.ensure_index([('slug', pymongo.ASCENDING)])
-    ctx.db.charts.ensure_index([('account_id', pymongo.ASCENDING), ('slug', pymongo.ASCENDING)], unique=True)
-    ctx.db.charts.ensure_index([('title', pymongo.ASCENDING)])
-
-
-def load_database(ctx):
-    connection = pymongo.Connection(host=ctx.conf['database.host_name'], port=ctx.conf['database.port'])
-    db = connection[ctx.conf['database.name']]
-    Wrapper.db = db
-    return db
+def make_router():
+    routings = [
+        (None, '^/api/1/charts(?=/|$)', charts.route_api1_class),
+        ('GET', '^/api/1/logout/?$', accounts.logout),
+        ]
+    return urls.make_router(*routings)

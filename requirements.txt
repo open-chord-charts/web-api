@@ -1,0 +1,3 @@
+PasteDeploy
+-e git+https://gitorious.org/biryani/biryani.git@biryani#egg=biryani
+-e .

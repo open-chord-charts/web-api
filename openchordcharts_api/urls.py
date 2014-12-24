@@ -4,7 +4,7 @@
 # Open Chord Charts -- Database of free chord charts
 # By: Christophe Benz <contact@openchordcharts.org>
 #
-# Copyright (C) 2012-2013 Christophe Benz
+# Copyright (C) 2012, 2013, 2014 Christophe Benz
 # https://gitorious.org/open-chord-charts/
 #
 # This file is part of Open Chord Charts.
@@ -28,39 +28,43 @@
 
 import re
 
-from webob.dec import wsgify
+import webob
 
-from . import wsgi_helpers
+from . import contexts, wsgihelpers
 
 
 def make_router(*routings):
-    """Return a WSGI application that dispatches requests to controllers."""
+    """Return a WSGI application that dispatches requests to controllers """
     routes = []
     for routing in routings:
         methods, regex, app = routing[:3]
         if isinstance(methods, basestring):
             methods = (methods,)
-        urlvars = routing[3] if len(routing) >= 4 else {}
-        routes.append((methods, re.compile(regex), app, urlvars))
+        vars = routing[3] if len(routing) >= 4 else {}
+        routes.append((methods, re.compile(unicode(regex)), app, vars))
 
-    @wsgify
-    def router(req):
+    def router(environ, start_response):
         """Dispatch request to controllers."""
+        req = webob.Request(environ)
         split_path_info = req.path_info.split('/')
-        assert not split_path_info[0], split_path_info
-        for methods, regex, app, urlvars in routes:
+        if split_path_info[0]:
+            # When path_info doesn't start with a "/" this is an error or a attack => Reject request.
+            # An example of an URL with such a invalid path_info: http://127.0.0.1http%3A//127.0.0.1%3A80/result?...
+            ctx = contexts.Ctx(req)
+            return wsgihelpers.bad_request(ctx, message=ctx._(u'Invalid path: {}').format(req.path_info))(
+                environ, start_response)
+        for methods, regex, app, vars in routes:
             if methods is None or req.method in methods:
                 match = regex.match(req.path_info)
                 if match is not None:
                     if getattr(req, 'urlvars', None) is None:
                         req.urlvars = {}
-                    req.urlvars.update(dict(
-                        (name, value.decode('utf-8') if value is not None else None)
-                        for name, value in match.groupdict().iteritems()
-                        ))
-                    req.urlvars.update(urlvars)
+                    req.urlvars.update(match.groupdict())
+                    req.urlvars.update(vars)
                     req.script_name += req.path_info[:match.end()]
                     req.path_info = req.path_info[match.end():]
-                    return req.get_response(app)
-        return wsgi_helpers.not_found(req.ctx)
+                    return app(req.environ, start_response)
+        ctx = contexts.Ctx(req)
+        return wsgihelpers.not_found(ctx, message=ctx._(u'URL matched no route'))(environ, start_response)
+
     return router

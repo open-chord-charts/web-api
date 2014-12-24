@@ -1,13 +1,14 @@
-.PHONY: clean flake8 jshint
+all: check
 
-all: clean flake8 jshint
+check: flake8 jshint
 
-clean:
-	find -name "*.pyc" | xargs rm -f
-	rm -rf cache/*
+clean: clean-pyc
 
-flake8:
+clean-pyc:
+	find -name "*.pyc" -exec rm \{\} \;
+
+ctags:
+	ctags --recurse=yes .
+
+flake8: clean-pyc
 	flake8
-
-jshint:
-	jshint openchordcharts/static
