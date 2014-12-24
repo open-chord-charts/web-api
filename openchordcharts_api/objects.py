@@ -136,7 +136,7 @@ class Mapper(object):
 class Wrapper(object):
     """Mixin that wraps MongoDB commands
 
-    Use it in conjuction with a document mapper mixin.
+    Use it in conjunction with a document mapper mixin.
     """
     _collection = None  # class attribute used as cache for class method get_collection()
     _id = None
