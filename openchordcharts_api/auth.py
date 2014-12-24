@@ -57,8 +57,8 @@ def authenticate(environ):
 
 def check_auth(environ, username, password):
     password_hexdigest = hashlib.sha1(password).hexdigest()
-    account = model.Account.find_one({'username': username, 'password': password_hexdigest}) \
-        if conf['auth.bypass_with_username'] is None \
-        else model.Account.find_one({'username': username})
+    account = model.Account.find_one({'username': username}) \
+        if conf['auth.bypass_with_username'] is not None and conf['auth.bypass_with_username'] == username \
+        else model.Account.find_one({'username': username, 'password': password_hexdigest})
     environ['auth.user_account'] = account
     return account is not None

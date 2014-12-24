@@ -33,6 +33,8 @@ from .. import urls
 def make_router():
     routings = [
         (None, '^/api/1/charts(?=/|$)', charts.route_api1_class),
+        ('GET', '^/api/1/login/?$', accounts.login),
         ('GET', '^/api/1/logout/?$', accounts.logout),
+        ('POST', '^/api/1/register/?$', accounts.register),
         ]
     return urls.make_router(*routings)
