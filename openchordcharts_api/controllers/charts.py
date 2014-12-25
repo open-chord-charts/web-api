@@ -67,15 +67,6 @@ def route_api1_class(environ, start_response):
     return router(environ, start_response)
 
 
-# WSGI responses
-
-chart_already_exists = lambda ctx, slug: \
-    wsgihelpers.bad_request(ctx, message=ctx._(u'Chart with slug "{}" already exists'.format(slug)))
-
-invalid_account = lambda ctx, username: \
-    wsgihelpers.bad_request(ctx, message=ctx._(u'Invalid account: {}'.format(username)))
-
-
 # Controllers
 
 @wsgify
@@ -176,6 +167,8 @@ def api1_create_or_edit(req):
         )(req.body, state=ctx)
     if errors is not None:
         return wsgihelpers.bad_request(ctx, errors=errors, message=ctx._(u'Invalid JSON'))
+    chart_already_exists = lambda ctx, slug: \
+        wsgihelpers.bad_request(ctx, message=ctx._(u'Chart with slug "{}" already exists'.format(slug)))
     if is_create_mode:
         slug = conv.slugify(chart_attributes['title'])
         existing_chart = model.Chart.find_one({'slug': slug})
@@ -226,7 +219,7 @@ def api1_search(req):
     if data['owner']:
         owner_account = model.Account.find_one({'username': data['owner']})
         if owner_account is None:
-            return invalid_account(ctx, username=data['owner'])
+            return wsgihelpers.bad_request(ctx, message=ctx._(u'Invalid account: {}'.format(data['owner'])))
         spec['owner_account_id'] = owner_account._id
     charts_cursor = model.Chart.find(spec).sort('slug').limit(conf['charts.limit'])
     return wsgihelpers.respond_json(ctx, {'charts': [chart.to_json() for chart in charts_cursor]})

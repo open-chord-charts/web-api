@@ -33,12 +33,6 @@ from webob.dec import wsgify
 from .. import contexts, conv, model, wsgihelpers
 
 
-# WSGI responses
-
-account_already_exists = lambda ctx, username: \
-    wsgihelpers.bad_request(ctx, message=ctx._(u'Account with username "{}" already exists'.format(username)))
-
-
 # Controllers
 
 @wsgify
@@ -79,7 +73,8 @@ def register(req):
         return wsgihelpers.bad_request(ctx, errors=errors, message=ctx._(u'Invalid parameters'))
     existing_account = model.Account.find_one({'username': data['username']})
     if existing_account is not None:
-        return account_already_exists(ctx, data['username'])
+        return wsgihelpers.bad_request(ctx, message=ctx._(u'Account with username "{}" already exists'.format(
+            data['username'])))
     password_hexdigest = hashlib.sha1(data['password']).hexdigest()
     account = model.Account(email=data['email'], username=data['username'], password=password_hexdigest)
     account.compute_attributes()
