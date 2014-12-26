@@ -86,6 +86,10 @@ class Chart(Model):
         assert self.owner_account_id is not None
         return Account.find_one({'_id': self.owner_account_id})
 
+    def before_upsert(self, old_bson, bson):
+        super(Account, self).before_upsert(old_bson, bson)
+        assert self.owner_account_id is not None
+
     def compute_attributes(self):
         self.keywords = self.compute_keywords()
         self.slug = conv.slugify(self.title)
@@ -101,9 +105,8 @@ class Chart(Model):
         values, errors = super(Chart, self).instance_to_json(state=state or conv.default_state)
         if errors is not None:
             return values, errors
-        owner_account_id = values.pop('owner_account_id', None)
-        if owner_account_id is not None:
-            values['ownerAccountId'] = unicode(owner_account_id)
+        owner_account_id = values.pop('owner_account_id')
+        values['ownerAccountId'] = unicode(owner_account_id)
         return values, None
 
     @classmethod
