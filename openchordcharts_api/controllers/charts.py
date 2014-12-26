@@ -229,4 +229,7 @@ def api1_search(req):
 def api1_view(req):
     ctx = contexts.Ctx(req)
     chart = ctx.node
-    return wsgihelpers.respond_json(ctx, {'chart': chart.to_json()})
+    chart_json = chart.to_json()
+    owner_account = model.Account.find_one({'_id': chart.owner_account_id})
+    chart_json['ownerUsername'] = owner_account.username
+    return wsgihelpers.respond_json(ctx, {'chart': chart_json})
