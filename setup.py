@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-"""Open chord charts project."""
+"""Open Chord Charts API"""
 
 
 from setuptools import setup, find_packages
