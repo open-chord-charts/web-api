@@ -105,7 +105,8 @@ def validate_structure_and_parts(values, state=None):
     if structure is not None and parts is not None:
         for part_name in structure:
             if part_name not in parts:
-                return values, state._(u'Part "{}" is declared in structure but is missing in parts.'.format(part_name))
+                return values, state._(u'Part "{}" is declared in "structure" but is missing from "parts".'.format(
+                    part_name))
     elif structure is not None or parts is not None:
-        return values, state._(u'Both structure and parts must be provided, or none.')
+        return values, state._(u'Both "structure" and "parts" must be provided, or none.')
     return values, None
