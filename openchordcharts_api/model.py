@@ -87,7 +87,7 @@ class Chart(Model):
         return Account.find_one({'_id': self.owner_account_id})
 
     def before_upsert(self, old_bson, bson):
-        super(Account, self).before_upsert(old_bson, bson)
+        super(Chart, self).before_upsert(old_bson, bson)
         assert self.owner_account_id is not None
 
     def compute_attributes(self):
