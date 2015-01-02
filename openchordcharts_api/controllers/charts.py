@@ -53,7 +53,7 @@ def route_api1(environ, start_response):
     router = urls.make_router(
         ('GET', '^$', api1_view),
         ('POST', '^$', api1_create_or_edit),
-        (('GET', 'POST'), '^/delete/?$', api1_delete),
+        (('GET', 'POST'), '^/delete$', api1_delete),
         )
     return router(environ, start_response)
 
