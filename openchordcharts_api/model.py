@@ -154,9 +154,12 @@ class Chart(Model):
 
     @classmethod
     def validate_bson(cls, bson):
+        non_empty_string = conv.pipe(conv.empty_to_none, conv.test_not_none())
         return conv.struct(
             {
                 'owner_account_id': conv.test_not_none(),
+                'slug': non_empty_string,
+                'title': non_empty_string,
                 },
             default=conv.noop,  # Keep unexpected item as is.
             )(bson)
