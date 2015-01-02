@@ -186,7 +186,7 @@ def api1_create_or_edit(req):
         chart.set_attributes(**chart_attributes)
     chart.compute_attributes()
     chart.save(safe=True)
-    return wsgihelpers.respond_json(ctx, {'chart': chart.to_json()})
+    return wsgihelpers.respond_json(ctx, {'chart': chart.to_json(state=ctx)})
 
 
 @wsgify
@@ -204,8 +204,8 @@ def api1_search(req):
     ctx = contexts.Ctx(req)
     data, errors = conv.struct(
         {
+            'ownerSlug': conv.cleanup_line,
             'q': conv.cleanup_line,
-            'owner': conv.cleanup_line,
             },
         default=None,  # Fail if unexpected item.
         )(req.params, state=conv.default_state)
@@ -216,20 +216,19 @@ def api1_search(req):
     if data['q'] is not None:
         keywords = data['q'].strip().split()
         spec['keywords'] = {'$all': [re.compile(u'^{0}'.format(re.escape(keyword))) for keyword in keywords]}
-    if data['owner']:
-        owner_account = model.Account.find_one({'username': data['owner']})
+    if data['ownerSlug']:
+        owner_account = model.Account.find_one({'username': data['ownerSlug']})
         if owner_account is None:
-            return wsgihelpers.bad_request(ctx, message=ctx._(u'Invalid account: {}'.format(data['owner'])))
+            return wsgihelpers.bad_request(ctx, message=ctx._(u'Invalid account: {}'.format(data['ownerSlug'])))
         spec['owner_account_id'] = owner_account._id
     charts_cursor = model.Chart.find(spec).sort('slug').limit(conf['charts.limit'])
-    return wsgihelpers.respond_json(ctx, {'charts': [chart.to_json() for chart in charts_cursor]})
+    return wsgihelpers.respond_json(ctx, {
+        'charts': [chart.to_json(state=ctx, with_owner=True) for chart in charts_cursor],
+    })
 
 
 @wsgify
 def api1_view(req):
     ctx = contexts.Ctx(req)
     chart = ctx.node
-    chart_json = chart.to_json()
-    owner_account = model.Account.find_one({'_id': chart.owner_account_id})
-    chart_json['ownerUsername'] = owner_account.username
-    return wsgihelpers.respond_json(ctx, {'chart': chart_json})
+    return wsgihelpers.respond_json(ctx, {'chart': chart.to_json(state=ctx, with_owner=True)})

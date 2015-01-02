@@ -126,6 +126,22 @@ class Chart(Model):
             return self, None
         return id_or_slug_to_instance
 
+    def owner_account(self):
+        owner_account = Account.find_one({'_id': self.owner_account_id})
+        assert owner_account is not None
+        return owner_account
+
+    def to_json(self, state=None, with_owner=False):
+        chart_json = super(Chart, self).to_json(state=state)
+        if with_owner:
+            # Denormalize chart JSON embedding owner infos.
+            owner_account = self.owner_account()
+            chart_json['owner'] = {
+                'slug': owner_account.slug,
+                'username': owner_account.username,
+                }
+        return chart_json
+
 
 # Helper functions around models
 
