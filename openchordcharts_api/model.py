@@ -64,13 +64,23 @@ class Account(Model):
 
     def before_upsert(self, old_bson, bson):
         super(Account, self).before_upsert(old_bson, bson)
-        assert self.email is not None
-        assert self.password is not None
-        assert self.slug is not None
-        assert self.username is not None
+        conv.check(self.validate_bson(bson))
 
     def compute_attributes(self):
         self.slug = conv.slugify(self.username)
+
+    @classmethod
+    def validate_bson(cls, bson):
+        non_empty_string = conv.pipe(conv.empty_to_none, conv.test_not_none())
+        return conv.struct(
+            {
+                'email': non_empty_string,
+                'password': non_empty_string,
+                'slug': non_empty_string,
+                'username': non_empty_string,
+                },
+            default=conv.noop,  # Keep unexpected item as is.
+            )(bson)
 
 
 class Chart(Model):
@@ -88,7 +98,7 @@ class Chart(Model):
 
     def before_upsert(self, old_bson, bson):
         super(Chart, self).before_upsert(old_bson, bson)
-        assert self.owner_account_id is not None
+        conv.check(self.validate_bson(bson))
 
     def compute_attributes(self):
         self.keywords = self.compute_keywords()
@@ -141,6 +151,15 @@ class Chart(Model):
                 'username': owner_account.username,
                 }
         return chart_json
+
+    @classmethod
+    def validate_bson(cls, bson):
+        return conv.struct(
+            {
+                'owner_account_id': conv.test_not_none(),
+                },
+            default=conv.noop,  # Keep unexpected item as is.
+            )(bson)
 
 
 # Helper functions around models
