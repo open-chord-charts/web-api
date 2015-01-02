@@ -122,8 +122,6 @@ def respond_json(ctx, data, code=None, headers=None, jsonp=None):
             data['params'] = req.body
     else:
         error = None
-    headers = [] if headers is None else list(headers)
-    headers.extend(handle_cross_origin_resource_sharing(ctx))
     if jsonp:
         content_type = 'application/javascript; charset=utf-8'
     else:
@@ -146,7 +144,8 @@ def respond_json(ctx, data, code=None, headers=None, jsonp=None):
         response.content_type = content_type
         if code is not None:
             response.status = code
-        response.headers.update(headers)
+        if headers is not None:
+            response.headers.update(headers)
     # try:
     #     text = json.dumps(data, encoding = 'utf-8', ensure_ascii = False, indent = 2)
     # except UnicodeDecodeError:

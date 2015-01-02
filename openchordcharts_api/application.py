@@ -31,13 +31,30 @@ import urllib
 
 import webob
 
-from . import controllers, environment
+from . import contexts, controllers, environment, wsgihelpers
 
 
 percent_encoding_re = re.compile('%[\dA-Fa-f]{2}')
 
 
 # Middlewares
+
+def cross_origin_resource_sharing_handler(app):
+    """WSGI middleware that handles CORS headers."""
+    def handle_cross_origin_resource_sharing(environ, start_response):
+        req = webob.Request(environ)
+        ctx = contexts.Ctx(req)
+        try:
+            headers = wsgihelpers.handle_cross_origin_resource_sharing(ctx)
+        except webob.exc.HTTPException as exc:
+            res = exc
+            return res(environ, start_response)
+        res = req.get_response(app)
+        res.headers = headers
+        return res(environ, start_response)
+
+    return handle_cross_origin_resource_sharing
+
 
 def request_query_encoding_fixer(app):
     """WSGI middleware that repairs a badly encoded query in request URL."""
@@ -75,6 +92,9 @@ def make_app(global_conf, **app_conf):
 
     # Dispatch request to controllers.
     app = controllers.make_router()
+
+    # Handle CORS headers
+    app = cross_origin_resource_sharing_handler(app)
 
     # Repair badly encoded query in request URL.
     app = request_query_encoding_fixer(app)
