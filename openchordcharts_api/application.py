@@ -50,7 +50,7 @@ def cross_origin_resource_sharing_handler(app):
             res = exc
             return res(environ, start_response)
         res = req.get_response(app)
-        res.headers = headers
+        res.headers.update(headers)
         return res(environ, start_response)
 
     return handle_cross_origin_resource_sharing
