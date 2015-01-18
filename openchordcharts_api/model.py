@@ -175,17 +175,13 @@ def check_owner(ctx, user, chart):
 def get_user(ctx, check=False):
     from . import auth
     user = ctx.user
-    req = ctx.req
     if user is UnboundLocalError:
-        username = ctx.session.get('username')
-        if username is None:
-            result = auth.authenticate(req.environ)
-            if isinstance(result, basestring):
-                username = req.remote_user = result
-                ctx.session['username'] = username
-                ctx.session.save()
-            elif check:
-                raise result
+        req = ctx.req
+        authenticate_result = auth.authenticate(req.environ)
+        if isinstance(authenticate_result, basestring):
+            username = req.remote_user = authenticate_result
+        elif check:
+            raise authenticate_result
         ctx.user = user = None if username is None else Account.find_one({'username': username})
     return user
 

@@ -61,10 +61,6 @@ class Ctx(State):
 
     node = property(node_get, node_set, node_del)
 
-    @property
-    def session(self):
-        return self.req.environ.get('beaker.session') if self.req is not None else None
-
     def user_del(self):
         del self._user
         if self.req is not None and self.req.environ.get('open-chord-charts') is not None \

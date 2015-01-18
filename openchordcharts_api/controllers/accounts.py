@@ -38,15 +38,14 @@ from .. import contexts, conv, model, wsgihelpers
 @wsgify
 def login(req):
     ctx = contexts.Ctx(req)
-    model.get_user(ctx, check=True)
-    return wsgihelpers.respond_json(ctx, {'login': 'ok'})
+    user = model.get_user(ctx, check=True)
+    return wsgihelpers.respond_json(ctx, {'login': 'ok', 'username': user.username})
 
 
 @wsgify
 def logout(req):
     ctx = contexts.Ctx(req)
-    ctx.session.delete()
-    return wsgihelpers.respond_json(ctx, {'logout': 'ok'})
+    return wsgihelpers.unauthorized(ctx)
 
 
 @wsgify
