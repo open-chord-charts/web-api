@@ -74,6 +74,10 @@ def register(req):
     if existing_account is not None:
         return wsgihelpers.bad_request(ctx, message=ctx._(u'Account with username "{}" already exists'.format(
             data['username'])))
+    existing_account = model.Account.find_one({'email': data['email']})
+    if existing_account is not None:
+        return wsgihelpers.bad_request(ctx, message=ctx._(u'Account with email "{}" already exists'.format(
+            data['email'])))
     password_hexdigest = hashlib.sha1(data['password']).hexdigest()
     account = model.Account(email=data['email'], username=data['username'], password=password_hexdigest)
     account.compute_attributes()
