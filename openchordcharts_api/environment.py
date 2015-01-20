@@ -52,7 +52,7 @@ def load_environment(global_conf, app_conf):
         {
             'app_conf': conv.default(app_conf),
             'app_dir': conv.default(app_dir),
-            'auth.bypass_with_username': conv.pipe(conv.empty_to_none, conv.not_none),
+            'auth.bypass_with_username': conv.empty_to_none,
             'auth.realm': conv.pipe(conv.empty_to_none, conv.not_none),
             'charts.limit': conv.pipe(conv.input_to_int, conv.not_none),
             'database.host': conv.pipe(conv.empty_to_none, conv.not_none),
