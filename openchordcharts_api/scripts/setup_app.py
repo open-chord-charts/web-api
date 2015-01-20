@@ -44,7 +44,7 @@ log = logging.getLogger(app_name)
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('config', help=u"Path of OpenChordCharts-API configuration file")
-    parser.add_argument('-s', '--section', default='api', help=u"Name of configuration section in configuration file")
+    parser.add_argument('-s', '--section', default='main', help=u"Name of configuration section in configuration file")
     parser.add_argument('-v', '--verbose', action='store_true', default=False, help=u"Increase output verbosity")
     args = parser.parse_args()
     logging.basicConfig(level=logging.DEBUG if args.verbose else logging.WARNING, stream=sys.stdout)
