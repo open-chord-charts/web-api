@@ -37,7 +37,7 @@ def authenticate(environ):
     def respond_authenticate():
         ctx = contexts.Ctx(req)
         headers = (
-            ('WWW-Authenticate', u'Basic realm="{}"'.format(conf['auth.realm'])),
+            ('WWW-Authenticate', u'Basic realm="{}"'.format(conf['auth.realm']).encode('utf-8')),
             )
         return wsgihelpers.unauthorized(ctx, headers=headers)
 
