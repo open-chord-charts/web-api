@@ -5,7 +5,7 @@
 # By: Christophe Benz <contact@openchordcharts.org>
 #
 # Copyright (C) 2012 Christophe Benz
-# https://gitorious.org/open-chord-charts/
+# https://github.com/openchordcharts/
 #
 # This file is part of Open Chord Charts.
 #

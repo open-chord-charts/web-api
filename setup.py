@@ -5,8 +5,8 @@
 # Open Chord Charts -- Database of free chord charts
 # By: Christophe Benz <contact@openchordcharts.org>
 #
-# Copyright (C) 2012, 2013, 2014 Christophe Benz
-# https://gitorious.org/open-chord-charts/
+# Copyright (C) 2012, 2013, 2014, 2015 Christophe Benz
+# https://github.com/openchordcharts/
 #
 # This file is part of Open Chord Charts.
 #
